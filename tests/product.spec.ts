@@ -133,6 +133,7 @@ test('@claim:offline-demo reloads after the first visit', async ({ page, context
   await page.evaluate(async () => { await navigator.serviceWorker.ready; if (!navigator.serviceWorker.controller) location.reload(); });
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
   await context.setOffline(true);
+  await expect(page.getByText('Offline — the saved shell remains available')).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Inspect a scrubbed payment failure' })).toBeVisible();
   await expect(page.getByText('503 response')).toBeVisible();

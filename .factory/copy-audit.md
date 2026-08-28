@@ -50,6 +50,20 @@ are included because visitors read them as standalone phrases. No line exceeds
 | Buy the policy pack | 4 | Pass |
 | Have a license? | 3 | Pass |
 | Paste it. | 2 | Pass |
+| Paste a license token, then verify it. | 7 | Pass |
+| Checking this license… | 3 | Pass |
+| This license is no longer active. | 6 | Pass |
+| Buy a new license to restore the pack. | 8 | Pass |
+| The license check could not connect. | 6 | Pass |
+| Try again when you are online. | 6 | Pass |
+| This license is not active. | 5 | Pass |
+| Paste another token or buy a license. | 7 | Pass |
+| License verified. | 2 | Pass |
+| The policy pack is ready. | 5 | Pass |
+| Copied. | 1 | Pass |
+| Copy failed. | 2 | Pass |
+| Select the command above. | 4 | Pass |
+| Offline — the saved shell remains available | 7 | Pass |
 | Sociobot is the merchant of record. | 6 | Pass |
 | Capture a scrubbed boundary. | 4 | Pass |
 | Replay it locally. | 3 | Pass |

@@ -47,7 +47,7 @@ function header(): string {
   return `<a class="skip" href="#main">Skip to content</a>
     <header class="topbar">
       <a class="wordmark" href="/" data-link aria-label="Boundary Replay home"><span class="mark" aria-hidden="true">BR</span><span>Boundary Replay</span></a>
-      <nav aria-label="Primary"><a href="/demo" data-link>Demo</a><a href="/#how">How it works</a><a href="/privacy" data-link>Privacy</a></nav>
+      <nav aria-label="Primary"><a href="/demo" data-link>Demo</a><a href="/#how">How it works</a><a href="/privacy" data-link>Privacy</a></nav><span class="network-state" hidden aria-live="polite">Offline — the saved shell remains available</span>
     </header>`;
 }
 
@@ -163,6 +163,7 @@ function render(focus = true): void {
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')!.href = `https://incident-boundary-replay.sociobot.in${route === '/404' ? '/404' : route}`;
   bindEvents();
   void updateLicenseUI();
+  syncNetworkState();
   if (focus) requestAnimationFrame(() => document.querySelector<HTMLElement>('h1')?.focus());
 }
 
@@ -178,8 +179,10 @@ function bindEvents(): void {
   }));
   document.querySelector<HTMLButtonElement>('[data-copy]')?.addEventListener('click', async event => {
     const button = event.currentTarget as HTMLButtonElement;
-    await navigator.clipboard.writeText(button.dataset.copy!);
-    document.querySelector<HTMLElement>('.copy-status')!.textContent = ' Copied.';
+    try {
+      await navigator.clipboard.writeText(button.dataset.copy!);
+      document.querySelector<HTMLElement>('.copy-status')!.textContent = ' Copied.';
+    } catch { document.querySelector<HTMLElement>('.copy-status')!.textContent = ' Copy failed. Select the command above.'; }
   });
   document.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () => {
     sessionStorage.removeItem(DEMO_KEY); render(false);
@@ -202,7 +205,8 @@ function bindEvents(): void {
     event.preventDefault();
     const token = new FormData(event.currentTarget as HTMLFormElement).get('license')?.toString().trim();
     if (!token) { setLicenseStatus('Paste a license token, then verify it.'); return; }
-    localStorage.setItem(LICENSE_KEY, token); await verifyLicense(token, true);
+    setLicenseStatus('Checking this license…');
+    localStorage.setItem(LICENSE_KEY, token); await verifyLicense(token, true); await updateLicenseUI();
   });
   document.querySelector<HTMLAnchorElement>('[data-team-download]')?.addEventListener('click', event => {
     event.preventDefault();
@@ -239,6 +243,16 @@ async function updateLicenseUI(): Promise<void> {
   const valid = await verifyLicense(token, Boolean(returned));
   document.querySelector<HTMLElement>('.paid-download')?.toggleAttribute('hidden', !valid);
   if (valid) setLicenseStatus('License verified. The policy pack is ready.');
+  else {
+    const form = document.querySelector<HTMLFormElement>('.license-form');
+    if (form) form.hidden = false;
+    if (!document.querySelector<HTMLElement>('.license-status')?.textContent) setLicenseStatus('This license is not active. Paste another token or buy a license.');
+  }
+}
+
+function syncNetworkState(): void {
+  const state = document.querySelector<HTMLElement>('.network-state');
+  if (state) state.hidden = navigator.onLine;
 }
 
 document.addEventListener('click', event => {
@@ -246,6 +260,8 @@ document.addEventListener('click', event => {
   if (link && location.pathname !== '/') { event.preventDefault(); navigate(link.getAttribute('href')!); }
 });
 window.addEventListener('popstate', () => render());
+window.addEventListener('online', syncNetworkState);
+window.addEventListener('offline', syncNetworkState);
 render(false);
 
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => undefined));

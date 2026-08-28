@@ -46,7 +46,7 @@ folder. It never reads an existing capture folder.
 - Lighthouse 12.8.2 mobile: Performance 100, Accessibility 100, Best Practices
   100, SEO 100. LCP 1.6 s and CLS 0.044. Lab INP was unavailable because the
   audit performs no user interaction.
-- First-load budgets: JS 5.96 KB gzip; CSS 3.50 KB gzip; Latin fonts 37 KB;
+- First-load budgets: JS 6.13 KB gzip; CSS 3.54 KB gzip; Latin fonts 37 KB;
   hero WebP 62 KB. All are below the product budgets.
 - Desktop and 390×844 screenshots were inspected. Reduced motion removes the
   one-shot signal sweep and terminal cursor movement.
