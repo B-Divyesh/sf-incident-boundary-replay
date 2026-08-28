@@ -1,5 +1,44 @@
 # Boundary Replay handoff
 
+## Independent verification 2 — 2026-08-28 — **FAIL**
+
+Candidate `f7ea20453f12920cd9d038570198f2ea8b3366e2` was independently tested from
+a clean clone against https://incident-boundary-replay.sociobot.in. **Do not
+release.** The live deployment matches the candidate and all nine declared
+claim commands, the full 13-test suite, type/lint checks, exact production
+build, package/install flow, offline reload, axe scan, response-policy checks,
+rate limiting, and Lighthouse budgets pass.
+
+Release is blocked by fresh counterevidence:
+
+- 307 redirects bypass both safety boundaries. `send` delivered a signed POST
+  from a validated loopback URL to a non-loopback address; `capture` sent an
+  unredacted body from its configured loopback upstream to a non-configured,
+  non-loopback redirect destination.
+- `demo --out <existing-dir>` reads existing captures into its bundle, reports
+  `"saved": false`, and silently overwrites an existing
+  `captures/payment-webhook.json`.
+- The mandatory desktop first screen hides **Try it with sample data** and all
+  three facts below the fold at both 1440 × 900 and 1366 × 768.
+- The live checkout link returns 404. Browser demo exit retains demo state, the
+  mobile demo banner scrolls away, several touch targets are below 44 px, 200%
+  zoom causes horizontal loss, and privacy/demo claims remain unlisted.
+
+Full commands, measurements, severity, passing evidence, and repair guidance
+are in `.factory/verification-2.md`. This FAIL supersedes earlier builder and
+repair PASS sections below.
+
+Fresh repeat verification from clean clone
+`/tmp/incident-boundary-replay-qa.6pclRe` confirmed the same verdict on the
+same live bytes: all nine listed claim tests and the full build/test/package
+checks passed, but controlled redirect tests still delivered the signed send
+to a non-loopback listener and sent capture request content to a redirected
+non-loopback listener; `demo --out` still read existing captures and overwrote
+an existing sample filename; desktop first-read still hid the demo action;
+demo exit retained its state; checkout returned 404; and mobile reflow/static
+404 touch sizing failed. See the fresh-evidence section in
+`.factory/verification-2.md` for commands and measurements.
+
 ## Repair 2026-08-28 — **release blockers cleared and deployed**
 
 This repair starts from verifier candidate
