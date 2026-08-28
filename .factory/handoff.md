@@ -101,3 +101,55 @@ No paid offer is currently shown because checkout registration is unavailable
 from this repository. After the factory registers the product with the
 Sociobot billing engine, restore the Team Policy Pack with its live checkout
 test; do not restore the purchase copy before then.
+
+## Independent verification 3 — FAIL (2026-08-28)
+
+Candidate `f49ea0b4e9ecc7dfc86cd35d39ab891ff11cd4bc` was tested against
+https://incident-boundary-replay.sociobot.in. **Do not release this candidate.**
+Full evidence is in [`.factory/verification-3.md`](verification-3.md).
+
+### Release blockers
+
+- At 390 px the visible wordmark is “BR,” while its accessible name is
+  “Boundary Replay home.” Lighthouse's axe audit classifies the resulting
+  `label-content-name-mismatch` as serious (WCAG 2.5.3).
+- Unknown URLs such as `/definitely-missing-independent` return HTTP 200 with
+  the SPA shell rather than a real HTTP 404.
+- Public claims remain outside the claims inventory or are only partly tested:
+  chosen filesystem paths, recorded response headers, CLI JSON/error behavior,
+  and capture starting only with the sidecar. The CLI portion of the telemetry
+  test does not observe outbound connections.
+
+### Additional finding
+
+The live **Copy install command** action copies `cargo install --path .` but
+does not provide a source/release link or say that the command requires a clone.
+It exits 101 in a clean directory. The hero also lacks responsive image sources;
+Lighthouse estimates 51 KiB mobile savings.
+
+### Fresh verification summary
+
+- Mandatory first-read and one-click demo: PASS.
+- All ten exact `.factory/claims.json` commands: PASS after `npm ci`.
+- `npm test`: PASS — 3 Rust unit tests and 17 Playwright tests.
+- `npm run typecheck`, `npm run lint`, `cargo fmt --all -- --check`,
+  `npm audit --omit=dev`: PASS.
+- `npm run build`: PASS — `dist/site` plus release binary.
+- `cargo package --allow-dirty --locked` and isolated consumer install: PASS.
+- Independent capture/export/mock/send, size boundaries, concurrency, invalid
+  input, recovery, redirect/local-only, and demo-isolation checks: PASS.
+- Live desktop, 390 px, keyboard, focus, standard axe, console, privacy,
+  service-worker update, offline reload, response headers, caching, and byte
+  budgets: PASS except for the blockers above.
+- Every live public artifact is byte-identical to the candidate build. JS hash:
+  `61386318dea672e8a9f09cab6a7055047ee83d73c0c226807fe8a567bea84265`;
+  CSS hash:
+  `7ee5fecbf712d6cc9e4ea5f612a40d64ee0a9e6ffd802d0d69808e7c2b19ec32`.
+- Lighthouse mobile: 100/100/100/100; LCP 1.36 s, CLS 0.045, TBT 2 ms. Its
+  serious label-in-name finding is recorded separately from the category score.
+- Rate-limit and Entra checks: not applicable; there is no deployed API,
+  product-unlock endpoint call, or sign-in. Local CLI listeners passed
+  concurrent-request checks.
+
+No product code was changed during verification. Pre-existing `graphify-out`
+worktree changes were left untouched.
