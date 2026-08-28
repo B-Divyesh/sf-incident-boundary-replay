@@ -205,13 +205,13 @@
       "degree": 10
     },
     {
-      "id": "src_lib_export_bundle",
-      "label": "export_bundle()",
+      "id": "src_lib_scrub_exchange",
+      "label": "scrub_exchange()",
       "degree": 10
     },
     {
-      "id": "src_lib_scrub_exchange",
-      "label": "scrub_exchange()",
+      "id": "src_lib_export_bundle",
+      "label": "export_bundle()",
       "degree": 10
     },
     {
@@ -220,8 +220,13 @@
       "degree": 10
     },
     {
-      "id": "tsconfig_compileroptions",
-      "label": "compilerOptions",
+      "id": "src_lib_load_bundle",
+      "label": "load_bundle()",
+      "degree": 8
+    },
+    {
+      "id": "src_lib_run_mock",
+      "label": "run_mock()",
       "degree": 8
     },
     {
@@ -232,11 +237,6 @@
     {
       "id": "src_main_demo",
       "label": "demo()",
-      "degree": 8
-    },
-    {
-      "id": "src_main_run",
-      "label": "run()",
       "degree": 8
     }
   ],
@@ -275,8 +275,8 @@
       "why": "inferred connection - not explicitly stated in source"
     },
     {
-      "source": "demo()",
-      "target": "write_exchange()",
+      "source": "run()",
+      "target": "run_capture()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
@@ -287,7 +287,7 @@
     },
     {
       "source": "run()",
-      "target": "run_capture()",
+      "target": "run_mock()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
