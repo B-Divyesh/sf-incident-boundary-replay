@@ -24,6 +24,9 @@
   before it reloads offline.
 - Repair commit: `0156247a810285e0c1e805b83bae70fe849b4b74`, pushed to
   `origin/main` before deployment.
+- Follow-up offline repair commit:
+  `0cc2fb6882d145a0ad58a2f8a829d6d9dfcc70fc`, also pushed to `origin/main`
+  and deployed through the same static SWA configuration.
 
 ### Repair verification
 
@@ -47,10 +50,13 @@
   668 ms, with no console errors; title, `lang=en`, one h1, main landmark,
   and image alts passed. The deployed `/404.html` returned HTTP 200 with the
   configured CSP and security headers.
-- Custom-domain registration was started by the deployment configuration for
-  `https://incident-boundary-replay.sociobot.in`; Azure DNS resolution is in
-  place and Azure is validating its managed TLS certificate. Its final HTTPS
-  result is recorded below once the certificate is issued.
+- Final custom-domain identity check: Azure reports `Ready` for
+  `incident-boundary-replay.sociobot.in`; `https://incident-boundary-replay.sociobot.in/`
+  returned HTTP 200. Factory `verify-url.sh` loaded it in 884 ms with no
+  console errors; its title, `lang=en`, h1, main landmark, labels, and image
+  alt checks all passed. The deployed `sw.js` exposes cache v2, its emitted
+  JS/CSS precache entries, and the `ignoreVary` offline fallback. The deployed
+  `404.html` returns HTTP 200 with the configured CSP and security headers.
 
 ## Built
 
