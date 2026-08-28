@@ -192,19 +192,14 @@
   },
   "gods": [
     {
-      "id": "src_lib_exchange",
-      "label": "Exchange",
-      "degree": 11
-    },
-    {
       "id": "site_src_main_render",
       "label": "render()",
       "degree": 11
     },
     {
-      "id": "src_lib_redactionpolicy",
-      "label": "RedactionPolicy",
-      "degree": 10
+      "id": "src_lib_exchange",
+      "label": "Exchange",
+      "degree": 11
     },
     {
       "id": "src_lib_scrub_exchange",
@@ -217,9 +212,19 @@
       "degree": 10
     },
     {
+      "id": "src_lib_redactionpolicy",
+      "label": "RedactionPolicy",
+      "degree": 10
+    },
+    {
       "id": "src_lib_capture_one",
       "label": "capture_one()",
       "degree": 10
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 8
     },
     {
       "id": "src_lib_load_bundle",
@@ -234,11 +239,6 @@
     {
       "id": "src_lib_write_exchange",
       "label": "write_exchange()",
-      "degree": 8
-    },
-    {
-      "id": "src_main_demo",
-      "label": "demo()",
       "degree": 8
     }
   ],
