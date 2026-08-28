@@ -8,7 +8,7 @@ repository = "https://github.com/B-Divyesh/sf-incident-boundary-replay"
 readme = "README.md"
 keywords = ["http", "webhook", "mock", "redaction", "debugging"]
 categories = ["command-line-utilities", "development-tools::testing"]
-include = ["src/**", "examples/**", "Cargo.toml", "README.md", "LICENSE", "CHANGELOG.md"]
+include = ["/src/**", "/examples/**", "/Cargo.toml", "/README.md", "/LICENSE", "/CHANGELOG.md"]
 
 [[bin]]
 name = "boundary-replay"
@@ -33,4 +33,3 @@ uuid = { version = "1.18", features = ["v4", "serde"] }
 
 [dev-dependencies]
 tempfile = "3.21"
-

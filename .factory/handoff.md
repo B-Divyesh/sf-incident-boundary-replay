@@ -37,7 +37,7 @@ folder. It never reads an existing capture folder.
 - `npm test`: 10 passed, including all eight claim tests.
 - `npm run build`: passed; site output is `dist/site/index.html`; release CLI
   is `target/release/boundary-replay`.
-- `cargo package --allow-dirty`: passed; package archive is ready for the
+- `cargo package`: passed; package archive is ready for the
   factory registry workflow.
 - `npm audit`: 0 vulnerabilities.
 - Factory `verify-url.sh`: load 624 ms, no console errors, one h1, `lang=en`,
