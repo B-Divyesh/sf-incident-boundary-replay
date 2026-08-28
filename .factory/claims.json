@@ -1,0 +1,58 @@
+[
+  {
+    "id": "redact-before-disk",
+    "claim": "Redacts selected headers and JSON fields before disk",
+    "where": "landing facts, workflow, README, privacy",
+    "test": "npm test -- --grep @claim:redact-before-disk",
+    "sandbox": "fresh temp folder and local upstream; send an HTTP request through the capture sidecar; inspect the only saved exchange for redaction markers and absence of request and response secrets"
+  },
+  {
+    "id": "local-only-replay",
+    "claim": "Mock servers and webhook sends accept loopback targets only",
+    "where": "landing facts, safety section, README",
+    "test": "npm test -- --grep @claim:local-only-replay",
+    "sandbox": "run the CLI against a non-loopback bind and target; assert both stop with an actionable error"
+  },
+  {
+    "id": "runnable-local-mock",
+    "claim": "An exported fixture matches its recorded method and path and returns the recorded response locally",
+    "where": "landing workflow, demo, README",
+    "test": "npm test -- --grep @claim:runnable-local-mock",
+    "sandbox": "fresh CLI demo bundle; start the mock on loopback; POST to the recorded path; assert status 503 and the recorded JSON body"
+  },
+  {
+    "id": "signed-local-webhook",
+    "claim": "A scrubbed webhook is re-signed with a local secret before it is sent",
+    "where": "landing safety section, README",
+    "test": "npm test -- --grep @claim:signed-local-webhook",
+    "sandbox": "fresh CLI demo bundle and local receiver; send with a test environment secret; assert a fresh HMAC signature and no captured signature"
+  },
+  {
+    "id": "private-demo",
+    "claim": "The browser demo uses sample data, stores only demo-prefixed session state, and makes no third-party request",
+    "where": "demo banner, privacy, demo documentation",
+    "test": "npm test -- --grep @claim:private-demo",
+    "sandbox": "fresh browser context; record requests and storage while opening and resetting /demo"
+  },
+  {
+    "id": "offline-demo",
+    "claim": "The browser demo works offline after the first visit",
+    "where": "service worker behavior, handoff",
+    "test": "npm test -- --grep @claim:offline-demo",
+    "sandbox": "fresh browser context; visit /demo; wait for service worker control; go offline; reload and inspect the fixture"
+  },
+  {
+    "id": "sample-export",
+    "claim": "The browser demo exports one scrubbed sample fixture",
+    "where": "demo export action",
+    "test": "npm test -- --grep @claim:sample-export",
+    "sandbox": "fresh browser context; download the demo bundle; assert its manifest, count, status, and redaction markers"
+  },
+  {
+    "id": "paid-policy-pack",
+    "claim": "The Team Policy Pack costs $49 once; a valid license unlocks it and is checked at most once per day",
+    "where": "paid tier and privacy",
+    "test": "npm test -- --grep @claim:paid-policy-pack",
+    "sandbox": "fresh browser context with intercepted Sociobot verification; return with a test license; reload; assert one check and the policy download"
+  }
+]
