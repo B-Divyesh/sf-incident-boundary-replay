@@ -402,6 +402,16 @@ test('390px keeps required product text at the 16px body-text floor and exposes 
   expect(sizes.every(size => size >= 16)).toBe(true);
 });
 
+test('install guidance links to source, copies a clone-ready command, and uses the mobile landscape source', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Copy install command' })).toHaveAttribute(
+    'data-copy',
+    'git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git && cd sf-incident-boundary-replay && cargo install --path .'
+  );
+  await expect(page.getByRole('link', { name: /View source/ })).toHaveAttribute('href', 'https://github.com/B-Divyesh/sf-incident-boundary-replay');
+  await expect(page.locator('.landscape source')).toHaveAttribute('srcset', '/assets/boundary-landscape-640.webp');
+});
+
 test('desktop first read keeps the demo action and facts in view', async ({ page }) => {
   for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768 }]) {
     await page.setViewportSize(viewport);
