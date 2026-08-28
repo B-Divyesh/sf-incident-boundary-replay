@@ -90,7 +90,7 @@ Bundle: /tmp/.../payment-failure.bundle
       <div class="section-index"><span>02</span><p>A short path back to the bug</p></div>
       <div><h2 id="how-heading">How the boundary becomes a fixture</h2>
         <ol class="steps">
-          <li><span>Capture</span><h3>Opt in one client</h3><p>Point that client at the sidecar. Other traffic stays untouched.</p></li>
+          <li><span>Capture</span><h3>Opt in one client</h3><p>Point that client at the sidecar to capture its boundary.</p></li>
           <li><span>Scrub</span><h3>Replace selected values</h3><p>Headers and JSON fields are replaced in memory before any write.</p></li>
           <li><span>Replay</span><h3>Run the local mock</h3><p>Match the recorded method and path. Return the failed response locally.</p></li>
         </ol>
@@ -107,7 +107,7 @@ Bundle: /tmp/.../payment-failure.bundle
 function pricing(): string {
   return `<section class="pricing" aria-labelledby="pricing-heading">
     <div class="section-index"><span>04</span><p>Optional team rules</p></div>
-    <div><p class="eyebrow">One-time purchase</p><h2 id="pricing-heading">Use one policy across services</h2><p class="price"><span>$49</span> Team Policy Pack</p><p>Includes maintained payment, messaging, identity, and support redaction policies. The free exporter stays complete.</p>
+    <div><p class="eyebrow">One-time purchase</p><h2 id="pricing-heading">Use one policy across services</h2><p class="price"><span>$49</span> Team Policy Pack</p><p>Includes maintained payment, messaging, identity, and support redaction policies.</p>
       <div class="price-actions"><a class="button secondary" href="https://api.sociobot.in/api/v1/products/incident-boundary-replay/checkout">Buy the policy pack</a><button class="text-button" type="button" data-show-license>Have a license? Paste it</button></div>
       <form class="license-form" hidden><label for="license">License token</label><div><input id="license" name="license" autocomplete="off" /><button type="submit">Verify license</button></div><p class="license-status" aria-live="polite"></p></form>
       <div class="paid-download" hidden><p>License active on this device.</p><a download="boundary-replay-team-policies.json" href="#" data-team-download>Download team policies</a></div>

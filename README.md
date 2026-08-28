@@ -92,6 +92,8 @@ Errors use a non-zero exit code and go to stderr.
 ```sh
 cargo test
 npm install
+npm run typecheck
+npm run lint
 npm test
 npm run build
 ```

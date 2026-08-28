@@ -49,6 +49,13 @@
     "sandbox": "fresh browser context; download the demo bundle; assert its manifest, count, status, and redaction markers"
   },
   {
+    "id": "free-local-exporter",
+    "claim": "The local exporter is available without a license",
+    "where": "landing facts",
+    "test": "npm test -- --grep @claim:free-local-exporter",
+    "sandbox": "fresh browser context with no stored license; open the demo, export its bundle, and inspect the downloaded fixture"
+  },
+  {
     "id": "paid-policy-pack",
     "claim": "The Team Policy Pack costs $49 once; a valid license unlocks it and is checked at most once per day",
     "where": "paid tier and privacy",

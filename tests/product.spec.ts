@@ -136,7 +136,7 @@ test('@claim:offline-demo reloads after the first visit', async ({ page, context
   const shellCached = await page.evaluate(async () => {
     const cache = await caches.open('boundary-replay-v2');
     const assets = [...document.querySelectorAll<HTMLScriptElement | HTMLLinkElement>('script[src], link[rel="stylesheet"]')]
-      .map(element => element.src || element.href)
+      .map(element => element instanceof HTMLScriptElement ? element.src : element.href)
       .filter(Boolean);
     return Promise.all(assets.map(asset => cache.match(asset).then(Boolean)));
   });
@@ -158,6 +158,17 @@ test('@claim:sample-export downloads one scrubbed fixture', async ({ page }) => 
   expect(data.manifest.fixture_count).toBe(1);
   expect(data.fixtures[0].response.status).toBe(503);
   expect(data.fixtures[0].request.body.customer_email).toBe('[REDACTED]');
+});
+
+test('@claim:free-local-exporter exports without a stored license', async ({ page }) => {
+  await page.goto('/demo');
+  expect(await page.evaluate(() => localStorage.getItem('sb_license:incident-boundary-replay'))).toBeNull();
+  const downloadEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export sample bundle' }).click();
+  const download = await downloadEvent;
+  const bundle = JSON.parse(readFileSync(await download.path()!, 'utf8'));
+  expect(bundle.manifest.fixture_count).toBe(1);
+  expect(bundle.fixtures[0].id).toBe('payment-webhook');
 });
 
 test('@claim:paid-policy-pack verifies once per day and reveals the download', async ({ page }) => {
@@ -193,6 +204,35 @@ test('site structure, keyboard path, mobile layout, and accessibility', async ({
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter(v => ['serious', 'critical'].includes(v.impact || ''))).toEqual([]);
   expect(errors).toEqual([]);
+});
+
+test('390px touch targets keep mobile navigation, demo controls, and footer links at 44px', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const landingTargets = [
+    page.getByRole('link', { name: 'Boundary Replay home' }),
+    page.getByRole('navigation').getByRole('link'),
+    page.locator('footer a')
+  ];
+  for (const targets of landingTargets) {
+    for (const box of await targets.evaluateAll(elements => elements.map(element => {
+      const rect = element.getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    }))) {
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+  }
+
+  await page.goto('/demo');
+  for (const target of [
+    page.getByRole('button', { name: 'Reset demo' }),
+    page.getByRole('link', { name: 'Start for real' })
+  ]) {
+    const box = await target.boundingBox();
+    expect(box?.width).toBeGreaterThanOrEqual(44);
+    expect(box?.height).toBeGreaterThanOrEqual(44);
+  }
 });
 
 test('real routes update title, h1, history, and focus', async ({ page }) => {

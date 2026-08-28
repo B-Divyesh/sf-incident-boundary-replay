@@ -7,6 +7,8 @@
     "dev": "vite --host 127.0.0.1",
     "pretest": "cargo test && cargo build",
     "test": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "lint": "cargo clippy -- -D warnings",
     "build:site": "vite build && node scripts/patch-service-worker.mjs",
     "build": "npm run build:site && cargo build --release"
   },

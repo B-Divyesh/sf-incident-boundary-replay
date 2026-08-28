@@ -27,8 +27,7 @@ are included because visitors read them as standalone phrases. No line exceeds
 | How the boundary becomes a fixture | 6 | Pass |
 | Capture | 1 | Pass |
 | Opt in one client | 4 | Pass |
-| Point that client at the sidecar. | 6 | Pass |
-| Other traffic stays untouched. | 4 | Pass |
+| Point that client at the sidecar to capture its boundary. | 10 | Pass |
 | Scrub | 1 | Pass |
 | Replace selected values | 3 | Pass |
 | Headers and JSON fields are replaced in memory before any write. | 11 | Pass |
@@ -46,7 +45,6 @@ are included because visitors read them as standalone phrases. No line exceeds
 | Use one policy across services | 5 | Pass |
 | $49 Team Policy Pack | 4 | Pass |
 | Includes maintained payment, messaging, identity, and support redaction policies. | 9 | Pass |
-| The free exporter stays complete. | 5 | Pass |
 | Buy the policy pack | 4 | Pass |
 | Have a license? | 3 | Pass |
 | Paste it. | 2 | Pass |
