@@ -8,9 +8,10 @@ a { color: inherit; text-decoration-color: var(--signal); text-underline-offset:
 .skip:focus { top: 16px; }
 .topbar, footer, main { max-width: 1240px; margin: 0 auto; padding-inline: 24px; }
 .topbar { min-height: 80px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #243b49; }
-.wordmark { display: flex; align-items: center; gap: 12px; font: 680 18px/1 var(--display); text-decoration: none; }
-.mark { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid var(--signal); color: var(--signal); font: 12px var(--mono); clip-path: polygon(0 0, 78% 0, 100% 22%, 100% 100%, 0 100%); }
-nav { display: flex; gap: 28px; }
+.wordmark { display: flex; align-items: center; min-height: 44px; gap: 12px; font: 680 18px/1 var(--display); text-decoration: none; }
+.mark { display: grid; width: 44px; height: 44px; place-items: center; border: 1px solid var(--signal); color: var(--signal); font: 12px var(--mono); clip-path: polygon(0 0, 78% 0, 100% 22%, 100% 100%, 0 100%); }
+nav { display: flex; gap: 8px; }
+nav a, footer a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; }
 main { min-height: calc(100vh - 214px); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
 .error-code { margin: 0 0 20px; color: var(--coral); font-size: 13px; letter-spacing: .12em; }
 h1 { max-width: 850px; margin: 0; font: clamp(44px, 7vw, 78px)/1.04 var(--display); letter-spacing: -.055em; }
@@ -18,4 +19,5 @@ h1 { max-width: 850px; margin: 0; font: clamp(44px, 7vw, 78px)/1.04 var(--displa
 .button { min-height: 44px; display: inline-flex; align-items: center; padding: 11px 18px; background: var(--signal); color: var(--ink); font-weight: 700; text-decoration: none; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%); }
 footer { display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 24px; padding-block: 36px; border-top: 1px solid var(--line); color: var(--mist); font-size: 12px; }
 footer p { margin: 0; }
-@media (max-width: 760px) { .topbar { min-height: 72px; padding-inline: 20px; } nav { gap: 14px; font-size: 13px; } main { min-height: calc(100vh - 240px); padding-inline: 20px; } footer { grid-template-columns: 1fr; padding-inline: 20px; } }
+@media (max-width: 760px) { .topbar { min-height: 72px; padding-inline: 20px; } nav { gap: 8px; font-size: 13px; } main { min-height: calc(100vh - 240px); padding-inline: 20px; } footer { grid-template-columns: 1fr; padding-inline: 20px; } }
+@media (max-width: 360px) { .topbar { align-items: flex-start; flex-wrap: wrap; gap: 8px; padding-inline: 16px; } nav { width: 100%; justify-content: space-between; gap: 0; } main, footer { padding-inline: 16px; } h1 { overflow-wrap: anywhere; } }

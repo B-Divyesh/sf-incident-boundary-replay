@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { createHmac } from 'node:crypto';
 import { createServer } from 'node:http';
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
@@ -17,6 +17,25 @@ function makeDemo(root: string): string {
   const result = spawnSync(binary, ['demo', '--out', root, '--json'], { encoding: 'utf8' });
   expect(result.status, result.stderr).toBe(0);
   return join(root, 'payment-failure.bundle');
+}
+
+function runBinary(args: string[], env: NodeJS.ProcessEnv = process.env): Promise<{ code: number | null; stdout: string; stderr: string }> {
+  return new Promise(resolveRun => {
+    const child = spawn(binary, args, { env });
+    let stdout = ''; let stderr = '';
+    child.stdout.on('data', chunk => { stdout += chunk; });
+    child.stderr.on('data', chunk => { stderr += chunk; });
+    child.on('close', code => resolveRun({ code, stdout, stderr }));
+  });
+}
+
+async function freeLoopbackPort(): Promise<number> {
+  const server = createServer();
+  await new Promise<void>(resolveListen => server.listen(0, '127.0.0.1', resolveListen));
+  const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('could not reserve a loopback port');
+  await new Promise<void>(resolveClose => server.close(() => resolveClose()));
+  return address.port;
 }
 
 test('@claim:redact-before-disk capture sidecar writes only scrubbed data', async () => {
@@ -60,13 +79,73 @@ test('@claim:redact-before-disk capture sidecar writes only scrubbed data', asyn
   }
 });
 
-test('@claim:local-only-replay CLI refuses non-local binds and targets', () => {
+test('@claim:local-only-replay never follows 301, 302, 303, 307, or 308 redirects', async () => {
   const bind = spawnSync(binary, ['serve', '--bundle', '/tmp/missing', '--listen', '0.0.0.0:9487'], { encoding: 'utf8' });
   expect(bind.status).not.toBe(0);
   expect(bind.stderr).toContain('refusing non-loopback address');
-  const send = spawnSync(binary, ['send', '--bundle', '/tmp/missing', '--fixture', 'x', '--target', 'https://example.com/hook', '--signing-secret-env', 'TEST_SECRET'], { encoding: 'utf8' });
-  expect(send.status).not.toBe(0);
-  expect(send.stderr).toContain('refusing non-local target');
+  const nonLocal = spawnSync(binary, ['send', '--bundle', '/tmp/missing', '--fixture', 'x', '--target', 'https://example.com/hook', '--signing-secret-env', 'TEST_SECRET'], { encoding: 'utf8' });
+  expect(nonLocal.status).not.toBe(0);
+  expect(nonLocal.stderr).toContain('refusing non-local target');
+  const root = tempFolder();
+  const bundle = makeDemo(root);
+  const redirectedBodies: string[] = [];
+  const receiver = createServer((request, response) => {
+    let body = '';
+    request.on('data', chunk => { body += chunk; });
+    request.on('end', () => { redirectedBodies.push(body); response.writeHead(202); response.end('unexpected'); });
+  });
+  await new Promise<void>(resolveListen => receiver.listen(0, '127.0.0.1', resolveListen));
+  const receiverAddress = receiver.address();
+  if (!receiverAddress || typeof receiverAddress === 'string') throw new Error('redirect receiver has no port');
+  const redirector = createServer((request, response) => {
+    const status = Number(request.url?.slice(1));
+    response.writeHead(status, { location: `http://127.0.0.1:${receiverAddress.port}/outside-boundary` });
+    response.end('redirect denied');
+  });
+  await new Promise<void>(resolveListen => redirector.listen(0, '127.0.0.1', resolveListen));
+  const redirectAddress = redirector.address();
+  if (!redirectAddress || typeof redirectAddress === 'string') throw new Error('redirector has no port');
+  const sidecarPort = await freeLoopbackPort();
+  const sidecar = spawn(binary, ['capture', '--listen', `127.0.0.1:${sidecarPort}`, '--upstream', `http://127.0.0.1:${redirectAddress.port}`, '--out', join(root, 'captured')], { stdio: ['ignore', 'pipe', 'pipe'] });
+  try {
+    await new Promise<void>((resolveReady, reject) => {
+      const timeout = setTimeout(() => reject(new Error('capture sidecar did not start')), 5000);
+      sidecar.stdout.on('data', chunk => { if (chunk.toString().includes('capturing opted-in traffic')) { clearTimeout(timeout); resolveReady(); } });
+      sidecar.on('exit', code => reject(new Error(`capture sidecar stopped with ${code}`)));
+    });
+    for (const status of [301, 302, 303, 307, 308]) {
+      const capture = await fetch(`http://127.0.0.1:${sidecarPort}/${status}`, { method: 'POST', body: `raw-secret-${status}`, redirect: 'manual' });
+      expect(capture.status).toBe(status);
+      const result = await runBinary(['send', '--bundle', bundle, '--fixture', 'payment-webhook', '--target', `http://127.0.0.1:${redirectAddress.port}/${status}`, '--signing-secret-env', 'TEST_SIGNING_SECRET', '--json'], { ...process.env, TEST_SIGNING_SECRET: 'test-secret' });
+      expect(result.code, result.stderr).toBe(0);
+      expect(JSON.parse(result.stdout).status).toBe(status);
+    }
+    await new Promise(resolve => setTimeout(resolve, 100));
+    expect(redirectedBodies).toEqual([]);
+  } finally {
+    sidecar.kill('SIGINT');
+    await Promise.all([
+      new Promise<void>(resolveClose => redirector.close(() => resolveClose())),
+      new Promise<void>(resolveClose => receiver.close(() => resolveClose()))
+    ]);
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('@claim:cli-demo-isolation refuses non-empty output folders and never changes their captures', () => {
+  const root = tempFolder();
+  const captures = join(root, 'captures');
+  const existing = join(captures, 'payment-webhook.json');
+  mkdirSync(captures, { recursive: true });
+  writeFileSync(existing, '{"invoice_id":"preexisting-private-id"}');
+  const before = readFileSync(existing, 'utf8');
+  try {
+    const result = spawnSync(binary, ['demo', '--out', root, '--json'], { encoding: 'utf8' });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain('is not empty');
+    expect(readFileSync(existing, 'utf8')).toBe(before);
+    expect(readdirSync(root)).toEqual(['captures']);
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
 test('@claim:runnable-local-mock exported bundle returns its recorded failure', async () => {
@@ -128,6 +207,21 @@ test('@claim:private-demo uses isolated sample state and same-origin requests', 
   expect(requests.every(url => new URL(url).origin === 'http://127.0.0.1:4173')).toBe(true);
 });
 
+test('@claim:telemetry-free keeps the local browser and CLI demo flow local', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', request => requests.push(request.url()));
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Try it with sample data' }).click();
+  await expect(page.getByRole('heading', { name: 'Inspect a scrubbed payment failure' })).toBeVisible();
+  expect(requests.every(url => new URL(url).origin === 'http://127.0.0.1:4173')).toBe(true);
+  const root = tempFolder();
+  try {
+    const result = spawnSync(binary, ['demo', '--out', root, '--json'], { encoding: 'utf8' });
+    expect(result.status, result.stderr).toBe(0);
+    expect(JSON.parse(result.stdout)).toMatchObject({ demo: true, fixtures: 1, saved: true });
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 test('@claim:offline-demo reloads after the first visit', async ({ page, context }) => {
   await page.goto('/demo');
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
@@ -171,24 +265,6 @@ test('@claim:free-local-exporter exports without a stored license', async ({ pag
   expect(bundle.fixtures[0].id).toBe('payment-webhook');
 });
 
-test('@claim:paid-policy-pack verifies once per day and reveals the download', async ({ page }) => {
-  let checks = 0;
-  await page.route('https://api.sociobot.in/**', route => { checks += 1; return route.fulfill({ json: { valid: true, reason: 'ok', expires_at: null } }); });
-  await page.goto('/?license=test_license_token');
-  await expect(page.locator('.price')).toContainText('$49');
-  const downloadLink = page.getByRole('link', { name: 'Download team policies' });
-  await expect(downloadLink).toBeVisible();
-  expect(await page.evaluate(() => localStorage.getItem('sb_license:incident-boundary-replay'))).toBe('test_license_token');
-  const downloadEvent = page.waitForEvent('download');
-  await downloadLink.click();
-  const download = await downloadEvent;
-  const policy = JSON.parse(readFileSync((await download.path())!, 'utf8'));
-  expect(Object.keys(policy.policies)).toEqual(['payments', 'messaging', 'identity', 'support']);
-  await page.reload();
-  await expect(page.getByRole('link', { name: 'Download team policies' })).toBeVisible();
-  expect(checks).toBe(1);
-});
-
 test('site structure, keyboard path, mobile layout, and accessibility', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
@@ -204,6 +280,49 @@ test('site structure, keyboard path, mobile layout, and accessibility', async ({
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter(v => ['serious', 'critical'].includes(v.impact || ''))).toEqual([]);
   expect(errors).toEqual([]);
+});
+
+test('desktop first read keeps the demo action and facts in view', async ({ page }) => {
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    const action = await page.getByRole('link', { name: 'Try it with sample data' }).boundingBox();
+    const facts = await page.locator('.facts').boundingBox();
+    expect(action).not.toBeNull();
+    expect(facts).not.toBeNull();
+    expect(action!.y + action!.height).toBeLessThanOrEqual(viewport.height);
+    expect(facts!.y + facts!.height).toBeLessThanOrEqual(viewport.height);
+  }
+});
+
+test('demo banner stays available and leaving demo discards sample state', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/demo');
+  await page.evaluate(() => window.scrollTo(0, 1430));
+  const banner = await page.locator('.demo-banner').boundingBox();
+  expect(banner).not.toBeNull();
+  expect(banner!.y).toBeGreaterThanOrEqual(0);
+  await page.getByRole('link', { name: 'Start for real' }).click();
+  await expect(page).toHaveURL('/');
+  expect(await page.evaluate(() => sessionStorage.getItem('demo:incident-boundary-replay:state'))).toBeNull();
+});
+
+test('200% reflow and standalone 404 keep content and targets in the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 195, height: 422 });
+  for (const route of ['/', '/demo', '/privacy', '/404.html']) {
+    await page.goto(route);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/404.html');
+  for (const target of [page.getByRole('link', { name: 'Boundary Replay home' }), page.getByRole('navigation').getByRole('link'), page.locator('footer a')]) {
+    for (const box of await target.evaluateAll(elements => elements.map(element => {
+      const rect = element.getBoundingClientRect(); return { width: rect.width, height: rect.height };
+    }))) {
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+  }
 });
 
 test('390px touch targets keep mobile navigation, demo controls, and footer links at 44px', async ({ page }) => {

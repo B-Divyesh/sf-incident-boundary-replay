@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use boundary_replay::{
     export_bundle, run_capture, run_mock, scrub_exchange, send_webhook, write_exchange, Exchange,
     RedactionPolicy,
@@ -19,21 +19,28 @@ struct Cli {
 enum Command {
     /// Proxy opted-in traffic and write only scrubbed exchanges
     Capture {
+        /// Loopback address for the opted-in sidecar, for example 127.0.0.1:8787
         #[arg(long, default_value = "127.0.0.1:8787")]
         listen: String,
+        /// Explicit HTTP(S) upstream to capture; redirects are returned, never followed
         #[arg(long)]
         upstream: String,
+        /// Folder where scrubbed exchange JSON files are written
         #[arg(long, default_value = "captures")]
         out: PathBuf,
+        /// JSON file listing headers and fields to redact
         #[arg(long)]
         redact: Option<PathBuf>,
     },
     /// Export scrubbed captures as a portable mock bundle
     Export {
+        /// Folder containing scrubbed capture JSON files
         #[arg(long)]
         captures: PathBuf,
+        /// Empty or new folder for the portable bundle
         #[arg(long)]
         out: PathBuf,
+        /// JSON file listing headers and fields to redact again before export
         #[arg(long)]
         redact: Option<PathBuf>,
         #[arg(long)]
@@ -41,19 +48,25 @@ enum Command {
     },
     /// Serve a bundle as a loopback-only HTTP mock
     Serve {
+        /// Bundle folder containing manifest.json and fixtures
         #[arg(long)]
         bundle: PathBuf,
+        /// Loopback address for the local mock, for example 127.0.0.1:9487
         #[arg(long, default_value = "127.0.0.1:9487")]
         listen: String,
     },
     /// Re-sign and send one scrubbed webhook to a local service
     Send {
+        /// Bundle folder containing the scrubbed fixture
         #[arg(long)]
         bundle: PathBuf,
+        /// Fixture ID from the bundle manifest
         #[arg(long)]
         fixture: String,
+        /// Loopback http(s) endpoint; redirects are returned, never followed
         #[arg(long)]
         target: String,
+        /// Name of the environment variable containing the local HMAC secret
         #[arg(long)]
         signing_secret_env: String,
         #[arg(long)]
@@ -61,6 +74,7 @@ enum Command {
     },
     /// Build a temporary mock bundle from shipped sample data
     Demo {
+        /// Empty or new folder for isolated sample files (defaults to a new temp folder)
         #[arg(long)]
         out: Option<PathBuf>,
         #[arg(long)]
@@ -141,6 +155,12 @@ fn demo(out: Option<PathBuf>, machine: bool) -> Result<()> {
             &Uuid::new_v4().to_string()[..8]
         ))
     });
+    if root.exists() && std::fs::read_dir(&root)?.next().is_some() {
+        bail!(
+            "demo output folder {} is not empty; choose a new or empty folder so sample data cannot read or overwrite captures",
+            root.display()
+        );
+    }
     let captures = root.join("captures");
     let bundle = root.join("payment-failure.bundle");
     std::fs::create_dir_all(&captures)
@@ -153,10 +173,10 @@ fn demo(out: Option<PathBuf>, machine: bool) -> Result<()> {
     if machine {
         println!(
             "{}",
-            json!({"demo": true, "bundle": bundle, "fixtures": manifest.fixture_count, "saved": false})
+            json!({"demo": true, "bundle": bundle, "fixtures": manifest.fixture_count, "saved": true})
         );
     } else {
-        println!("Demo — sample data, nothing was read from your captures.");
+        println!("Demo — isolated sample data; no existing captures were read or changed.");
         println!(
             "Scrubbed {} secret or PII field(s) before disk.",
             exchange.redactions.len()

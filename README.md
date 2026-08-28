@@ -4,8 +4,9 @@ Capture an opted-in HTTP boundary, scrub secrets before disk, and export a
 local mock bundle. It is for backend engineers reproducing queue, webhook, and
 third-party failures without calling the original system.
 
-Boundary Replay has no telemetry. Captures and bundles stay in paths you
-choose. Replay and webhook send commands accept loopback targets only.
+Boundary Replay sends no telemetry during its local demo flow. Captures and
+bundles stay in paths you choose. Replay and webhook send commands accept
+loopback targets only and never follow redirects.
 
 ## Install
 
@@ -25,9 +26,10 @@ The factory owns registry publishing.
 boundary-replay demo
 ```
 
-The command creates a temporary folder, records a realistic failed payment
+The command creates a new temporary folder, records a realistic failed payment
 webhook, redacts its secrets, exports a bundle, and prints the mock command.
-It does not read your captures. The same sample is in `examples/`.
+With `--out`, it accepts only a new or empty folder. It never reads or changes
+an existing capture folder. The same sample is in `examples/`.
 
 The browser walkthrough is available at `/demo` or
 https://incident-boundary-replay.sociobot.in/demo.
@@ -79,8 +81,8 @@ boundary-replay send \
 ```
 
 `send` removes captured signature headers and signs the scrubbed body with
-HMAC-SHA256. It refuses non-loopback targets, so a bundle cannot replay into a
-production host.
+HMAC-SHA256. It refuses non-loopback targets and returns redirects without
+following them, so a bundle cannot replay into a production host.
 
 ## Script output
 
@@ -109,5 +111,4 @@ Deploy `dist/site` as the static root. The included SPA fallback preserves
 
 ## License
 
-MIT. See [LICENSE](LICENSE). The optional Team Policy Pack is a one-time
-purchase sold by Sociobot, the merchant of record.
+MIT. See [LICENSE](LICENSE).

@@ -3,19 +3,7 @@ import '@fontsource/ibm-plex-mono/latin-400.css';
 import './style.css';
 
 const PRODUCT = 'incident-boundary-replay';
-const LICENSE_KEY = `sb_license:${PRODUCT}`;
-const VERDICT_KEY = `${LICENSE_KEY}:verdict`;
 const DEMO_KEY = `demo:${PRODUCT}:state`;
-const API = 'https://api.sociobot.in/api/v1';
-const TEAM_PACK = {
-  pack: 'Boundary Replay Team Policy Pack', version: '2026.08',
-  policies: {
-    payments: { headers: ['authorization', 'x-signature'], json_fields: ['card_number', 'customer_email', 'client_secret'] },
-    messaging: { headers: ['authorization', 'x-api-key'], json_fields: ['phone', 'message_body', 'media_url'] },
-    identity: { headers: ['authorization', 'cookie'], json_fields: ['email', 'password', 'access_token', 'refresh_token'] },
-    support: { headers: ['authorization'], json_fields: ['email', 'phone', 'message', 'attachment_url'] }
-  }
-};
 
 type Route = '/' | '/demo' | '/privacy' | '/terms' | '/404';
 
@@ -77,7 +65,7 @@ function landing(): string {
         <div class="terminal" role="region" aria-label="Boundary Replay terminal recording">
           <div class="terminal-bar"><span></span><span></span><span></span><b>boundary-replay demo</b></div>
           <pre><code><span class="prompt">$</span> boundary-replay demo
-Demo — sample data, nothing was read from your captures.
+Demo — isolated sample data; no existing captures were read or changed.
 <span class="amber">Scrubbed 4 secret or PII field(s) before disk.</span>
 Bundle: /tmp/.../payment-failure.bundle
 <span class="green">Run: boundary-replay serve --bundle … --listen 127.0.0.1:9487</span></code></pre>
@@ -100,25 +88,12 @@ Bundle: /tmp/.../payment-failure.bundle
       <div class="section-index"><span>03</span><p>The safety boundary</p></div>
       <div><h2 id="limits-heading">Production replay is not a feature</h2><p>Capture starts only when you run the sidecar. Mock servers and webhook sends refuse non-local targets. New mock signatures use a secret from your environment.</p></div>
     </section>
-    ${pricing()}
   </main>${footer()}`;
-}
-
-function pricing(): string {
-  return `<section class="pricing" aria-labelledby="pricing-heading">
-    <div class="section-index"><span>04</span><p>Optional team rules</p></div>
-    <div><p class="eyebrow">One-time purchase</p><h2 id="pricing-heading">Use one policy across services</h2><p class="price"><span>$49</span> Team Policy Pack</p><p>Includes maintained payment, messaging, identity, and support redaction policies.</p>
-      <div class="price-actions"><a class="button secondary" href="https://api.sociobot.in/api/v1/products/incident-boundary-replay/checkout">Buy the policy pack</a><button class="text-button" type="button" data-show-license>Have a license? Paste it</button></div>
-      <form class="license-form" hidden><label for="license">License token</label><div><input id="license" name="license" autocomplete="off" /><button type="submit">Verify license</button></div><p class="license-status" aria-live="polite"></p></form>
-      <div class="paid-download" hidden><p>License active on this device.</p><a download="boundary-replay-team-policies.json" href="#" data-team-download>Download team policies</a></div>
-      <p class="legal-note">Sociobot is the merchant of record. See <a href="/terms" data-link>terms</a> and <a href="/privacy" data-link>privacy</a>.</p>
-    </div>
-  </section>`;
 }
 
 function demo(): string {
   sessionStorage.setItem(DEMO_KEY, JSON.stringify({ fixture: fixture.id, stage: 'exported' }));
-  return `${header()}<div class="demo-banner" role="status"><span>Demo — sample data, nothing is saved</span><div><button type="button" data-reset>Reset demo</button><a href="/" data-link>Start for real</a></div></div>
+  return `${header()}<div class="demo-banner" role="status"><span>Demo — sample data, nothing is saved</span><div><button type="button" data-reset>Reset demo</button><a href="/" data-link data-exit-demo>Start for real</a></div></div>
     <main id="main" class="demo-main">
       <section class="demo-head"><p class="eyebrow">Sample trace 7ef92c1b45d04da6</p><h1 tabindex="-1">Inspect a scrubbed payment failure</h1><p>This sample is already captured. Move across the boundary to see what the local service receives.</p></section>
       <section class="boundary-workbench" aria-label="Sample boundary exchange">
@@ -135,11 +110,11 @@ function demo(): string {
 }
 
 function privacy(): string {
-  return `${header()}<main id="main" class="prose"><p class="eyebrow">Policy · 28 August 2026</p><h1 tabindex="-1">Your captures stay in your chosen folder</h1><h2>CLI data</h2><p>Boundary Replay sends no telemetry. It writes scrubbed captures and bundles only to paths you choose.</p><h2>Browser data</h2><p>The demo uses session storage under a <code>demo:</code> key. Closing the tab removes it. A license token is stored in local storage after you paste it or return from checkout.</p><h2>License checks</h2><p>License verification sends the token to Sociobot at <code>api.sociobot.in</code> at most once per day. No capture content is sent.</p><h2>Contact</h2><p>Questions can go to <a href="mailto:privacy@sociobot.in">privacy@sociobot.in</a>.</p></main>${footer()}`;
+  return `${header()}<main id="main" class="prose"><p class="eyebrow">Policy · 28 August 2026</p><h1 tabindex="-1">Your captures stay in your chosen folder</h1><h2>CLI data</h2><p>Boundary Replay sends no telemetry. It writes scrubbed captures and bundles only to paths you choose.</p><h2>Browser data</h2><p>The demo uses session storage under a <code>demo:</code> key. Leaving demo mode discards that sample state.</p><h2>Contact</h2><p>Questions can go to <a href="mailto:privacy@sociobot.in">privacy@sociobot.in</a>.</p></main>${footer()}`;
 }
 
 function terms(): string {
-  return `${header()}<main id="main" class="prose"><p class="eyebrow">Terms · 28 August 2026</p><h1 tabindex="-1">Use Boundary Replay on systems you control</h1><h2>Safe use</h2><p>You must have permission to capture each service boundary. Review redaction policies before handling production traffic.</p><h2>Free software</h2><p>The CLI is provided under the MIT License without warranty.</p><h2>Team Policy Pack</h2><p>The Team Policy Pack costs $49 once. Sociobot is the merchant of record. Refunds are handled by Sociobot and revoke the license.</p><h2>Limits</h2><p>Redaction rules reduce exposure but cannot identify every secret. You remain responsible for each exported bundle.</p></main>${footer()}`;
+  return `${header()}<main id="main" class="prose"><p class="eyebrow">Terms · 28 August 2026</p><h1 tabindex="-1">Use Boundary Replay on systems you control</h1><h2>Safe use</h2><p>You must have permission to capture each service boundary. Review redaction policies before handling production traffic.</p><h2>Free software</h2><p>The CLI is provided under the MIT License without warranty.</p><h2>Limits</h2><p>Redaction rules reduce exposure but cannot identify every secret. You remain responsible for each exported bundle.</p></main>${footer()}`;
 }
 
 function notFound(): string {
@@ -149,8 +124,8 @@ function notFound(): string {
 const routeMeta: Record<Route, [string, string]> = {
   '/': ['Boundary Replay — replay failed HTTP boundaries', 'Capture an opted-in HTTP exchange, scrub secrets before disk, and export a runnable local mock.'],
   '/demo': ['Demo — Boundary Replay', 'Inspect a sample failed webhook, its redactions, and its local mock response.'],
-  '/privacy': ['Privacy — Boundary Replay', 'How Boundary Replay handles captures, demo state, and license tokens.'],
-  '/terms': ['Terms — Boundary Replay', 'Terms for the Boundary Replay CLI and optional Team Policy Pack.'],
+  '/privacy': ['Privacy — Boundary Replay', 'How Boundary Replay handles captures and isolated demo state.'],
+  '/terms': ['Terms — Boundary Replay', 'Terms for the Boundary Replay CLI.'],
   '/404': ['Not found — Boundary Replay', 'This Boundary Replay page could not be found.']
 };
 
@@ -162,7 +137,6 @@ function render(focus = true): void {
   document.querySelector<HTMLMetaElement>('meta[name="description"]')!.content = routeMeta[route][1];
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')!.href = `https://incident-boundary-replay.sociobot.in${route === '/404' ? '/404' : route}`;
   bindEvents();
-  void updateLicenseUI();
   syncNetworkState();
   if (focus) requestAnimationFrame(() => document.querySelector<HTMLElement>('h1')?.focus());
 }
@@ -175,7 +149,10 @@ function navigate(path: string): void {
 
 function bindEvents(): void {
   document.querySelectorAll<HTMLAnchorElement>('a[data-link]').forEach(link => link.addEventListener('click', event => {
-    if (link.origin === location.origin) { event.preventDefault(); navigate(link.pathname + link.search + link.hash); }
+    if (link.origin === location.origin) {
+      if (link.hasAttribute('data-exit-demo')) sessionStorage.removeItem(DEMO_KEY);
+      event.preventDefault(); navigate(link.pathname + link.search + link.hash);
+    }
   }));
   document.querySelector<HTMLButtonElement>('[data-copy]')?.addEventListener('click', async event => {
     const button = event.currentTarget as HTMLButtonElement;
@@ -198,56 +175,6 @@ function bindEvents(): void {
     const link = document.createElement('a'); link.href = url; link.download = 'payment-failure.bundle.json'; link.click(); URL.revokeObjectURL(url);
     document.querySelector<HTMLElement>('.export-status')!.textContent = 'Exported one scrubbed fixture.';
   });
-  document.querySelector<HTMLButtonElement>('[data-show-license]')?.addEventListener('click', () => {
-    const form = document.querySelector<HTMLFormElement>('.license-form')!; form.hidden = false; form.querySelector('input')?.focus();
-  });
-  document.querySelector<HTMLFormElement>('.license-form')?.addEventListener('submit', async event => {
-    event.preventDefault();
-    const token = new FormData(event.currentTarget as HTMLFormElement).get('license')?.toString().trim();
-    if (!token) { setLicenseStatus('Paste a license token, then verify it.'); return; }
-    setLicenseStatus('Checking this license…');
-    localStorage.setItem(LICENSE_KEY, token); await verifyLicense(token, true); await updateLicenseUI();
-  });
-  document.querySelector<HTMLAnchorElement>('[data-team-download]')?.addEventListener('click', event => {
-    event.preventDefault();
-    const verdict = JSON.parse(localStorage.getItem(VERDICT_KEY) || 'null') as { valid?: boolean } | null;
-    if (!verdict?.valid) { setLicenseStatus('Verify an active license before downloading the policy pack.'); return; }
-    const url = URL.createObjectURL(new Blob([JSON.stringify(TEAM_PACK, null, 2)], { type: 'application/json' }));
-    const link = document.createElement('a'); link.href = url; link.download = 'boundary-replay-team-policies.json'; link.click(); URL.revokeObjectURL(url);
-  });
-}
-
-function setLicenseStatus(message: string): void {
-  const status = document.querySelector<HTMLElement>('.license-status'); if (status) status.textContent = message;
-}
-
-async function verifyLicense(token: string, force = false): Promise<boolean> {
-  const cached = JSON.parse(localStorage.getItem(VERDICT_KEY) || 'null') as { valid: boolean; checked: number } | null;
-  if (!force && cached && Date.now() - cached.checked < 86_400_000) return cached.valid;
-  try {
-    const response = await fetch(`${API}/products/${PRODUCT}/verify?license=${encodeURIComponent(token)}`);
-    const result = await response.json() as { valid: boolean };
-    localStorage.setItem(VERDICT_KEY, JSON.stringify({ valid: result.valid, checked: Date.now() }));
-    if (!result.valid) setLicenseStatus('This license is no longer active. Buy a new license to restore the pack.');
-    return result.valid;
-  } catch {
-    setLicenseStatus('The license check could not connect. Try again when you are online.');
-    return cached?.valid ?? false;
-  }
-}
-
-async function updateLicenseUI(): Promise<void> {
-  const query = new URLSearchParams(location.search); const returned = query.get('license');
-  if (returned) { localStorage.setItem(LICENSE_KEY, returned); query.delete('license'); history.replaceState({}, '', `${location.pathname}${query.size ? `?${query}` : ''}`); }
-  const token = localStorage.getItem(LICENSE_KEY); if (!token) return;
-  const valid = await verifyLicense(token, Boolean(returned));
-  document.querySelector<HTMLElement>('.paid-download')?.toggleAttribute('hidden', !valid);
-  if (valid) setLicenseStatus('License verified. The policy pack is ready.');
-  else {
-    const form = document.querySelector<HTMLFormElement>('.license-form');
-    if (form) form.hidden = false;
-    if (!document.querySelector<HTMLElement>('.license-status')?.textContent) setLicenseStatus('This license is not active. Paste another token or buy a license.');
-  }
 }
 
 function syncNetworkState(): void {

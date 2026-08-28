@@ -19,7 +19,7 @@ are included because visitors read them as standalone phrases. No line exceeds
 | Real CLI output | 3 | Pass |
 | Keep the boundary. | 3 | Pass |
 | Drop the secrets. | 3 | Pass |
-| Demo — sample data, nothing was read from your captures. | 9 | Pass |
+| Demo — isolated sample data; no existing captures were read or changed. | 11 | Pass |
 | Scrubbed 4 secret or PII fields before disk. | 8 | Pass |
 | Bundle: /tmp/.../payment-failure.bundle | 2 | Pass |
 | Copy install command | 3 | Pass |
@@ -40,29 +40,10 @@ are included because visitors read them as standalone phrases. No line exceeds
 | Capture starts only when you run the sidecar. | 8 | Pass |
 | Mock servers and webhook sends refuse non-local targets. | 8 | Pass |
 | New mock signatures use a secret from your environment. | 9 | Pass |
-| Optional team rules | 3 | Pass |
-| One-time purchase | 2 | Pass |
-| Use one policy across services | 5 | Pass |
-| $49 Team Policy Pack | 4 | Pass |
-| Includes maintained payment, messaging, identity, and support redaction policies. | 9 | Pass |
-| Buy the policy pack | 4 | Pass |
-| Have a license? | 3 | Pass |
-| Paste it. | 2 | Pass |
-| Paste a license token, then verify it. | 7 | Pass |
-| Checking this license… | 3 | Pass |
-| This license is no longer active. | 6 | Pass |
-| Buy a new license to restore the pack. | 8 | Pass |
-| The license check could not connect. | 6 | Pass |
-| Try again when you are online. | 6 | Pass |
-| This license is not active. | 5 | Pass |
-| Paste another token or buy a license. | 7 | Pass |
-| License verified. | 2 | Pass |
-| The policy pack is ready. | 5 | Pass |
 | Copied. | 1 | Pass |
 | Copy failed. | 2 | Pass |
 | Select the command above. | 4 | Pass |
 | Offline — the saved shell remains available | 7 | Pass |
-| Sociobot is the merchant of record. | 6 | Pass |
 | Capture a scrubbed boundary. | 4 | Pass |
 | Replay it locally. | 3 | Pass |
 
@@ -79,4 +60,3 @@ and three facts fit in one breath and identify the first action.
 | Capture process | sidecar |
 | Replacement rules | policy |
 | Browser sample environment | demo |
-| Paid rules collection | Team Policy Pack |

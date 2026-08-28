@@ -8,7 +8,7 @@ use axum::{
 };
 use chrono::Utc;
 use hmac::{Hmac, Mac};
-use reqwest::Client;
+use reqwest::{redirect::Policy as RedirectPolicy, Client};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::Sha256;
@@ -320,6 +320,18 @@ fn local_target(value: &str) -> Result<Url> {
     Ok(url)
 }
 
+/// A boundary operation must never turn an explicitly allowed first hop into an
+/// implicit second hop.  In particular, a redirect can cross from localhost to
+/// a production host after the initial URL has passed validation.  Returning
+/// the redirect response is useful to callers and keeps the complete target
+/// choice explicit.
+fn boundary_client() -> Result<Client> {
+    Client::builder()
+        .redirect(RedirectPolicy::none())
+        .build()
+        .context("could not create the HTTP client")
+}
+
 #[derive(Clone)]
 struct CaptureState {
     upstream: Url,
@@ -345,7 +357,7 @@ pub async fn run_capture(
         upstream,
         out: out.to_path_buf(),
         policy,
-        client: Client::new(),
+        client: boundary_client()?,
     };
     let app = Router::new()
         .fallback(any(capture_handler))
@@ -519,7 +531,7 @@ pub async fn send_webhook(
         "t={timestamp},v1={}",
         hex::encode(mac.finalize().into_bytes())
     );
-    let client = Client::new();
+    let client = boundary_client()?;
     let method: reqwest::Method = fixture
         .request
         .method

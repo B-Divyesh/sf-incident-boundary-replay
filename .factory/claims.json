@@ -11,7 +11,7 @@
     "claim": "Mock servers and webhook sends accept loopback targets only",
     "where": "landing facts, safety section, README",
     "test": "npm test -- --grep @claim:local-only-replay",
-    "sandbox": "run the CLI against a non-loopback bind and target; assert both stop with an actionable error"
+    "sandbox": "run the CLI against a non-loopback bind and target; then send every standard redirect status from a loopback first hop to a second receiver; assert neither capture nor signed webhook traffic reaches the redirected destination"
   },
   {
     "id": "runnable-local-mock",
@@ -35,6 +35,20 @@
     "sandbox": "fresh browser context; record requests and storage while opening and resetting /demo"
   },
   {
+    "id": "cli-demo-isolation",
+    "claim": "The CLI demo never reads or changes an existing capture folder",
+    "where": "README, demo documentation, terminal recording",
+    "test": "npm test -- --grep @claim:cli-demo-isolation",
+    "sandbox": "create an existing captures/payment-webhook.json with private content; run demo --out against its parent; assert the command refuses and the file is byte-for-byte unchanged"
+  },
+  {
+    "id": "telemetry-free",
+    "claim": "Boundary Replay sends no telemetry during its local demo flow",
+    "where": "README, privacy page",
+    "test": "npm test -- --grep @claim:telemetry-free",
+    "sandbox": "fresh browser context records all requests while visiting the landing page and demo; run the shipped CLI demo; assert browser requests remain same-origin and the CLI demo completes without network configuration"
+  },
+  {
     "id": "offline-demo",
     "claim": "The browser demo works offline after the first visit",
     "where": "service worker behavior, handoff",
@@ -50,16 +64,9 @@
   },
   {
     "id": "free-local-exporter",
-    "claim": "The local exporter is available without a license",
+    "claim": "The local exporter is free to use",
     "where": "landing facts",
     "test": "npm test -- --grep @claim:free-local-exporter",
-    "sandbox": "fresh browser context with no stored license; open the demo, export its bundle, and inspect the downloaded fixture"
-  },
-  {
-    "id": "paid-policy-pack",
-    "claim": "The Team Policy Pack costs $49 once; a valid license unlocks it and is checked at most once per day",
-    "where": "paid tier and privacy",
-    "test": "npm test -- --grep @claim:paid-policy-pack",
-    "sandbox": "fresh browser context with intercepted Sociobot verification; return with a test license; reload; assert one check and the policy download"
+    "sandbox": "fresh browser context; open the demo, export its bundle, and inspect the downloaded fixture"
   }
 ]
