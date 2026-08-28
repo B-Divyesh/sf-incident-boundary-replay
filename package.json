@@ -1,0 +1,23 @@
+{
+  "name": "incident-boundary-replay",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "pretest": "cargo test && cargo build",
+    "test": "playwright test",
+    "build:site": "vite build",
+    "build": "npm run build:site && cargo build --release"
+  },
+  "devDependencies": {
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource-variable/space-grotesk": "5.3.0",
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.58.2",
+    "@types/node": "24.3.0",
+    "sharp": "0.35.4",
+    "typescript": "5.9.2",
+    "vite": "7.3.6"
+  }
+}
