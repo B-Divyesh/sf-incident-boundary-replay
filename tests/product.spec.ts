@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { createHmac } from 'node:crypto';
 import { createServer } from 'node:http';
-import { mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
@@ -197,4 +197,22 @@ test('real routes update title, h1, history, and focus', async ({ page }) => {
   await page.goto('/missing-route');
   await expect(page.getByText('404 · NO MATCHING FIXTURE')).toBeVisible();
   await expect(page.locator('h1')).toHaveCount(1);
+});
+
+test('SWA config keeps navigation fallback separate from the designed 404 response', async ({ page }) => {
+  const config = JSON.parse(readFileSync('site/public/staticwebapp.config.json', 'utf8')) as {
+    navigationFallback: { rewrite: string };
+    routes: Array<Record<string, unknown>>;
+    responseOverrides: Record<string, { rewrite?: string }>;
+  };
+  expect(config.navigationFallback.rewrite).toBe('/index.html');
+  expect(config.routes.every(route => !('rewrite' in route && 'statusCode' in route))).toBe(true);
+  expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html' });
+  expect(existsSync('site/public/404.html')).toBe(true);
+
+  await page.goto('/404.html');
+  await expect(page).toHaveTitle('Not found — Boundary Replay');
+  await expect(page.locator('main')).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('This route crossed the wrong boundary');
+  await expect(page.getByRole('link', { name: 'Return home' })).toHaveAttribute('href', '/');
 });
