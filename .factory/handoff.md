@@ -119,6 +119,12 @@ Full evidence is in [`.factory/verification-3.md`](verification-3.md).
   chosen filesystem paths, recorded response headers, CLI JSON/error behavior,
   and capture starting only with the sidecar. The CLI portion of the telemetry
   test does not observe outbound connections.
+- Normal `export --out` accepts a non-empty directory despite describing it as
+  “Empty or new.” It overwrites same-name fixtures and leaves unrelated raw
+  secret JSON inside the directory presented as the scrubbed bundle.
+- Meaningful mobile copy renders at 10–13 px, below the supplied 16 px web
+  body-text floor. This includes navigation, the first-screen facts, workflow
+  labels, and footer text.
 
 ### Additional finding
 
@@ -126,6 +132,10 @@ The live **Copy install command** action copies `cargo install --path .` but
 does not provide a source/release link or say that the command requires a clone.
 It exits 101 in a clean directory. The hero also lacks responsive image sources;
 Lighthouse estimates 51 KiB mobile savings.
+
+From `/demo`, **How it works** changes the address to `/#how` but leaves the
+page at the top with the landing h1 focused instead of scrolling/focusing the
+target section.
 
 ### Fresh verification summary
 

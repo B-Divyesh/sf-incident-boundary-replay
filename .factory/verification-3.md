@@ -100,7 +100,41 @@ promises. Also strengthen `@claim:telemetry-free`: its browser requests are
 intercepted, but the CLI half only proves that `demo` succeeds without network
 configuration, not that the binary makes no outbound connection.
 
+### High — normal export accepts a non-empty destination and leaves secrets
+
+An additional packaged-consumer probe found that the non-empty-directory guard
+applies only to `demo --out`, not the normal `export --out` command. Although
+`export --help` describes the destination as an “Empty or new folder,” export
+accepted a populated bundle directory and exited 0. It silently overwrote an
+existing same-name `fixtures/payment-webhook.json`, while leaving an unrelated
+`fixtures/stale-private.json` containing the raw sample email and card number.
+Both `maya.chen@example.com` and `4242424242424242` therefore remained inside
+the directory presented as the new scrubbed bundle.
+
+This is a data-loss and disclosure path in the core job. Refuse a non-empty
+normal-export destination before creating or changing any file, matching the
+repaired demo behavior. Reproduction evidence is at
+`/tmp/ibr-export-existing.OhBc62` in the verification container.
+
+### High — required copy is below the 16 px text floor
+
+The supplied design baseline requires body text of at least 16 px on web. At
+the live 390 px layout, meaningful navigation, explanatory, and product copy
+renders at 10–13 px: navigation is 13 px; the sentence beside the sample action
+is 13 px; all three first-screen facts are 12 px; section context, step labels,
+and footer copy are 12 px; figure labels are 10 px; and the terminal title is
+11 px. These carry required first-read, workflow, and navigation information,
+not merely decoration. Raise meaningful text to the contract minimum and
+retest narrow reflow.
+
 ## Other defects
+
+### Medium — cross-route “How it works” navigation does not reach its target
+
+From live `/demo`, activating **How it works** changes the address to `/#how`
+but leaves `scrollY=0`, focuses the landing h1, and leaves `#how` 2047 px below
+the viewport. The SPA should process the hash after rendering and move scroll
+and focus to the section.
 
 ### Medium — live install action lacks a usable acquisition step
 
