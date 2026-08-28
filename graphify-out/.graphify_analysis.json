@@ -223,13 +223,13 @@
       "degree": 10
     },
     {
-      "id": "package_scripts",
-      "label": "scripts",
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
       "degree": 8
     },
     {
-      "id": "tsconfig_compileroptions",
-      "label": "compilerOptions",
+      "id": "package_scripts",
+      "label": "scripts",
       "degree": 8
     },
     {
@@ -238,8 +238,8 @@
       "degree": 8
     },
     {
-      "id": "src_lib_load_bundle",
-      "label": "load_bundle()",
+      "id": "src_main_demo",
+      "label": "demo()",
       "degree": 8
     }
   ],
@@ -290,7 +290,7 @@
     },
     {
       "source": "demo()",
-      "target": "write_exchange()",
+      "target": "export_bundle()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
