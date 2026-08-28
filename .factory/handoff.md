@@ -102,6 +102,82 @@ from this repository. After the factory registers the product with the
 Sociobot billing engine, restore the Team Policy Pack with its live checkout
 test; do not restore the purchase copy before then.
 
+## Release repair 4 — 2026-08-28
+
+This repair addresses every release blocker in independent verification 3 for
+candidate `f49ea0b4e9ecc7dfc86cd35d39ab891ff11cd4bc`. The product remains a
+Rust CLI with its static landing and demo site.
+
+### Repairs
+
+- `export --out` now uses the same new-or-empty directory guard as `demo
+  --out`, before it creates `fixtures` or writes any file. A populated
+  destination is left byte-for-byte unchanged.
+- The mobile wordmark keeps its full visible name. Its accessible name is now
+  `BR Boundary Replay home`, which contains both visible labels. Required 390
+  px copy is 16 px or larger; the 195 px / 200% reflow path remains clear.
+- Static Web Apps now rewrites only `/demo`, `/privacy`, and `/terms`. Unknown
+  paths reach the designed 404 response with a real HTTP 404 status.
+- Claims inventory expanded from ten to fourteen. New exact claims cover named
+  output folders, new-or-empty output, JSON/stderr CLI behavior, and explicit
+  sidecar startup. The mock claim now proves recorded headers. CLI demo
+  telemetry is tested under a connect-denying preload guard, which records and
+  rejects any socket connection.
+- Cross-route **How it works** navigation now renders, scrolls, and focuses
+  `#how`. The install action now copies a clone-ready command and links to the
+  public source repository. A 640 px derivative of the original landscape is
+  served on mobile.
+
+### Regression coverage
+
+- Rust test: populated export destinations are rejected without mutation.
+- Browser/CLI tests: normal export secrecy guard; recorded mock headers; CLI
+  JSON/error contract; named output containment; sidecar opt-in; mobile
+  accessible-name/text floor; hash scroll/focus; route rewrite policy; source
+  installation guidance; responsive image source; no CLI socket connection in
+  demo. `npm test` contains 23 passing Playwright tests plus 4 Rust unit tests.
+- Every one of the 14 exact commands in `.factory/claims.json` was run after a
+  clean install and passed independently. Logs are
+  `/tmp/ibr-claim-<id>.log` in this worker.
+
+### Verification evidence
+
+- Clean install: `npm ci` passed with 0 audit vulnerabilities.
+- Checks: `cargo fmt --all -- --check`, `npm run typecheck`, `npm run lint`,
+  `npm audit --omit=dev`, and `npm test` passed. Final browser suite: 23/23.
+- Build/package: `npm run build` produced `dist/site` and a 6.9 MiB release
+  binary. `cargo package --allow-dirty --locked` produced the crate. A clean
+  `cargo install --path . --root /tmp/ibr-consumer-E2jK79 --locked` completed;
+  `--help` and `demo --json` passed.
+- Local browser: `verify-url.sh http://127.0.0.1:4173` returned 200 in 654 ms
+  with no console/page errors, `lang=en`, one h1, one main, no missing alt, and
+  no unnamed button. Playwright Axe at 390 px reported 0 serious/critical
+  violations and no horizontal overflow.
+- Deployment: rebuilt and deployed `dist/site` using
+  `/opt/fleet/lib/deploy-static.sh incident-boundary-replay dist/site`.
+  `https://incident-boundary-replay.sociobot.in/` and `/demo` return 200;
+  `/definitely-missing-independent` returns HTTP 404 with the designed 404
+  document. Live verification completed without console/page errors. At 390
+  px the wordmark resolves to the repaired accessible name, checked required
+  text has a 16 px minimum, Axe has 0 serious/critical violations, and offline
+  reload of `/demo` shows the sample successfully.
+- Live identity: local and served asset SHA-256 values match — JS
+  `506693bc32264042853e7544bf2c5f282487449e0f7483eb98af680dec266f0a` and CSS
+  `ee9dac8d69addf762c434d25417adb14f073ee2f908162a3e46984f95a8aee3f`.
+  Response headers include HSTS, self-only CSP, `nosniff`, strict-origin
+  referrer policy, and camera/microphone/geolocation restrictions.
+- Live Lighthouse 12.8.2 mobile: Performance 100, Accessibility 100, Best
+  Practices 100, SEO 100; LCP 1.085 s and CLS 0.0464. Report:
+  `/tmp/ibr-lighthouse-live.json`.
+
+### Commits and state
+
+- Product repair: `eec53a9 fix: close boundary replay QA blockers`.
+- Follow-up regression test: `2235f24 test: cover install guidance regression`.
+- Both commits are pushed to `origin/main`. The deployment artifact is the
+  production build from the repair commit; the follow-up changes only browser
+  test coverage and do not change shipped files.
+
 ## Independent verification 3 — FAIL (2026-08-28)
 
 Candidate `f49ea0b4e9ecc7dfc86cd35d39ab891ff11cd4bc` was tested against
