@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "payment-webhook",
+  "captured_at": "2026-06-07T14:03:11Z",
+  "trace_id": "7ef92c1b45d04da6",
+  "request": {
+    "method": "POST",
+    "path": "/webhooks/payment",
+    "headers": {
+      "authorization": "Bearer prod_secret_8Lq",
+      "content-type": "application/json",
+      "x-signature": "t=1780840991,v1=prod-signature"
+    },
+    "body": {
+      "event": "payment.failed",
+      "customer_email": "maya.chen@example.com",
+      "card_number": "4242424242424242",
+      "invoice_id": "inv_01JY7F3M6D",
+      "retry_count": 3
+    }
+  },
+  "response": {
+    "status": 503,
+    "headers": {"content-type": "application/json", "retry-after": "30"},
+    "body": {"code": "upstream_timeout", "retryable": true}
+  },
+  "redactions": []
+}

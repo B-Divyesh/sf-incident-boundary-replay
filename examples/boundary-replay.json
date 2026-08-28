@@ -1,0 +1,4 @@
+{
+  "headers": ["authorization", "cookie", "set-cookie", "x-api-key", "x-signature"],
+  "json_fields": ["email", "phone", "token", "secret", "card_number", "customer_email"]
+}
