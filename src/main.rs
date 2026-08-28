@@ -1,7 +1,7 @@
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result};
 use boundary_replay::{
-    export_bundle, run_capture, run_mock, scrub_exchange, send_webhook, write_exchange, Exchange,
-    RedactionPolicy,
+    ensure_empty_or_new_directory, export_bundle, run_capture, run_mock, scrub_exchange,
+    send_webhook, write_exchange, Exchange, RedactionPolicy,
 };
 use clap::{Parser, Subcommand};
 use serde_json::json;
@@ -155,12 +155,7 @@ fn demo(out: Option<PathBuf>, machine: bool) -> Result<()> {
             &Uuid::new_v4().to_string()[..8]
         ))
     });
-    if root.exists() && std::fs::read_dir(&root)?.next().is_some() {
-        bail!(
-            "demo output folder {} is not empty; choose a new or empty folder so sample data cannot read or overwrite captures",
-            root.display()
-        );
-    }
+    ensure_empty_or_new_directory(&root, "demo output")?;
     let captures = root.join("captures");
     let bundle = root.join("payment-failure.bundle");
     std::fs::create_dir_all(&captures)

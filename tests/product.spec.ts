@@ -5,7 +5,7 @@ import { createServer } from 'node:http';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { spawn, spawnSync } from 'node:child_process';
+import { execFileSync, spawn, spawnSync } from 'node:child_process';
 
 const binary = resolve('target/debug/boundary-replay');
 
@@ -161,6 +161,8 @@ test('@claim:runnable-local-mock exported bundle returns its recorded failure', 
     });
     const response = await fetch(`http://127.0.0.1:${port}/webhooks/payment`, { method: 'POST' });
     expect(response.status).toBe(503);
+    expect(response.headers.get('content-type')).toContain('application/json');
+    expect(response.headers.get('retry-after')).toBe('30');
     await expect(response.json()).resolves.toEqual({ code: 'upstream_timeout', retryable: true });
   } finally { server.kill('SIGINT'); rmSync(root, { recursive: true, force: true }); }
 });
@@ -215,11 +217,119 @@ test('@claim:telemetry-free keeps the local browser and CLI demo flow local', as
   await expect(page.getByRole('heading', { name: 'Inspect a scrubbed payment failure' })).toBeVisible();
   expect(requests.every(url => new URL(url).origin === 'http://127.0.0.1:4173')).toBe(true);
   const root = tempFolder();
+  const guard = tempFolder();
   try {
-    const result = spawnSync(binary, ['demo', '--out', root, '--json'], { encoding: 'utf8' });
+    const guardLibrary = join(guard, 'deny-connect.so');
+    const connectLog = join(guard, 'connect.log');
+    execFileSync('gcc', ['-shared', '-fPIC', '-O2', '-o', guardLibrary, 'tests/connect-guard.c']);
+    const result = spawnSync(binary, ['demo', '--out', root, '--json'], {
+      encoding: 'utf8',
+      env: { ...process.env, LD_PRELOAD: guardLibrary, BOUNDARY_REPLAY_CONNECT_LOG: connectLog }
+    });
     expect(result.status, result.stderr).toBe(0);
     expect(JSON.parse(result.stdout)).toMatchObject({ demo: true, fixtures: 1, saved: true });
+    expect(existsSync(connectLog) ? readFileSync(connectLog, 'utf8') : '').toBe('');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(guard, { recursive: true, force: true });
+  }
+});
+
+test('@claim:chosen-output-paths keeps captured and exported data inside named folders', async () => {
+  const root = tempFolder();
+  const captureFolder = join(root, 'capture-folder');
+  const bundleFolder = join(root, 'bundle-folder');
+  const upstream = createServer((request, response) => {
+    request.resume();
+    request.on('end', () => { response.writeHead(503, { 'content-type': 'application/json' }); response.end('{"ok":false}'); });
+  });
+  await new Promise<void>(resolveListen => upstream.listen(0, '127.0.0.1', resolveListen));
+  const address = upstream.address();
+  if (!address || typeof address === 'string') throw new Error('upstream has no port');
+  const port = await freeLoopbackPort();
+  const sidecar = spawn(binary, ['capture', '--listen', `127.0.0.1:${port}`, '--upstream', `http://127.0.0.1:${address.port}`, '--out', captureFolder], { stdio: ['ignore', 'pipe', 'pipe'] });
+  try {
+    await new Promise<void>((resolveReady, reject) => {
+      const timeout = setTimeout(() => reject(new Error('capture sidecar did not start')), 5000);
+      sidecar.stdout.on('data', chunk => { if (chunk.toString().includes('capturing opted-in traffic')) { clearTimeout(timeout); resolveReady(); } });
+      sidecar.on('exit', code => reject(new Error(`capture sidecar stopped with ${code}`)));
+    });
+    expect((await fetch(`http://127.0.0.1:${port}/only-here`, { method: 'POST', body: '{"token":"private"}' })).status).toBe(503);
+    const exported = spawnSync(binary, ['export', '--captures', captureFolder, '--out', bundleFolder, '--json'], { encoding: 'utf8' });
+    expect(exported.status, exported.stderr).toBe(0);
+    expect(JSON.parse(exported.stdout)).toMatchObject({ bundle: bundleFolder, fixtures: 1 });
+    expect(readdirSync(root).sort()).toEqual(['bundle-folder', 'capture-folder']);
+    expect(readdirSync(bundleFolder).sort()).toEqual(['fixtures', 'manifest.json']);
+  } finally {
+    sidecar.kill('SIGINT');
+    await new Promise<void>(resolveClose => upstream.close(() => resolveClose()));
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('@claim:empty-output-folders export refuses a populated destination without changing it', () => {
+  const root = tempFolder();
+  const bundle = makeDemo(root);
+  const out = join(root, 'existing-bundle');
+  const privateFixture = join(out, 'fixtures', 'stale-private.json');
+  mkdirSync(join(out, 'fixtures'), { recursive: true });
+  writeFileSync(privateFixture, '{"email":"maya.chen@example.com","card":"4242424242424242"}');
+  const before = readFileSync(privateFixture, 'utf8');
+  try {
+    const demo = spawnSync(binary, ['demo', '--out', root, '--json'], { encoding: 'utf8' });
+    expect(demo.status).not.toBe(0);
+    expect(demo.stderr).toContain('is not empty');
+    const result = spawnSync(binary, ['export', '--captures', join(root, 'captures'), '--out', out, '--json'], { encoding: 'utf8' });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain('is not empty');
+    expect(readFileSync(privateFixture, 'utf8')).toBe(before);
+    expect(readdirSync(out).sort()).toEqual(['fixtures']);
+    expect(existsSync(join(out, 'manifest.json'))).toBe(false);
+    expect(existsSync(bundle)).toBe(true);
   } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('@claim:cli-json-and-errors gives scripts JSON on success and stderr plus a non-zero exit on errors', () => {
+  const root = tempFolder();
+  try {
+    const demo = spawnSync(binary, ['demo', '--out', root, '--json'], { encoding: 'utf8' });
+    expect(demo.status, demo.stderr).toBe(0);
+    expect(JSON.parse(demo.stdout)).toMatchObject({ demo: true, fixtures: 1, saved: true });
+    const exportedRoot = tempFolder();
+    try {
+      const exported = spawnSync(binary, ['export', '--captures', join(root, 'captures'), '--out', exportedRoot, '--json'], { encoding: 'utf8' });
+      expect(exported.status, exported.stderr).toBe(0);
+      expect(JSON.parse(exported.stdout)).toMatchObject({ bundle: exportedRoot, fixtures: 1 });
+    } finally { rmSync(exportedRoot, { recursive: true, force: true }); }
+    const failed = spawnSync(binary, ['send', '--bundle', join(root, 'payment-failure.bundle'), '--fixture', 'payment-webhook', '--target', 'https://example.com/hooks', '--signing-secret-env', 'TEST_SECRET', '--json'], { encoding: 'utf8' });
+    expect(failed.status).not.toBe(0);
+    expect(failed.stdout).toBe('');
+    expect(failed.stderr).toContain('refusing non-local target');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('@claim:capture-opt-in starts capturing only after the sidecar is launched', async () => {
+  const root = tempFolder();
+  const port = await freeLoopbackPort();
+  await expect(fetch(`http://127.0.0.1:${port}/not-running`)).rejects.toThrow();
+  const upstream = createServer((request, response) => { request.resume(); response.writeHead(204); response.end(); });
+  await new Promise<void>(resolveListen => upstream.listen(0, '127.0.0.1', resolveListen));
+  const address = upstream.address();
+  if (!address || typeof address === 'string') throw new Error('upstream has no port');
+  const sidecar = spawn(binary, ['capture', '--listen', `127.0.0.1:${port}`, '--upstream', `http://127.0.0.1:${address.port}`, '--out', root], { stdio: ['ignore', 'pipe', 'pipe'] });
+  try {
+    await new Promise<void>((resolveReady, reject) => {
+      const timeout = setTimeout(() => reject(new Error('capture sidecar did not start')), 5000);
+      sidecar.stdout.on('data', chunk => { if (chunk.toString().includes('capturing opted-in traffic')) { clearTimeout(timeout); resolveReady(); } });
+      sidecar.on('exit', code => reject(new Error(`capture sidecar stopped with ${code}`)));
+    });
+    expect((await fetch(`http://127.0.0.1:${port}/running`)).status).toBe(204);
+    expect(readdirSync(root)).toHaveLength(1);
+  } finally {
+    sidecar.kill('SIGINT');
+    await new Promise<void>(resolveClose => upstream.close(() => resolveClose()));
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test('@claim:offline-demo reloads after the first visit', async ({ page, context }) => {
@@ -280,6 +390,16 @@ test('site structure, keyboard path, mobile layout, and accessibility', async ({
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter(v => ['serious', 'critical'].includes(v.impact || ''))).toEqual([]);
   expect(errors).toEqual([]);
+});
+
+test('390px keeps required product text at the 16px body-text floor and exposes its visible wordmark name', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.getByRole('link', { name: 'BR Boundary Replay home' })).toBeVisible();
+  const sizes = await page.locator('nav a, .hero-actions > span, .facts, .section-index, .steps li > span, .landscape figcaption, .terminal-bar, footer').evaluateAll(elements =>
+    elements.map(element => Number.parseFloat(getComputedStyle(element).fontSize))
+  );
+  expect(sizes.every(size => size >= 16)).toBe(true);
 });
 
 test('desktop first read keeps the demo action and facts in view', async ({ page }) => {
@@ -354,7 +474,7 @@ test('390px touch targets keep mobile navigation, demo controls, and footer link
   }
 });
 
-test('real routes update title, h1, history, and focus', async ({ page }) => {
+test('real routes update title, h1, history, focus, and cross-route hash navigation', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Privacy' }).first().click();
   await expect(page).toHaveURL('/privacy');
@@ -365,15 +485,20 @@ test('real routes update title, h1, history, and focus', async ({ page }) => {
   await page.goto('/missing-route');
   await expect(page.getByText('404 · NO MATCHING FIXTURE')).toBeVisible();
   await expect(page.locator('h1')).toHaveCount(1);
+  await page.goto('/demo');
+  await page.getByRole('link', { name: 'How it works' }).click();
+  await expect(page).toHaveURL('/#how');
+  await expect(page.locator('#how')).toBeFocused();
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
 });
 
-test('SWA config keeps navigation fallback separate from the designed 404 response', async ({ page }) => {
+test('SWA config rewrites only known client routes and preserves a real 404 response', async ({ page }) => {
   const config = JSON.parse(readFileSync('site/public/staticwebapp.config.json', 'utf8')) as {
-    navigationFallback: { rewrite: string };
     routes: Array<Record<string, unknown>>;
     responseOverrides: Record<string, { rewrite?: string }>;
   };
-  expect(config.navigationFallback.rewrite).toBe('/index.html');
+  expect('navigationFallback' in config).toBe(false);
+  expect(config.routes.filter(route => route.rewrite === '/index.html').map(route => route.route)).toEqual(['/demo', '/privacy', '/terms']);
   expect(config.routes.every(route => !('rewrite' in route && 'statusCode' in route))).toBe(true);
   expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html' });
   expect(existsSync('site/public/404.html')).toBe(true);

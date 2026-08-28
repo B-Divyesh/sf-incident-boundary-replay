@@ -23,6 +23,7 @@ are included because visitors read them as standalone phrases. No line exceeds
 | Scrubbed 4 secret or PII fields before disk. | 8 | Pass |
 | Bundle: /tmp/.../payment-failure.bundle | 2 | Pass |
 | Copy install command | 3 | Pass |
+| View source | 2 | Pass |
 | A short path back to the bug | 7 | Pass |
 | How the boundary becomes a fixture | 6 | Pass |
 | Capture | 1 | Pass |
@@ -60,3 +61,6 @@ and three facts fit in one breath and identify the first action.
 | Capture process | sidecar |
 | Replacement rules | policy |
 | Browser sample environment | demo |
+
+The responsive `boundary-landscape-640.webp` source is decorative supporting
+art. It has no required text.

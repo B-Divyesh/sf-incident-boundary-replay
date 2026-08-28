@@ -5,7 +5,7 @@ local mock bundle. It is for backend engineers reproducing queue, webhook, and
 third-party failures without calling the original system.
 
 Boundary Replay sends no telemetry during its local demo flow. Captures and
-bundles stay in paths you choose. Replay and webhook send commands accept
+bundles are written only under output folders you name. Replay and webhook send commands accept
 loopback targets only and never follow redirects.
 
 ## Install
@@ -66,8 +66,10 @@ boundary-replay export --captures ./captures --out ./payment-failure.bundle
 boundary-replay serve --bundle ./payment-failure.bundle --listen 127.0.0.1:9487
 ```
 
-The local server matches method and path, then returns the recorded status,
-headers, and body. It refuses non-loopback bind addresses.
+`export --out` accepts a new or empty folder only. It refuses a populated
+folder before changing any file. The local server matches method and path, then
+returns the recorded status, headers, and body. It refuses non-loopback bind
+addresses.
 
 ## Send a signed webhook to a local service
 
@@ -106,8 +108,9 @@ release binary. Site source is under `site/`; browser tests use Playwright
 
 ## Deploy
 
-Deploy `dist/site` as the static root. The included SPA fallback preserves
-`/demo`, `/privacy`, `/terms`, and `/404` on direct loads.
+Deploy `dist/site` as the static root. The Static Web Apps route rules preserve
+`/demo`, `/privacy`, and `/terms` on direct loads while unknown URLs return the
+designed HTTP 404 page.
 
 ## License
 

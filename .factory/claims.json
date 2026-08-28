@@ -15,10 +15,10 @@
   },
   {
     "id": "runnable-local-mock",
-    "claim": "An exported fixture matches its recorded method and path and returns the recorded response locally",
+    "claim": "An exported fixture matches its recorded method and path and returns the recorded status, headers, and body locally",
     "where": "landing workflow, demo, README",
     "test": "npm test -- --grep @claim:runnable-local-mock",
-    "sandbox": "fresh CLI demo bundle; start the mock on loopback; POST to the recorded path; assert status 503 and the recorded JSON body"
+    "sandbox": "fresh CLI demo bundle; start the mock on loopback; POST to the recorded path; assert status 503, content-type and retry-after headers, and the recorded JSON body"
   },
   {
     "id": "signed-local-webhook",
@@ -46,7 +46,35 @@
     "claim": "Boundary Replay sends no telemetry during its local demo flow",
     "where": "README, privacy page",
     "test": "npm test -- --grep @claim:telemetry-free",
-    "sandbox": "fresh browser context records all requests while visiting the landing page and demo; run the shipped CLI demo; assert browser requests remain same-origin and the CLI demo completes without network configuration"
+    "sandbox": "fresh browser context records all requests while visiting the landing page and demo; run the shipped CLI demo under a connect-denying preload guard; assert browser requests remain same-origin, the CLI succeeds, and it makes no socket connection"
+  },
+  {
+    "id": "chosen-output-paths",
+    "claim": "Captured exchanges and exported bundles are written only under the output folders you name",
+    "where": "README, privacy page",
+    "test": "npm test -- --grep @claim:chosen-output-paths",
+    "sandbox": "fresh temp folder and local upstream; capture into a named folder, export into a second named folder, and assert no sibling files were created"
+  },
+  {
+    "id": "empty-output-folders",
+    "claim": "Export and demo accept only a new or empty output folder",
+    "where": "CLI help, README, demo documentation",
+    "test": "npm test -- --grep @claim:empty-output-folders",
+    "sandbox": "fresh demo captures and a populated output folder containing private-looking JSON; assert both demo and export fail before any file changes"
+  },
+  {
+    "id": "cli-json-and-errors",
+    "claim": "Demo, export, and send support JSON output; CLI errors use stderr and a non-zero exit code",
+    "where": "README",
+    "test": "npm test -- --grep @claim:cli-json-and-errors",
+    "sandbox": "fresh demo bundle; parse demo and export JSON results, then use a non-local send target and assert empty stdout, actionable stderr, and failure status"
+  },
+  {
+    "id": "capture-opt-in",
+    "claim": "Capture begins only after you run the sidecar",
+    "where": "landing safety section",
+    "test": "npm test -- --grep @claim:capture-opt-in",
+    "sandbox": "fresh loopback port and local upstream; prove no server responds before launch, then launch capture and assert a request is captured"
   },
   {
     "id": "offline-demo",

@@ -34,7 +34,7 @@ function routeFromPath(): Route {
 function header(): string {
   return `<a class="skip" href="#main">Skip to content</a>
     <header class="topbar">
-      <a class="wordmark" href="/" data-link aria-label="Boundary Replay home"><span class="mark" aria-hidden="true">BR</span><span>Boundary Replay</span></a>
+      <a class="wordmark" href="/" data-link aria-label="BR Boundary Replay home"><span class="mark" aria-hidden="true">BR</span><span>Boundary Replay</span></a>
       <nav aria-label="Primary"><a href="/demo" data-link>Demo</a><a href="/#how">How it works</a><a href="/privacy" data-link>Privacy</a></nav><span class="network-state" hidden aria-live="polite">Offline — the saved shell remains available</span>
     </header>`;
 }
@@ -54,7 +54,7 @@ function landing(): string {
         <ul class="facts" aria-label="Product facts"><li>Redacts before disk</li><li>Replays only on localhost</li><li>Free local exporter</li></ul>
       </div>
       <figure class="landscape">
-        <img src="/assets/boundary-landscape.webp" width="1152" height="768" fetchpriority="high" alt="Request paths cross a glass redaction boundary and emerge as safe local fixtures." />
+        <picture><source media="(max-width: 760px)" srcset="/assets/boundary-landscape-640.webp" /><img src="/assets/boundary-landscape.webp" width="1152" height="768" fetchpriority="high" alt="Request paths cross a glass redaction boundary and emerge as safe local fixtures." /></picture>
         <figcaption><span>PRODUCTION EDGE</span><span>SCRUB</span><span>LOCAL MOCK</span></figcaption>
       </figure>
     </section>
@@ -71,7 +71,7 @@ Bundle: /tmp/.../payment-failure.bundle
 <span class="green">Run: boundary-replay serve --bundle … --listen 127.0.0.1:9487</span></code></pre>
         </div>
         <img class="recording-proof" src="/assets/terminal-recording.svg" width="960" height="180" loading="lazy" alt="A terminal recording shows the demo command capturing, scrubbing, and exporting one fixture." />
-        <button class="copy-command" type="button" data-copy="cargo install --path .">Copy install command</button><span class="copy-status" aria-live="polite"></span>
+        <div class="install-actions"><button class="copy-command" type="button" data-copy="git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git && cd sf-incident-boundary-replay && cargo install --path .">Copy install command</button><a href="https://github.com/B-Divyesh/sf-incident-boundary-replay" rel="external">View source <span class="sr-only">(external)</span></a></div><span class="copy-status" aria-live="polite"></span>
       </div>
     </section>
     <section class="how" id="how" aria-labelledby="how-heading">
@@ -138,13 +138,25 @@ function render(focus = true): void {
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')!.href = `https://incident-boundary-replay.sociobot.in${route === '/404' ? '/404' : route}`;
   bindEvents();
   syncNetworkState();
-  if (focus) requestAnimationFrame(() => document.querySelector<HTMLElement>('h1')?.focus());
+  requestAnimationFrame(() => {
+    const target = location.hash ? document.querySelector<HTMLElement>(location.hash) : null;
+    if (target) {
+      target.tabIndex = -1;
+      const savedScrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      target.scrollIntoView({ block: 'start' });
+      document.documentElement.style.scrollBehavior = savedScrollBehavior;
+      target.focus();
+    } else if (focus) {
+      document.querySelector<HTMLElement>('h1')?.focus();
+    }
+  });
 }
 
 function navigate(path: string): void {
   history.pushState({}, '', path);
-  window.scrollTo(0, 0);
-  render();
+  if (!location.hash) window.scrollTo(0, 0);
+  render(!location.hash);
 }
 
 function bindEvents(): void {

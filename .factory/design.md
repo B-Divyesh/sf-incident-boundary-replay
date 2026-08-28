@@ -61,7 +61,9 @@ High-luminance type and controls meet WCAG AA on every surface.
   volumetric edges, restrained, no text, no logos, no people, no UI screenshot,
   no generic gradient blobs, dark negative space around the edges.” Generated
   at 1536×1024, converted locally to WebP. It is original project art.
+- `site/public/assets/boundary-landscape-640.webp`: a 640 px WebP derivative
+  made locally from the original landscape with ImageMagick on 2026-08-28 for
+  mobile delivery. It introduces no new imagery or license.
 - Open Graph art is composed locally from the same original landscape and
   product typography. No stock assets are used.
 - The boundary glyph and favicon are hand-authored SVG geometry for this repo.
-

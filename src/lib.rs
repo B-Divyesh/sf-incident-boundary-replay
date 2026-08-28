@@ -227,6 +227,7 @@ pub fn export_bundle(
     if !captures.is_dir() {
         bail!("capture folder {} does not exist", captures.display());
     }
+    ensure_empty_or_new_directory(out, "bundle output")?;
     std::fs::create_dir_all(out.join("fixtures"))
         .with_context(|| format!("could not create bundle {}", out.display()))?;
     let mut entries: Vec<PathBuf> = std::fs::read_dir(captures)?
@@ -257,6 +258,25 @@ pub fn export_bundle(
         serde_json::to_vec_pretty(&manifest)?,
     )?;
     Ok(manifest)
+}
+
+/// Refuse destinations that could contain an earlier bundle or unrelated
+/// private files. This check happens before creating the fixture directory so
+/// a failed export never changes the destination.
+pub fn ensure_empty_or_new_directory(path: &Path, purpose: &str) -> Result<()> {
+    if !path.exists() {
+        return Ok(());
+    }
+    if !path.is_dir() {
+        bail!("{purpose} {} is not a directory", path.display());
+    }
+    if std::fs::read_dir(path)?.next().is_some() {
+        bail!(
+            "{purpose} folder {} is not empty; choose a new or empty folder so Boundary Replay cannot overwrite or mix in existing files",
+            path.display()
+        );
+    }
+    Ok(())
 }
 
 fn safe_id(id: &str) -> String {
@@ -590,6 +610,22 @@ mod tests {
         assert_eq!(manifest.fixture_count, 1);
         let loaded = load_bundle(bundle.path()).unwrap();
         assert_eq!(loaded[0].response.status, 503);
+    }
+
+    #[test]
+    fn refuses_non_empty_bundle_output_without_changing_it() {
+        let source = tempfile::tempdir().unwrap();
+        let out = tempfile::tempdir().unwrap();
+        let private_file = out.path().join("stale-private.json");
+        std::fs::write(&private_file, "private value").unwrap();
+        let before = std::fs::read(&private_file).unwrap();
+
+        let error =
+            export_bundle(source.path(), out.path(), &RedactionPolicy::default()).unwrap_err();
+
+        assert!(error.to_string().contains("is not empty"));
+        assert_eq!(std::fs::read(&private_file).unwrap(), before);
+        assert_eq!(std::fs::read_dir(out.path()).unwrap().count(), 1);
     }
 
     #[test]
