@@ -57,6 +57,8 @@
   alt checks all passed. The deployed `sw.js` exposes cache v2, its emitted
   JS/CSS precache entries, and the `ignoreVary` offline fallback. The deployed
   `404.html` returns HTTP 200 with the configured CSP and security headers.
+- Live Lighthouse 12.8.2 (mobile) on the custom domain: Performance 100,
+  Accessibility 100, Best Practices 100, SEO 100; LCP 1.4 s and CLS 0.044.
 
 ## Built
 
