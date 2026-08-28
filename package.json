@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1",
     "pretest": "cargo test && cargo build",
     "test": "playwright test",
-    "build:site": "vite build",
+    "build:site": "vite build && node scripts/patch-service-worker.mjs",
     "build": "npm run build:site && cargo build --release"
   },
   "devDependencies": {

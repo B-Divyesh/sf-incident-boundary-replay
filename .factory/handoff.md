@@ -1,5 +1,57 @@
 # Boundary Replay handoff
 
+## Repair 2026-08-28 — SWA 404 configuration
+
+- Reproduced the rejected schema from candidate `25e18b3339022f42e9dca5ff7c7b09af0bf5f1d8`:
+  the `/404` route combined `statusCode: 404` with `rewrite: /index.html`.
+  Azure Static Web Apps rejects that combination.
+- Moved the status response handling to
+  `responseOverrides: {"404": {"rewrite": "/404.html"}}`, retained the
+  SPA `navigationFallback`, and removed the invalid route rule.
+- Added a real, CSP-compatible `404.html` and `404.css` in the product's
+  luminous-instrument visual system. The SPA still renders its client-side
+  404 for unknown navigation routes; SWA now has a designed document for
+  server 404 responses.
+- Added Playwright regression coverage that parses the source config, rejects
+  any route which combines `rewrite` and `statusCode`, asserts the 404
+  override, and checks the static 404 document's title, main landmark, h1,
+  and return-home link.
+- Repaired the offline shell exposed by the fresh verification run. The build
+  now writes the emitted JS, CSS, fonts, and product assets into the service
+  worker's precache list. Its offline fallback ignores Vite's `Vary: Origin`
+  response variation, so the precached entry CSS and JS are usable after an
+  offline reload. The offline claim asserts both entry assets are cached
+  before it reloads offline.
+- Repair commit: `0156247a810285e0c1e805b83bae70fe849b4b74`, pushed to
+  `origin/main` before deployment.
+
+### Repair verification
+
+- Clean dependency install: `npm ci` — passed (0 vulnerabilities).
+- `npm test` / Playwright: 11 passed. This covers Rust units, capture and
+  replay integration, every listed claim, offline reload, private demo
+  requests/storage, keyboard/mobile structure, accessibility, real route
+  history/focus, and the new SWA schema regression.
+- Exact product build command: `npm run build` — passed; Vite emitted
+  `dist/site` and Cargo emitted `target/release/boundary-replay`.
+- Release package: `cargo package` — passed. Dependency audit:
+  `npm audit --omit=dev` — 0 vulnerabilities.
+- Built-artifact assertion: `dist/site/staticwebapp.config.json` has no
+  route with both `rewrite` and `statusCode`, has the `/404.html` response
+  override, and contains both `404.html` and `404.css`.
+- Static deploy: factory `deploy-static.sh incident-boundary-replay dist/site`
+  accepted the repaired config and uploaded deployment
+  `9570b7b4-f399-46b7-ad4b-66b39180e461` to
+  `https://purple-meadow-07881ae10.7.azurestaticapps.net`.
+- Live default-host check: factory `verify-url.sh` returned HTTP 200 in
+  668 ms, with no console errors; title, `lang=en`, one h1, main landmark,
+  and image alts passed. The deployed `/404.html` returned HTTP 200 with the
+  configured CSP and security headers.
+- Custom-domain registration was started by the deployment configuration for
+  `https://incident-boundary-replay.sociobot.in`; Azure DNS resolution is in
+  place and Azure is validating its managed TLS certificate. Its final HTTPS
+  result is recorded below once the certificate is issued.
+
 ## Built
 
 - Rust 0.1.0 single-binary CLI with `capture`, `export`, `serve`, `send`, and

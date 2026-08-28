@@ -130,8 +130,17 @@ test('@claim:private-demo uses isolated sample state and same-origin requests', 
 
 test('@claim:offline-demo reloads after the first visit', async ({ page, context }) => {
   await page.goto('/demo');
-  await page.evaluate(async () => { await navigator.serviceWorker.ready; if (!navigator.serviceWorker.controller) location.reload(); });
+  await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+  if (!await page.evaluate(() => Boolean(navigator.serviceWorker.controller))) await page.reload();
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+  const shellCached = await page.evaluate(async () => {
+    const cache = await caches.open('boundary-replay-v2');
+    const assets = [...document.querySelectorAll<HTMLScriptElement | HTMLLinkElement>('script[src], link[rel="stylesheet"]')]
+      .map(element => element.src || element.href)
+      .filter(Boolean);
+    return Promise.all(assets.map(asset => cache.match(asset).then(Boolean)));
+  });
+  expect(shellCached.every(Boolean)).toBe(true);
   await context.setOffline(true);
   await expect(page.getByText('Offline — the saved shell remains available')).toBeVisible();
   await page.reload();
@@ -209,6 +218,10 @@ test('SWA config keeps navigation fallback separate from the designed 404 respon
   expect(config.routes.every(route => !('rewrite' in route && 'statusCode' in route))).toBe(true);
   expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html' });
   expect(existsSync('site/public/404.html')).toBe(true);
+  const worker = readFileSync('dist/site/sw.js', 'utf8');
+  expect(worker).toContain('boundary-replay-v2');
+  expect(worker).toMatch(/"\/assets\/index-[^"]+\.js"/);
+  expect(worker).toMatch(/"\/assets\/index-[^"]+\.css"/);
 
   await page.goto('/404.html');
   await expect(page).toHaveTitle('Not found — Boundary Replay');
