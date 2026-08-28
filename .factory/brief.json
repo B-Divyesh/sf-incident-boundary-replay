@@ -1,0 +1,8 @@
+{
+  "slug": "incident-boundary-replay",
+  "title": "Boundary Replay",
+  "summary": "Capture a scrubbed service boundary and run it as a local mock.",
+  "artifact_class": "cli",
+  "monetization": "freemium",
+  "success_measure": "Teams reproduce seeded integration failures from exported bundles without production access."
+}
