@@ -1,0 +1,298 @@
+{
+  "communities": {
+    "0": [
+      "arc",
+      "btreemap",
+      "client",
+      "default",
+      "hashset",
+      "headermap",
+      "self",
+      "src_lib",
+      "src_lib_body_value",
+      "src_lib_bundlemanifest",
+      "src_lib_capturestate",
+      "src_lib_default_fields",
+      "src_lib_default_headers",
+      "src_lib_exchange",
+      "src_lib_header_map",
+      "src_lib_mockstate",
+      "src_lib_recordedrequest",
+      "src_lib_recordedresponse",
+      "src_lib_redactionpolicy",
+      "src_lib_redactionpolicy_default",
+      "src_lib_redactionpolicy_load",
+      "src_lib_redacts_nested_fields_and_headers",
+      "src_lib_refuses_non_local_replay_targets",
+      "src_lib_rs_option",
+      "src_lib_rs_pathbuf",
+      "src_lib_rs_string",
+      "src_lib_safe_id",
+      "src_lib_sample",
+      "src_lib_scrub_headers",
+      "src_lib_scrub_value",
+      "url",
+      "value",
+      "vec"
+    ],
+    "1": [
+      "site_src_main",
+      "site_src_main_bindevents",
+      "site_src_main_demo",
+      "site_src_main_esc",
+      "site_src_main_fixture",
+      "site_src_main_footer",
+      "site_src_main_header",
+      "site_src_main_landing",
+      "site_src_main_navigate",
+      "site_src_main_notfound",
+      "site_src_main_pricing",
+      "site_src_main_privacy",
+      "site_src_main_render",
+      "site_src_main_route",
+      "site_src_main_routefrompath",
+      "site_src_main_routemeta",
+      "site_src_main_setlicensestatus",
+      "site_src_main_syncnetworkstate",
+      "site_src_main_team_pack",
+      "site_src_main_terms",
+      "site_src_main_updatelicenseui",
+      "site_src_main_verifylicense"
+    ],
+    "2": [
+      "axe_core_playwright",
+      "fontsource_ibm_plex_mono",
+      "fontsource_variable_space_grotesk",
+      "package_devdependencies",
+      "package_devdependencies_axe_core_playwright",
+      "package_devdependencies_fontsource_ibm_plex_mono",
+      "package_devdependencies_fontsource_variable_space_grotesk",
+      "package_devdependencies_playwright_test",
+      "package_devdependencies_sharp",
+      "package_devdependencies_types_node",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "playwright_test",
+      "sharp",
+      "types_node",
+      "typescript",
+      "vite"
+    ],
+    "3": [
+      "ref_playwright_config_ts",
+      "ref_site_ts",
+      "ref_tests_ts",
+      "ref_vite_client",
+      "ref_vite_config_ts",
+      "tsconfig",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_noemit",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_target",
+      "tsconfig_compileroptions_types",
+      "tsconfig_compileroptions_usedefineforclassfields",
+      "tsconfig_include"
+    ],
+    "4": [
+      "src_lib_export_bundle",
+      "src_lib_exports_a_runnable_bundle",
+      "src_lib_scrub_exchange",
+      "src_lib_write_exchange",
+      "src_main",
+      "src_main_cli",
+      "src_main_command",
+      "src_main_demo",
+      "src_main_main",
+      "src_main_rs_option",
+      "src_main_rs_pathbuf",
+      "src_main_rs_result",
+      "src_main_rs_string",
+      "src_main_run"
+    ],
+    "5": [
+      "package",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_build_site",
+      "package_scripts_dev",
+      "package_scripts_pretest",
+      "package_scripts_test",
+      "package_type",
+      "package_version"
+    ],
+    "6": [
+      "path",
+      "socketaddr",
+      "src_lib_load_bundle",
+      "src_lib_local_target",
+      "src_lib_loopback_socket",
+      "src_lib_rs_result",
+      "src_lib_run_capture",
+      "src_lib_run_mock",
+      "src_lib_send_webhook",
+      "src_lib_shutdown"
+    ],
+    "7": [
+      "method",
+      "request",
+      "response",
+      "src_lib_capture_handler",
+      "src_lib_capture_one",
+      "src_lib_mock_handler",
+      "src_lib_value_bytes",
+      "state",
+      "uri"
+    ],
+    "8": [
+      "tests_product_spec",
+      "tests_product_spec_binary",
+      "tests_product_spec_makedemo",
+      "tests_product_spec_tempfolder"
+    ],
+    "9": [
+      "site_public_sw",
+      "site_public_sw_shell"
+    ],
+    "10": [
+      "pkg_boundary_replay"
+    ],
+    "11": [
+      "playwright_config"
+    ],
+    "12": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.13636363636363635,
+    "1": 0.21212121212121213,
+    "2": 0.11764705882352941,
+    "3": 0.13333333333333333,
+    "4": 0.27472527472527475,
+    "5": 0.18181818181818182,
+    "6": 0.4,
+    "7": 0.3055555555555556,
+    "8": 0.5,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0
+  },
+  "gods": [
+    {
+      "id": "site_src_main_render",
+      "label": "render()",
+      "degree": 11
+    },
+    {
+      "id": "src_lib_exchange",
+      "label": "Exchange",
+      "degree": 11
+    },
+    {
+      "id": "src_lib_redactionpolicy",
+      "label": "RedactionPolicy",
+      "degree": 10
+    },
+    {
+      "id": "src_lib_scrub_exchange",
+      "label": "scrub_exchange()",
+      "degree": 10
+    },
+    {
+      "id": "src_lib_export_bundle",
+      "label": "export_bundle()",
+      "degree": 10
+    },
+    {
+      "id": "src_lib_capture_one",
+      "label": "capture_one()",
+      "degree": 10
+    },
+    {
+      "id": "src_lib_write_exchange",
+      "label": "write_exchange()",
+      "degree": 8
+    },
+    {
+      "id": "src_lib_load_bundle",
+      "label": "load_bundle()",
+      "degree": 8
+    },
+    {
+      "id": "src_lib_run_mock",
+      "label": "run_mock()",
+      "degree": 8
+    },
+    {
+      "id": "src_main_run",
+      "label": "run()",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "run()",
+      "target": "run_capture()",
+      "source_files": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "run()",
+      "target": "run_mock()",
+      "source_files": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "run()",
+      "target": "send_webhook()",
+      "source_files": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "demo()",
+      "target": "scrub_exchange()",
+      "source_files": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source"
+    },
+    {
+      "source": "demo()",
+      "target": "write_exchange()",
+      "source_files": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}
