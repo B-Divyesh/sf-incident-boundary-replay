@@ -1,5 +1,15 @@
 # Boundary Replay handoff
 
+## Independent verification 2026-08-28 — **FAIL**
+
+Candidate `785c7738670b535a9d50ba5bde7c2834be29bcef` was independently tested from a fresh clone against https://incident-boundary-replay.sociobot.in.
+
+The exact eight claim tests all passed; `npm test` passed 11/11; `npm run build`, `cargo package --allow-dirty`, and clean-consumer CLI installation passed. The live JS/CSS were byte-identical to the candidate build. Core CLI capture/demo/export/mock behavior, live demo privacy/offline behavior, security headers, axe serious/critical scan, and rate limiting were verified.
+
+**Release is blocked** by undersized mobile touch targets: at 390 px, header links are 21 px high, footer links are 19 px high, “Start for real” is 21 px high, and the wordmark is 40 × 40; all are below the required 44 × 44 px. The landing also includes unlisted claim-like copy (“Other traffic stays untouched”, “Free local exporter” / “free exporter stays complete”) with no matching claims test. An ad-hoc `npx tsc --noEmit` additionally fails in a Playwright test because an element union is not narrowed.
+
+Full independent evidence and exact commands/results are in `.factory/verification.md`. Repair the listed issues and repeat verification; do not interpret the earlier builder PASS evidence below as the current release verdict.
+
 ## Repair 2026-08-28 — SWA 404 configuration
 
 - Reproduced the rejected schema from candidate `25e18b3339022f42e9dca5ff7c7b09af0bf5f1d8`:
