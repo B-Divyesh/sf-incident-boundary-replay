@@ -230,6 +230,11 @@
       "degree": 11
     },
     {
+      "id": "site_src_main_render",
+      "label": "render()",
+      "degree": 10
+    },
+    {
       "id": "src_lib_redactionpolicy",
       "label": "RedactionPolicy",
       "degree": 10
@@ -242,11 +247,6 @@
     {
       "id": "src_lib_capture_one",
       "label": "capture_one()",
-      "degree": 10
-    },
-    {
-      "id": "site_src_main_render",
-      "label": "render()",
       "degree": 10
     },
     {
