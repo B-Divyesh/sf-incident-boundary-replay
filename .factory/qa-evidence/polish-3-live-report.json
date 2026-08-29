@@ -1,0 +1,104 @@
+{
+  "origin": "https://incident-boundary-replay.sociobot.in",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Boundary Replay — replay HTTP failures on localhost",
+      "lang": "en",
+      "h1Count": 1,
+      "mainCount": 1,
+      "missingAltCount": 0,
+      "canonical": "https://incident-boundary-replay.sociobot.in/",
+      "ogTitle": "Boundary Replay — replay HTTP failures on localhost",
+      "twitterTitle": "Boundary Replay — replay HTTP failures on localhost",
+      "axeSeriousOrCritical": [],
+      "errors": []
+    },
+    {
+      "route": "/demo",
+      "status": 200,
+      "title": "Demo — Boundary Replay",
+      "lang": "en",
+      "h1Count": 1,
+      "mainCount": 1,
+      "missingAltCount": 0,
+      "canonical": "https://incident-boundary-replay.sociobot.in/demo",
+      "ogTitle": "Demo — Boundary Replay",
+      "twitterTitle": "Demo — Boundary Replay",
+      "axeSeriousOrCritical": [],
+      "errors": []
+    },
+    {
+      "route": "/privacy",
+      "status": 200,
+      "title": "Privacy — Boundary Replay",
+      "lang": "en",
+      "h1Count": 1,
+      "mainCount": 1,
+      "missingAltCount": 0,
+      "canonical": "https://incident-boundary-replay.sociobot.in/privacy",
+      "ogTitle": "Privacy — Boundary Replay",
+      "twitterTitle": "Privacy — Boundary Replay",
+      "axeSeriousOrCritical": [],
+      "errors": []
+    },
+    {
+      "route": "/terms",
+      "status": 200,
+      "title": "Terms — Boundary Replay",
+      "lang": "en",
+      "h1Count": 1,
+      "mainCount": 1,
+      "missingAltCount": 0,
+      "canonical": "https://incident-boundary-replay.sociobot.in/terms",
+      "ogTitle": "Terms — Boundary Replay",
+      "twitterTitle": "Terms — Boundary Replay",
+      "axeSeriousOrCritical": [],
+      "errors": []
+    },
+    {
+      "route": "/missing-route",
+      "status": 404,
+      "title": "Not found — Boundary Replay",
+      "lang": "en",
+      "h1Count": 1,
+      "mainCount": 1,
+      "missingAltCount": 0,
+      "canonical": "https://incident-boundary-replay.sociobot.in/404",
+      "ogTitle": "Not found — Boundary Replay",
+      "twitterTitle": "Not found — Boundary Replay",
+      "axeSeriousOrCritical": [],
+      "errors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ]
+    }
+  ],
+  "cliTranscript": {
+    "releaseExitCode": 0,
+    "matchesFreshReleaseStdout": true
+  },
+  "demo": {
+    "heading": "Inspect a payment failure with secrets removed",
+    "banner": "Demo — sample data, nothing is saved\nReset demo\nStart for real",
+    "resetVisible": true,
+    "startVisible": true,
+    "demoStatePresent": true,
+    "onlySameOriginRequests": true
+  },
+  "privacy": {
+    "realLocalStoragePreserved": true,
+    "realSessionStoragePreserved": true,
+    "demoStateDiscarded": true
+  },
+  "offline": {
+    "heading": "Inspect a payment failure with secrets removed",
+    "responseVisible": true,
+    "noticeVisible": true
+  },
+  "font": {
+    "computedFamily": "\"IBM Plex Mono\", ui-monospace, monospace",
+    "ibmLoaded": true,
+    "requestedIbmResource": true
+  }
+}
