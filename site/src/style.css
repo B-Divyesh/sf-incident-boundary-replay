@@ -66,6 +66,7 @@ pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .recording-proof { display: block; width: 100%; height: auto; margin-top: 12px; border: 1px solid var(--line); }
 .prompt { color: var(--signal); }.amber { color: var(--amber); }.green { color: var(--green); }
 .install-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 16px; }.copy-command { border-color: var(--line); }.install-actions a { min-height: 44px; display: inline-flex; align-items: center; }.copy-status { color: var(--green); }
+.install-command { margin-top: 16px; }.install-command label { display: block; margin-bottom: 6px; color: var(--mist); }.install-command input { width: 100%; min-height: 44px; border: 1px solid var(--line); padding: 10px 12px; background: var(--ink); color: var(--paper); font: inherit; }
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; padding: 0; background: var(--line); list-style: none; }
 .steps li { min-height: 280px; padding: 28px; background: var(--deep); }
 .steps li > span { color: var(--signal); font-size: 16px; letter-spacing: .1em; }

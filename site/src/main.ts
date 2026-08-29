@@ -25,9 +25,7 @@ function esc(value: string): string {
 }
 
 function routeFromPath(): Route {
-  if (location.pathname === '/' && new URLSearchParams(location.search).get('demo') === '1') {
-    history.replaceState({}, '', '/demo');
-  }
+  if (location.pathname === '/' && new URLSearchParams(location.search).get('demo') === '1') return '/demo';
   return ['/', '/demo', '/privacy', '/terms', '/404'].includes(location.pathname) ? location.pathname as Route : '/404';
 }
 
@@ -35,7 +33,7 @@ function header(): string {
   return `<a class="skip" href="#main">Skip to content</a>
     <header class="topbar">
       <a class="wordmark" href="/" data-link aria-label="BR Boundary Replay home"><span class="mark" aria-hidden="true">BR</span><span>Boundary Replay</span></a>
-      <nav aria-label="Primary"><a href="/demo" data-link>Demo</a><a href="/#how">How it works</a><a href="/privacy" data-link>Privacy</a></nav><span class="network-state" hidden aria-live="polite">Offline — the saved shell remains available</span>
+      <nav aria-label="Primary"><a href="/demo" data-link>Demo</a><a href="/#how">How it works</a><a href="/privacy" data-link>Privacy</a></nav><span class="network-state" hidden aria-live="polite">Offline — this page and its sample data remain available.</span>
     </header>`;
 }
 
@@ -48,34 +46,35 @@ function landing(): string {
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow"><span></span> Incident boundary capture</p>
-        <h1 tabindex="-1">Capture failures. Replay them safely on localhost.</h1>
-        <p class="lede">For backend engineers who need the failed boundary, not another trace.</p>
+        <h1 tabindex="-1">Capture HTTP failures. Replay them on localhost.</h1>
+        <p class="lede">For backend engineers reproducing failed queue, webhook, and third-party requests.</p>
         <div class="hero-actions"><a class="button primary" href="/demo" data-link>Try it with sample data</a><span>See a scrubbed failed webhook and its local response.</span></div>
         <ul class="facts" aria-label="Product facts"><li>Redacts before disk</li><li>Replays only on localhost</li><li>Free local exporter</li></ul>
       </div>
       <figure class="landscape">
-        <picture><source media="(max-width: 760px)" srcset="/assets/boundary-landscape-640.webp" /><img src="/assets/boundary-landscape.webp" width="1152" height="768" fetchpriority="high" alt="Request paths cross a glass redaction boundary and emerge as safe local fixtures." /></picture>
+        <picture><source media="(max-width: 760px)" srcset="/assets/boundary-landscape-640.webp" /><img src="/assets/boundary-landscape.webp" width="1152" height="768" fetchpriority="high" alt="Cyan request paths cross an amber redaction layer toward a local mock." /></picture>
         <figcaption><span>PRODUCTION EDGE</span><span>SCRUB</span><span>LOCAL MOCK</span></figcaption>
       </figure>
     </section>
     <section class="live-preview" aria-labelledby="preview-heading">
-      <div class="section-index"><span>01</span><p>One failure, isolated</p></div>
+      <div class="section-index"><span>01</span><p>A captured failure becomes a local fixture.</p></div>
       <div>
-        <p class="eyebrow">Real CLI output</p><h2 id="preview-heading">Keep the boundary. Drop the secrets.</h2>
+        <p class="eyebrow">Real CLI output</p><h2 id="preview-heading">Scrub the exchange before export.</h2>
         <div class="terminal" role="region" aria-label="Boundary Replay terminal recording">
           <div class="terminal-bar"><span></span><span></span><span></span><b>boundary-replay demo</b></div>
           <pre><code><span class="prompt">$</span> boundary-replay demo
 Demo — isolated sample data; no existing captures were read or changed.
-<span class="amber">Scrubbed 4 secret or PII field(s) before disk.</span>
+<span class="amber">Scrubbed four secret or personal-data fields before disk.</span>
 Bundle: /tmp/.../payment-failure.bundle
 <span class="green">Run: boundary-replay serve --bundle … --listen 127.0.0.1:9487</span></code></pre>
         </div>
         <img class="recording-proof" src="/assets/terminal-recording.svg" width="960" height="180" loading="lazy" alt="A terminal recording shows the demo command capturing, scrubbing, and exporting one fixture." />
+        <div class="install-command"><label for="install-command">Install command</label><input id="install-command" readonly value="git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git &amp;&amp; cd sf-incident-boundary-replay &amp;&amp; cargo install --path ." /></div>
         <div class="install-actions"><button class="copy-command" type="button" data-copy="git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git && cd sf-incident-boundary-replay && cargo install --path .">Copy install command</button><a href="https://github.com/B-Divyesh/sf-incident-boundary-replay" rel="external">View source <span class="sr-only">(external)</span></a></div><span class="copy-status" aria-live="polite"></span>
       </div>
     </section>
     <section class="how" id="how" aria-labelledby="how-heading">
-      <div class="section-index"><span>02</span><p>A short path back to the bug</p></div>
+      <div class="section-index"><span>02</span><p>Capture, scrub, and replay an HTTP failure.</p></div>
       <div><h2 id="how-heading">How the boundary becomes a fixture</h2>
         <ol class="steps">
           <li><span>Capture</span><h3>Opt in one client</h3><p>Point that client at the sidecar to capture its boundary.</p></li>
@@ -85,7 +84,7 @@ Bundle: /tmp/.../payment-failure.bundle
       </div>
     </section>
     <section class="limits" aria-labelledby="limits-heading">
-      <div class="section-index"><span>03</span><p>The safety boundary</p></div>
+      <div class="section-index"><span>03</span><p>What Boundary Replay will not do.</p></div>
       <div><h2 id="limits-heading">Production replay is not a feature</h2><p>Capture starts only when you run the sidecar. Mock servers and webhook sends refuse non-local targets. New mock signatures use a secret from your environment.</p></div>
     </section>
   </main>${footer()}`;
@@ -114,28 +113,34 @@ function privacy(): string {
 }
 
 function terms(): string {
-  return `${header()}<main id="main" class="prose"><p class="eyebrow">Terms · 28 August 2026</p><h1 tabindex="-1">Use Boundary Replay on systems you control</h1><h2>Safe use</h2><p>You must have permission to capture each service boundary. Review redaction policies before handling production traffic.</p><h2>Free software</h2><p>The CLI is provided under the MIT License without warranty.</p><h2>Limits</h2><p>Redaction rules reduce exposure but cannot identify every secret. You remain responsible for each exported bundle.</p></main>${footer()}`;
+  return `${header()}<main id="main" class="prose"><p class="eyebrow">Terms · 28 August 2026</p><h1 tabindex="-1">Use Boundary Replay on systems you control</h1><h2>Permission</h2><p>You must have permission to capture each service boundary. Review redaction policies before handling production traffic.</p><h2>Free software</h2><p>The CLI is provided under the MIT License without warranty.</p><h2>Limits</h2><p>Redaction rules reduce exposure but cannot identify every secret. You remain responsible for each exported bundle.</p></main>${footer()}`;
 }
 
 function notFound(): string {
-  return `${header()}<main id="main" class="not-found"><p class="error-code">404 · NO MATCHING FIXTURE</p><h1 tabindex="-1">This route crossed the wrong boundary</h1><p>The page was not found. Return to the capture path.</p><a class="button primary" href="/" data-link>Return home</a></main>${footer()}`;
+  return `${header()}<main id="main" class="not-found"><p class="error-code">404</p><h1 tabindex="-1">Page not found</h1><p>This address does not match a Boundary Replay page.</p><a class="button primary" href="/" data-link>Return home</a></main>${footer()}`;
 }
 
-const routeMeta: Record<Route, [string, string]> = {
-  '/': ['Boundary Replay — replay failed HTTP boundaries', 'Capture an opted-in HTTP exchange, scrub secrets before disk, and export a runnable local mock.'],
-  '/demo': ['Demo — Boundary Replay', 'Inspect a sample failed webhook, its redactions, and its local mock response.'],
-  '/privacy': ['Privacy — Boundary Replay', 'How Boundary Replay handles captures and isolated demo state.'],
-  '/terms': ['Terms — Boundary Replay', 'Terms for the Boundary Replay CLI.'],
-  '/404': ['Not found — Boundary Replay', 'This Boundary Replay page could not be found.']
+const routeMeta: Record<Route, { title: string; description: string }> = {
+  '/': { title: 'Boundary Replay — replay failed HTTP boundaries', description: 'Capture an opted-in HTTP exchange, scrub secrets before disk, and export a runnable local mock.' },
+  '/demo': { title: 'Demo — Boundary Replay', description: 'Inspect a sample failed webhook, its redactions, and its local mock response.' },
+  '/privacy': { title: 'Privacy — Boundary Replay', description: 'How Boundary Replay handles captures and isolated demo state.' },
+  '/terms': { title: 'Terms — Boundary Replay', description: 'Terms for the Boundary Replay CLI.' },
+  '/404': { title: 'Not found — Boundary Replay', description: 'This Boundary Replay page could not be found.' }
 };
 
 function render(focus = true): void {
   const route = routeFromPath();
   const app = document.querySelector<HTMLDivElement>('#app')!;
   app.innerHTML = route === '/' ? landing() : route === '/demo' ? demo() : route === '/privacy' ? privacy() : route === '/terms' ? terms() : notFound();
-  document.title = routeMeta[route][0];
-  document.querySelector<HTMLMetaElement>('meta[name="description"]')!.content = routeMeta[route][1];
+  const metadata = routeMeta[route];
+  document.title = metadata.title;
+  document.querySelector<HTMLMetaElement>('meta[name="description"]')!.content = metadata.description;
+  document.querySelector<HTMLMetaElement>('meta[property="og:title"]')!.content = metadata.title;
+  document.querySelector<HTMLMetaElement>('meta[property="og:description"]')!.content = metadata.description;
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:title"]')!.content = metadata.title;
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:description"]')!.content = metadata.description;
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')!.href = `https://incident-boundary-replay.sociobot.in${route === '/404' ? '/404' : route}`;
+  document.querySelector<HTMLElement>('#route-announcer')!.textContent = metadata.title;
   bindEvents();
   syncNetworkState();
   requestAnimationFrame(() => {
@@ -171,7 +176,7 @@ function bindEvents(): void {
     try {
       await navigator.clipboard.writeText(button.dataset.copy!);
       document.querySelector<HTMLElement>('.copy-status')!.textContent = ' Copied.';
-    } catch { document.querySelector<HTMLElement>('.copy-status')!.textContent = ' Copy failed. Select the command above.'; }
+    } catch { document.querySelector<HTMLElement>('.copy-status')!.textContent = ' Copy failed. Select the install command shown above.'; }
   });
   document.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () => {
     sessionStorage.removeItem(DEMO_KEY); render(false);

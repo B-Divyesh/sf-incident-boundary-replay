@@ -10,26 +10,26 @@ loopback targets only and never follow redirects.
 
 ## Install
 
-Build the single binary with Rust 1.85 or newer:
+Build the single binary with Rust 1.88 or newer:
 
 ```sh
 cargo install --path .
 boundary-replay --help
 ```
 
-The release-ready archive can be checked with `cargo package --allow-dirty`.
+Check the package archive with `cargo package --allow-dirty --locked`.
 The factory owns registry publishing.
 
-## Try the safe demo
+## Run the sample demo
 
 ```sh
 boundary-replay demo
 ```
 
-The command creates a new temporary folder, records a realistic failed payment
-webhook, redacts its secrets, exports a bundle, and prints the mock command.
-With `--out`, it accepts only a new or empty folder. It never reads or changes
-an existing capture folder. The same sample is in `examples/`.
+The demo creates a temporary folder with a scrubbed failed-payment fixture.
+It prints the command that starts the local mock. With `--out`, it accepts
+only a new or empty folder. It never reads or changes an existing capture
+folder. The same sample is in `examples/`.
 
 The browser walkthrough is available at `/demo` or
 https://incident-boundary-replay.sociobot.in/demo.
@@ -108,9 +108,9 @@ release binary. Site source is under `site/`; browser tests use Playwright
 
 ## Deploy
 
-Deploy `dist/site` as the static root. The Static Web Apps route rules preserve
-`/demo`, `/privacy`, and `/terms` on direct loads while unknown URLs return the
-designed HTTP 404 page.
+Deploy `dist/site` as the static root. Static Web Apps preserves `/demo`,
+`/privacy`, and `/terms` on direct loads. Unknown URLs return the designed HTTP
+404 page.
 
 ## License
 

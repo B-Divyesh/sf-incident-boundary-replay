@@ -132,6 +132,39 @@ test('@claim:local-only-replay never follows 301, 302, 303, 307, or 308 redirect
   }
 });
 
+test('@claim:msrv-build builds the locked CLI with Rust 1.88', () => {
+  const manifest = readFileSync('Cargo.toml', 'utf8');
+  expect(manifest).toContain('rust-version = "1.88"');
+  const build = spawnSync('rustup', ['run', '1.88.0', 'cargo', 'build', '--locked'], { encoding: 'utf8' });
+  expect(build.status, build.stderr).toBe(0);
+});
+
+test('@claim:default-cli-demo creates an isolated folder and prints a working mock command', async () => {
+  const result = spawnSync(binary, ['demo'], { encoding: 'utf8' });
+  expect(result.status, result.stderr).toBe(0);
+  const bundleMatch = result.stdout.match(/^Bundle: (.+)$/m);
+  const commandMatch = result.stdout.match(/^Run: boundary-replay serve --bundle (.+) --listen (127\.0\.0\.1:\d+)$/m);
+  expect(bundleMatch).not.toBeNull();
+  expect(commandMatch).not.toBeNull();
+  const bundle = bundleMatch![1];
+  expect(commandMatch![1]).toBe(bundle);
+  expect(existsSync(bundle)).toBe(true);
+  const server = spawn(binary, ['serve', '--bundle', bundle, '--listen', commandMatch![2]], { stdio: ['ignore', 'pipe', 'pipe'] });
+  try {
+    await new Promise<void>((resolveReady, reject) => {
+      const timeout = setTimeout(() => reject(new Error('printed mock command did not start')), 5000);
+      server.stdout.on('data', chunk => { if (chunk.toString().includes('serving 1 fixture')) { clearTimeout(timeout); resolveReady(); } });
+      server.on('exit', code => reject(new Error(`printed mock command stopped with ${code}`)));
+    });
+    const response = await fetch(`http://${commandMatch![2]}/webhooks/payment`, { method: 'POST' });
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({ code: 'upstream_timeout', retryable: true });
+  } finally {
+    server.kill('SIGINT');
+    rmSync(bundle.split('/payment-failure.bundle')[0], { recursive: true, force: true });
+  }
+});
+
 test('@claim:cli-demo-isolation refuses non-empty output folders and never changes their captures', () => {
   const root = tempFolder();
   const captures = join(root, 'captures');
@@ -346,7 +379,7 @@ test('@claim:offline-demo reloads after the first visit', async ({ page, context
   });
   expect(shellCached.every(Boolean)).toBe(true);
   await context.setOffline(true);
-  await expect(page.getByText('Offline — the saved shell remains available')).toBeVisible();
+  await expect(page.getByText('Offline — this page and its sample data remain available.')).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Inspect a scrubbed payment failure' })).toBeVisible();
   await expect(page.getByText('503 response')).toBeVisible();
@@ -392,6 +425,15 @@ test('site structure, keyboard path, mobile layout, and accessibility', async ({
   expect(errors).toEqual([]);
 });
 
+test('direct ?demo=1 opens the isolated sample with its persistent controls', async ({ page }) => {
+  await page.goto('/?demo=1');
+  await expect(page.getByRole('heading', { name: 'Inspect a scrubbed payment failure' })).toBeVisible();
+  await expect(page.getByText('Demo — sample data, nothing is saved')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reset demo' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Start for real' })).toBeVisible();
+  expect(await page.evaluate(() => sessionStorage.getItem('demo:incident-boundary-replay:state'))).not.toBeNull();
+});
+
 test('390px keeps required product text at the 16px body-text floor and exposes its visible wordmark name', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
@@ -409,7 +451,29 @@ test('install guidance links to source, copies a clone-ready command, and uses t
     'git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git && cd sf-incident-boundary-replay && cargo install --path .'
   );
   await expect(page.getByRole('link', { name: /View source/ })).toHaveAttribute('href', 'https://github.com/B-Divyesh/sf-incident-boundary-replay');
+  await expect(page.getByLabel('Install command')).toHaveValue('git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git && cd sf-incident-boundary-replay && cargo install --path .');
   await expect(page.locator('.landscape source')).toHaveAttribute('srcset', '/assets/boundary-landscape-640.webp');
+});
+
+test('routes update social metadata and the standalone 404 shares the site chrome', async ({ page }) => {
+  const routes = [
+    ['/demo', 'Demo — Boundary Replay', 'Inspect a sample failed webhook, its redactions, and its local mock response.'],
+    ['/privacy', 'Privacy — Boundary Replay', 'How Boundary Replay handles captures and isolated demo state.'],
+    ['/terms', 'Terms — Boundary Replay', 'Terms for the Boundary Replay CLI.']
+  ] as const;
+  for (const [route, title, description] of routes) {
+    await page.goto(route);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', title);
+    await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', description);
+    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', title);
+    await expect(page.locator('meta[name="twitter:description"]')).toHaveAttribute('content', description);
+  }
+  await page.goto('/404.html');
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'Not found — Boundary Replay');
+  await expect(page.getByRole('link', { name: 'BR Boundary Replay home' })).toBeVisible();
+  await expect(page.getByRole('navigation').getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '/#how');
+  await expect(page.locator('footer')).toContainText('Capture a scrubbed boundary. Replay it locally.');
+  await expect(page.locator('footer')).toContainText('v0.1.0 · build 2026.08.28');
 });
 
 test('desktop first read keeps the demo action and facts in view', async ({ page }) => {
@@ -493,7 +557,7 @@ test('real routes update title, h1, history, focus, and cross-route hash navigat
   await page.goBack();
   await expect(page).toHaveURL('/');
   await page.goto('/missing-route');
-  await expect(page.getByText('404 · NO MATCHING FIXTURE')).toBeVisible();
+  await expect(page.getByText('404')).toBeVisible();
   await expect(page.locator('h1')).toHaveCount(1);
   await page.goto('/demo');
   await page.getByRole('link', { name: 'How it works' }).click();
@@ -520,6 +584,6 @@ test('SWA config rewrites only known client routes and preserves a real 404 resp
   await page.goto('/404.html');
   await expect(page).toHaveTitle('Not found — Boundary Replay');
   await expect(page.locator('main')).toHaveCount(1);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('This route crossed the wrong boundary');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
   await expect(page.getByRole('link', { name: 'Return home' })).toHaveAttribute('href', '/');
 });

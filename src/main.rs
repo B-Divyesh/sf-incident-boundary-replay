@@ -173,8 +173,14 @@ fn demo(out: Option<PathBuf>, machine: bool) -> Result<()> {
     } else {
         println!("Demo — isolated sample data; no existing captures were read or changed.");
         println!(
-            "Scrubbed {} secret or PII field(s) before disk.",
-            exchange.redactions.len()
+            "Scrubbed {} secret or personal-data fields before disk.",
+            match exchange.redactions.len() {
+                1 => "one".to_string(),
+                2 => "two".to_string(),
+                3 => "three".to_string(),
+                4 => "four".to_string(),
+                count => count.to_string(),
+            }
         );
         println!("Bundle: {}", bundle.display());
         println!(

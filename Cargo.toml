@@ -2,6 +2,7 @@
 name = "boundary-replay"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.88"
 description = "Capture scrubbed HTTP exchanges and replay them as local mock fixtures"
 license = "MIT"
 repository = "https://github.com/B-Divyesh/sf-incident-boundary-replay"

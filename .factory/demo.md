@@ -1,6 +1,6 @@
 # Demo sandbox
 
-- Browser: `/demo` or `?demo=1` through the canonical `/demo` link.
+- Browser: `/demo` or `?demo=1`; both enter the same isolated sample workspace.
 - CLI: `boundary-replay demo`.
 - Sample: one `payment.failed` webhook with a trace ID, four redactions, and a
   recorded 503 response.

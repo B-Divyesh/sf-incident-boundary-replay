@@ -1,5 +1,19 @@
 [
   {
+    "id": "msrv-build",
+    "claim": "Builds with Rust 1.88 or newer",
+    "where": "README install section, Cargo package metadata",
+    "test": "npm test -- --grep @claim:msrv-build",
+    "sandbox": "clean locked build with the declared Rust 1.88 toolchain"
+  },
+  {
+    "id": "default-cli-demo",
+    "claim": "The default CLI demo creates a temporary folder and prints a working local mock command",
+    "where": "README sample demo section, terminal recording",
+    "test": "npm test -- --grep @claim:default-cli-demo",
+    "sandbox": "run boundary-replay demo without --out; parse its output, start the printed local mock command, verify the recorded fixture, then remove the temporary folder"
+  },
+  {
     "id": "redact-before-disk",
     "claim": "Redacts selected headers and JSON fields before disk",
     "where": "landing facts, workflow, README, privacy",
