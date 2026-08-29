@@ -1,0 +1,14 @@
+{
+  "url": "https://incident-boundary-replay.sociobot.in",
+  "loadMs": 806,
+  "errors": [],
+  "a11y": {
+    "title": "Boundary Replay — replay HTTP failures on localhost",
+    "lang": "en",
+    "h1": 1,
+    "main": true,
+    "imgsMissingAlt": 0,
+    "buttonsUnlabeled": 0,
+    "textLength": 1710
+  }
+}

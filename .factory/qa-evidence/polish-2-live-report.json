@@ -1,0 +1,113 @@
+{
+  "routes": {
+    "/": {
+      "status": 200,
+      "title": "Boundary Replay — replay HTTP failures on localhost",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "errors": [],
+      "seriousCritical": [],
+      "sameOrigin": true,
+      "canonical": "https://incident-boundary-replay.sociobot.in/",
+      "ogTitle": "Boundary Replay — replay HTTP failures on localhost"
+    },
+    "/demo": {
+      "status": 200,
+      "title": "Demo — Boundary Replay",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "errors": [],
+      "seriousCritical": [],
+      "sameOrigin": true,
+      "canonical": "https://incident-boundary-replay.sociobot.in/demo",
+      "ogTitle": "Demo — Boundary Replay"
+    },
+    "/privacy": {
+      "status": 200,
+      "title": "Privacy — Boundary Replay",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "errors": [],
+      "seriousCritical": [],
+      "sameOrigin": true,
+      "canonical": "https://incident-boundary-replay.sociobot.in/privacy",
+      "ogTitle": "Privacy — Boundary Replay"
+    },
+    "/terms": {
+      "status": 200,
+      "title": "Terms — Boundary Replay",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "errors": [],
+      "seriousCritical": [],
+      "sameOrigin": true,
+      "canonical": "https://incident-boundary-replay.sociobot.in/terms",
+      "ogTitle": "Terms — Boundary Replay"
+    },
+    "/missing-route": {
+      "status": 404,
+      "title": "Not found — Boundary Replay",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "errors": [],
+      "expectedNavigationErrors": [
+        "Browser network message for the deliberate HTTP 404 navigation"
+      ],
+      "seriousCritical": [],
+      "sameOrigin": true,
+      "canonical": "https://incident-boundary-replay.sociobot.in/404",
+      "ogTitle": "Not found — Boundary Replay"
+    }
+  },
+  "firstScreen": {
+    "mobile": {
+      "actionBottom": 571.46875,
+      "factsBottom": 803.625,
+      "viewport": 844,
+      "overflow": false
+    },
+    "desktop": {
+      "actionBottom": 536.59375,
+      "factsBottom": 658.375,
+      "viewport": 900
+    }
+  },
+  "demo": {
+    "title": "Demo — Boundary Replay",
+    "bannerText": "left demo",
+    "download": "payment-failure.bundle.json",
+    "stickyY": 0,
+    "storage": {
+      "demo": null,
+      "realSession": "keep-me",
+      "realLocal": "keep-me"
+    },
+    "sameOrigin": true
+  },
+  "links": {
+    "/": 200,
+    "/demo": 200,
+    "/privacy": 200,
+    "/terms": 200,
+    "/robots.txt": 200,
+    "/sitemap.xml": 200,
+    "/missing-route": 404,
+    "https://github.com/B-Divyesh/sf-incident-boundary-replay": 200,
+    "https://sociobot.in": 200
+  },
+  "headers": {
+    "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+    "nosniff": "nosniff",
+    "referrer": "strict-origin-when-cross-origin"
+  },
+  "offline": {
+    "title": "Demo — Boundary Replay",
+    "sampleVisible": true,
+    "noticeVisible": true
+  }
+}
