@@ -67,3 +67,8 @@ High-luminance type and controls meet WCAG AA on every surface.
 - Open Graph art is composed locally from the same original landscape and
   product typography. No stock assets are used.
 - The boundary glyph and favicon are hand-authored SVG geometry for this repo.
+- `site/public/assets/terminal-recording.svg` is hand-authored from a captured
+  stdout transcript of `boundary-replay demo` on 2026-08-29. Its temporary
+  folder identifier is normalized only in its regression test; every displayed
+  line otherwise matches the shipped command. It is original project art, not
+  a stock terminal recording.

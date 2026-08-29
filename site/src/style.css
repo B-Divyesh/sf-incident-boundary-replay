@@ -11,7 +11,7 @@
   --coral: #ff8f81;
   --green: #8de5af;
   --display: 'Space Grotesk Variable', system-ui, sans-serif;
-  --mono: 'IBM Plex Mono Variable', ui-monospace, monospace;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: clip; background: var(--ink); }

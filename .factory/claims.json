@@ -29,10 +29,10 @@
   },
   {
     "id": "default-cli-demo",
-    "claim": "The default CLI demo creates a temporary folder and prints a working local mock command",
-    "where": "README sample demo section, terminal recording",
+    "claim": "The default CLI demo creates a temporary folder, prints a working local mock command, and the landing shows that output",
+    "where": "README sample demo section, landing CLI transcript",
     "test": "npm test -- --grep @claim:default-cli-demo",
-    "sandbox": "run boundary-replay demo without --out; parse its output, start the printed local mock command, verify the recorded fixture, then remove the temporary folder"
+    "sandbox": "run boundary-replay demo without --out; compare normalized stdout with both landing transcripts, start the printed local mock command, verify the recorded fixture, then remove the temporary folder"
   },
   {
     "id": "redact-before-disk",

@@ -19,6 +19,22 @@ function makeDemo(root: string): string {
   return join(root, 'payment-failure.bundle');
 }
 
+function normalizeDemoOutput(output: string): string {
+  return output.trim().replace(
+    /\/tmp\/boundary-replay-demo-[0-9a-f]{8}\/payment-failure\.bundle/giu,
+    '/tmp/boundary-replay-demo-<demo-id>/payment-failure.bundle'
+  );
+}
+
+function checkedInSvgDemoOutput(): string {
+  const svg = readFileSync('site/public/assets/terminal-recording.svg', 'utf8');
+  const outputGroup = svg.match(/<g id="demo-output">([\s\S]*?)<\/g>/u);
+  expect(outputGroup, 'terminal SVG must contain the checked-in demo transcript').not.toBeNull();
+  return [...outputGroup![1].matchAll(/<text\b[^>]*>([^<]*)<\/text>/gu)]
+    .map(([, text]) => text)
+    .join('\n');
+}
+
 function runBinary(args: string[], env: NodeJS.ProcessEnv = process.env): Promise<{ code: number | null; stdout: string; stderr: string }> {
   return new Promise(resolveRun => {
     const child = spawn(binary, args, { env });
@@ -246,9 +262,13 @@ test('@claim:shipped-sample CLI and browser demos match both shipped example fil
   }
 });
 
-test('@claim:default-cli-demo creates an isolated folder and prints a working mock command', async () => {
+test('@claim:default-cli-demo creates an isolated folder, prints a working mock command, and matches both landing transcripts', async ({ page }) => {
   const result = spawnSync(binary, ['demo'], { encoding: 'utf8' });
   expect(result.status, result.stderr).toBe(0);
+  const normalizedOutput = normalizeDemoOutput(result.stdout);
+  await page.goto('/');
+  expect(normalizeDemoOutput(await page.locator('[data-demo-output]').innerText())).toBe(normalizedOutput);
+  expect(normalizeDemoOutput(checkedInSvgDemoOutput())).toBe(normalizedOutput);
   const bundleMatch = result.stdout.match(/^Bundle: (.+)$/m);
   const commandMatch = result.stdout.match(/^Run: boundary-replay serve --bundle (.+) --listen (127\.0\.0\.1:\d+)$/m);
   expect(bundleMatch).not.toBeNull();
@@ -494,7 +514,7 @@ test('@claim:offline-demo reloads after the first visit', async ({ page, context
   if (!await page.evaluate(() => Boolean(navigator.serviceWorker.controller))) await page.reload();
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
   const shellCached = await page.evaluate(async () => {
-    const cache = await caches.open('boundary-replay-v3');
+    const cache = await caches.open('boundary-replay-v4');
     const assets = [...document.querySelectorAll<HTMLScriptElement | HTMLLinkElement>('script[src], link[rel="stylesheet"]')]
       .map(element => element instanceof HTMLScriptElement ? element.src : element.href)
       .filter(Boolean);
@@ -701,15 +721,34 @@ test('SWA config rewrites only known client routes and preserves a real 404 resp
   expect(config.routes.filter(route => route.rewrite === '/index.html').map(route => route.route)).toEqual(['/demo', '/privacy', '/terms']);
   expect(config.routes.every(route => !('rewrite' in route && 'statusCode' in route))).toBe(true);
   expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html' });
-  expect(existsSync('site/public/404.html')).toBe(true);
+  expect(existsSync('site/404.html')).toBe(true);
   const worker = readFileSync('dist/site/sw.js', 'utf8');
-  expect(worker).toContain('boundary-replay-v3');
-  expect(worker).toMatch(/"\/assets\/index-[^"]+\.js"/);
-  expect(worker).toMatch(/"\/assets\/index-[^"]+\.css"/);
+  expect(worker).toContain('boundary-replay-v4');
+  expect(worker).toMatch(/"\/assets\/main-[^"]+\.js"/);
+  expect(worker).toMatch(/"\/assets\/main-[^"]+\.css"/);
 
   await page.goto('/404.html');
   await expect(page).toHaveTitle('Not found — Boundary Replay');
   await expect(page.locator('main')).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
   await expect(page.getByRole('link', { name: 'Return home' })).toHaveAttribute('href', '/');
+});
+
+test('self-hosted IBM Plex Mono loads for the product body on landing and 404 routes', async ({ page }) => {
+  const fontRequests: string[] = [];
+  page.on('request', request => {
+    if (request.resourceType() === 'font') fontRequests.push(request.url());
+  });
+
+  for (const route of ['/', '/404.html']) {
+    await page.goto(route);
+    await page.evaluate(async () => {
+      await document.fonts.load('16px "IBM Plex Mono"');
+      await document.fonts.ready;
+    });
+    expect(await page.locator('body').evaluate(element => getComputedStyle(element).fontFamily)).toContain('IBM Plex Mono');
+    expect(await page.evaluate(() => [...document.fonts].some(font => font.family === 'IBM Plex Mono' && font.status === 'loaded'))).toBe(true);
+  }
+
+  expect(fontRequests.some(url => /ibm-plex-mono.*\.woff2(?:\?|$)/iu.test(url))).toBe(true);
 });

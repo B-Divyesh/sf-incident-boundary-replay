@@ -1,1 +1,1 @@
-Record HTTP failures, remove selected secrets, and replay them on localhost.
+Record failed HTTP requests, remove selected secrets, and replay them on localhost.

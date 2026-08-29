@@ -58,16 +58,16 @@ function landing(): string {
     <section class="live-preview" aria-labelledby="preview-heading">
       <div class="section-index"><span>01</span><p>A captured failure becomes a localhost mock.</p></div>
       <div>
-        <p class="eyebrow">Real CLI output</p><h2 id="preview-heading">Remove selected secrets before export.</h2>
+        <p class="eyebrow">CLI output from boundary-replay demo</p><h2 id="preview-heading">Remove selected secrets before export.</h2>
         <div class="terminal" role="region" aria-label="Boundary Replay terminal recording">
           <div class="terminal-bar"><span></span><span></span><span></span><b>boundary-replay demo</b></div>
           <pre><code><span class="prompt">$</span> boundary-replay demo
-Demo — isolated sample data; no existing captures were read or changed.
-<span class="amber">Removed four secret or personal-data fields before saving.</span>
-Bundle: /tmp/.../payment-failure.bundle
-<span class="green">Run: boundary-replay serve --bundle … --listen 127.0.0.1:9487</span></code></pre>
+<span data-demo-output>Demo — isolated sample data; no existing captures were read or changed.
+<span class="amber">Scrubbed four secret or personal-data fields before disk.</span>
+Bundle: /tmp/boundary-replay-demo-0ad0e8a4/payment-failure.bundle
+<span class="green">Run: boundary-replay serve --bundle /tmp/boundary-replay-demo-0ad0e8a4/payment-failure.bundle --listen 127.0.0.1:9487</span></span></code></pre>
         </div>
-        <img class="recording-proof" src="/assets/terminal-recording.svg" width="960" height="180" loading="lazy" alt="A terminal recording shows the demo command recording a failed webhook and exporting a localhost mock." />
+        <img class="recording-proof" src="/assets/terminal-recording.svg" width="960" height="230" loading="lazy" alt="A captured terminal transcript from the shipped demo command." />
         <div class="install-command"><label for="install-command">Install command</label><input id="install-command" readonly value="git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git &amp;&amp; cd sf-incident-boundary-replay &amp;&amp; cargo install --path ." /></div>
         <div class="install-actions"><button class="copy-command" type="button" data-copy="git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git && cd sf-incident-boundary-replay && cargo install --path .">Copy install command</button><a href="https://github.com/B-Divyesh/sf-incident-boundary-replay" rel="external">View source <span class="sr-only">(external)</span></a></div><span class="copy-status" aria-live="polite"></span>
       </div>

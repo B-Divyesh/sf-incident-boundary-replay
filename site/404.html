@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Not found — Boundary Replay</title>
     <meta name="description" content="This Boundary Replay page could not be found." />
-    <meta name="theme-color" content="#071019" />
     <link rel="canonical" href="https://incident-boundary-replay.sociobot.in/404" />
+    <meta name="theme-color" content="#071019" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Not found — Boundary Replay" />
     <meta property="og:description" content="This Boundary Replay page could not be found." />
@@ -19,24 +19,10 @@
     <meta name="twitter:image" content="https://incident-boundary-replay.sociobot.in/assets/og-boundary-replay.webp" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="stylesheet" href="/404.css" />
   </head>
   <body>
-    <a class="skip" href="#main">Skip to content</a>
-    <header class="topbar">
-      <a class="wordmark" href="/" aria-label="BR Boundary Replay home"><span class="mark" aria-hidden="true">BR</span><span>Boundary Replay</span></a>
-      <nav aria-label="Primary"><a href="/demo">Demo</a><a href="/#how">How it works</a><a href="/privacy">Privacy</a></nav>
-    </header>
-    <main id="main">
-      <p class="error-code">404</p>
-      <h1 tabindex="-1">Page not found</h1>
-      <p class="lede">This address does not match a Boundary Replay page.</p>
-      <a class="button" href="/">Return home</a>
-    </main>
-    <footer>
-      <p>Record a failed HTTP exchange. Replay it on localhost.</p>
-      <div><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="https://sociobot.in" rel="external">Built by Param Factory <span class="sr-only">(external)</span></a></div>
-      <p>v0.1.0 · build 2026.08.29</p>
-    </footer>
+    <div id="app"></div>
+    <div id="route-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
