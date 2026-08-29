@@ -70,7 +70,8 @@ registered for this repository; no unavailable checkout is shown or claimed.
   `/tmp/ibr-polish-live-check.json`.
 - `?demo=1` opened the isolated sample on a 390×844 cold viewport with its
   persistent “Demo — sample data, nothing is saved” banner, **Reset demo**, and
-  **Start for real**. Screenshot:
+  **Start for real**. A live reset restored the demo namespace; a live exit
+  returned to `/` and removed it. Screenshot:
   `.factory/qa-evidence/polish-1-live-demo-mobile.png`.
 - The desktop first screen kept its sample action and three facts in the
   1440×900 viewport. Screenshot:
