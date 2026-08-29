@@ -227,6 +227,11 @@
       "degree": 11
     },
     {
+      "id": "site_src_main_render",
+      "label": "render()",
+      "degree": 10
+    },
+    {
       "id": "src_lib_redactionpolicy",
       "label": "RedactionPolicy",
       "degree": 10
@@ -242,28 +247,23 @@
       "degree": 10
     },
     {
-      "id": "site_src_main_render",
-      "label": "render()",
-      "degree": 10
-    },
-    {
       "id": "src_main_demo",
       "label": "demo()",
       "degree": 9
     },
     {
-      "id": "src_lib_load_bundle",
-      "label": "load_bundle()",
+      "id": "src_lib_write_exchange",
+      "label": "write_exchange()",
       "degree": 8
     },
     {
-      "id": "src_lib_run_capture",
-      "label": "run_capture()",
+      "id": "src_main_run",
+      "label": "run()",
       "degree": 8
     },
     {
-      "id": "src_lib_run_mock",
-      "label": "run_mock()",
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
       "degree": 8
     }
   ],
@@ -303,7 +303,7 @@
     },
     {
       "source": "demo()",
-      "target": "scrub_exchange()",
+      "target": "ensure_empty_or_new_directory()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
@@ -314,7 +314,7 @@
     },
     {
       "source": "demo()",
-      "target": "ensure_empty_or_new_directory()",
+      "target": "export_bundle()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
