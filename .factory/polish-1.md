@@ -23,5 +23,19 @@ handoff, plus the deployed live-site check.
 | F-1-15 | Replaced “release-ready” with the exact locked package verification command. | README; `cargo package --allow-dirty --locked`. |
 | F-1-16 | Replaced the standalone and SPA 404 metaphors with “Page not found” and “Return home.” | Routing/404 browser regression and live missing-route check. |
 
-Additional required demo coverage: `?demo=1` now remains a direct isolated demo
+## Live evidence
+
+Deployed production URL: https://incident-boundary-replay.sociobot.in
+
+- Desktop first-screen screenshot:
+  `.factory/qa-evidence/polish-1-live-desktop.png`.
+- Mobile isolated-demo screenshot:
+  `.factory/qa-evidence/polish-1-live-demo-mobile.png`.
+- `/`, `/demo`, `/privacy`, and `/terms` return HTTP 200; `/missing-route`
+  returns HTTP 404. Each has the expected title, one `h1`, one `main`, no
+  missing image alt text, route-correct social metadata, same-origin requests,
+  no page errors, and zero serious/critical Axe findings. Raw result:
+  `/tmp/ibr-polish-live-check.json`.
+
+Additional required demo coverage: `?demo=1` remains a direct isolated demo
 entry and is regression-tested with its banner, reset, and exit controls.
