@@ -335,7 +335,7 @@ fn local_target(value: &str) -> Result<Url> {
     let local = host.eq_ignore_ascii_case("localhost")
         || host.parse::<IpAddr>().is_ok_and(|ip| ip.is_loopback());
     if !local {
-        bail!("refusing non-local target {host}; replay is limited to localhost");
+        bail!("refusing non-loopback target {host}; use localhost, 127.0.0.1, or [::1]");
     }
     Ok(url)
 }

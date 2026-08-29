@@ -38,54 +38,53 @@ function header(): string {
 }
 
 function footer(): string {
-  return `<footer><p>Capture a scrubbed boundary. Replay it locally.</p><div><a href="/privacy" data-link>Privacy</a><a href="/terms" data-link>Terms</a><a href="https://sociobot.in" rel="external">Built by Param Factory <span class="sr-only">(external)</span></a></div><p>v0.1.0 · build 2026.08.28</p></footer>`;
+  return `<footer><p>Record a failed HTTP exchange. Replay it on localhost.</p><div><a href="/privacy" data-link>Privacy</a><a href="/terms" data-link>Terms</a><a href="https://sociobot.in" rel="external">Built by Param Factory <span class="sr-only">(external)</span></a></div><p>v0.1.0 · build 2026.08.29</p></footer>`;
 }
 
 function landing(): string {
   return `${header()}<main id="main">
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow"><span></span> Incident boundary capture</p>
         <h1 tabindex="-1">Capture HTTP failures. Replay them on localhost.</h1>
         <p class="lede">For backend engineers reproducing failed queue, webhook, and third-party requests.</p>
-        <div class="hero-actions"><a class="button primary" href="/demo" data-link>Try it with sample data</a><span>See a scrubbed failed webhook and its local response.</span></div>
-        <ul class="facts" aria-label="Product facts"><li>Redacts before disk</li><li>Replays only on localhost</li><li>Free local exporter</li></ul>
+        <div class="hero-actions"><a class="button primary" href="/demo" data-link>Try it with sample data</a><span>See a failed webhook with selected secrets removed.</span></div>
+        <ul class="facts" aria-label="Product facts"><li>Removes secrets before saving</li><li>Accepts loopback addresses such as 127.0.0.1 only</li><li>Free local exporter</li></ul>
       </div>
       <figure class="landscape">
         <picture><source media="(max-width: 760px)" srcset="/assets/boundary-landscape-640.webp" /><img src="/assets/boundary-landscape.webp" width="1152" height="768" fetchpriority="high" alt="Cyan request paths cross an amber redaction layer toward a local mock." /></picture>
-        <figcaption><span>PRODUCTION EDGE</span><span>SCRUB</span><span>LOCAL MOCK</span></figcaption>
+        <figcaption><span>PRODUCTION EDGE</span><span>REMOVE SECRETS</span><span>LOCAL MOCK</span></figcaption>
       </figure>
     </section>
     <section class="live-preview" aria-labelledby="preview-heading">
-      <div class="section-index"><span>01</span><p>A captured failure becomes a local fixture.</p></div>
+      <div class="section-index"><span>01</span><p>A captured failure becomes a localhost mock.</p></div>
       <div>
-        <p class="eyebrow">Real CLI output</p><h2 id="preview-heading">Scrub the exchange before export.</h2>
+        <p class="eyebrow">Real CLI output</p><h2 id="preview-heading">Remove selected secrets before export.</h2>
         <div class="terminal" role="region" aria-label="Boundary Replay terminal recording">
           <div class="terminal-bar"><span></span><span></span><span></span><b>boundary-replay demo</b></div>
           <pre><code><span class="prompt">$</span> boundary-replay demo
 Demo — isolated sample data; no existing captures were read or changed.
-<span class="amber">Scrubbed four secret or personal-data fields before disk.</span>
+<span class="amber">Removed four secret or personal-data fields before saving.</span>
 Bundle: /tmp/.../payment-failure.bundle
 <span class="green">Run: boundary-replay serve --bundle … --listen 127.0.0.1:9487</span></code></pre>
         </div>
-        <img class="recording-proof" src="/assets/terminal-recording.svg" width="960" height="180" loading="lazy" alt="A terminal recording shows the demo command capturing, scrubbing, and exporting one fixture." />
+        <img class="recording-proof" src="/assets/terminal-recording.svg" width="960" height="180" loading="lazy" alt="A terminal recording shows the demo command recording a failed webhook and exporting a localhost mock." />
         <div class="install-command"><label for="install-command">Install command</label><input id="install-command" readonly value="git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git &amp;&amp; cd sf-incident-boundary-replay &amp;&amp; cargo install --path ." /></div>
         <div class="install-actions"><button class="copy-command" type="button" data-copy="git clone https://github.com/B-Divyesh/sf-incident-boundary-replay.git && cd sf-incident-boundary-replay && cargo install --path .">Copy install command</button><a href="https://github.com/B-Divyesh/sf-incident-boundary-replay" rel="external">View source <span class="sr-only">(external)</span></a></div><span class="copy-status" aria-live="polite"></span>
       </div>
     </section>
     <section class="how" id="how" aria-labelledby="how-heading">
-      <div class="section-index"><span>02</span><p>Capture, scrub, and replay an HTTP failure.</p></div>
-      <div><h2 id="how-heading">How the boundary becomes a fixture</h2>
+      <div class="section-index"><span>02</span><p>Capture, remove secrets, and replay an HTTP failure.</p></div>
+      <div><h2 id="how-heading">How to capture, remove secrets, and replay a failure</h2>
         <ol class="steps">
-          <li><span>Capture</span><h3>Opt in one client</h3><p>Point that client at the sidecar to capture its boundary.</p></li>
-          <li><span>Scrub</span><h3>Replace selected values</h3><p>Headers and JSON fields are replaced in memory before any write.</p></li>
+          <li><span>Capture</span><h3>Opt in one client</h3><p>Route one client through Boundary Replay to record its request and response.</p></li>
+          <li><span>Remove secrets</span><h3>Replace selected values</h3><p>Headers and JSON fields are replaced in memory before any write.</p></li>
           <li><span>Replay</span><h3>Run the local mock</h3><p>Match the recorded method and path. Return the failed response locally.</p></li>
         </ol>
       </div>
     </section>
     <section class="limits" aria-labelledby="limits-heading">
       <div class="section-index"><span>03</span><p>What Boundary Replay will not do.</p></div>
-      <div><h2 id="limits-heading">Production replay is not a feature</h2><p>Capture starts only when you run the sidecar. Mock servers and webhook sends refuse non-local targets. New mock signatures use a secret from your environment.</p></div>
+      <div><h2 id="limits-heading">Production replay is not a feature</h2><p>Recording starts only when you run the capture command. Mock servers and webhook sends accept loopback targets only. New mock signatures use a secret from your environment.</p></div>
     </section>
   </main>${footer()}`;
 }
@@ -94,10 +93,10 @@ function demo(): string {
   sessionStorage.setItem(DEMO_KEY, JSON.stringify({ fixture: fixture.id, stage: 'exported' }));
   return `${header()}<div class="demo-banner" role="status"><span>Demo — sample data, nothing is saved</span><div><button type="button" data-reset>Reset demo</button><a href="/" data-link data-exit-demo>Start for real</a></div></div>
     <main id="main" class="demo-main">
-      <section class="demo-head"><p class="eyebrow">Sample trace 7ef92c1b45d04da6</p><h1 tabindex="-1">Inspect a scrubbed payment failure</h1><p>This sample is already captured. Move across the boundary to see what the local service receives.</p></section>
-      <section class="boundary-workbench" aria-label="Sample boundary exchange">
+      <section class="demo-head"><p class="eyebrow">Sample trace 7ef92c1b45d04da6</p><h1 tabindex="-1">Inspect a payment failure with secrets removed</h1><p>This request is already recorded. Review the removed values and the localhost response.</p></section>
+      <section class="boundary-workbench" aria-label="Sample recorded request and response">
         <div class="lane"><p class="lane-label">01 · CAPTURED</p><h2>Failed webhook</h2><dl><div><dt>Method</dt><dd>POST</dd></div><div><dt>Path</dt><dd>/webhooks/payment</dd></div><div><dt>Event</dt><dd>payment.failed</dd></div></dl><button type="button" data-stage="capture">Inspect capture</button></div>
-        <div class="boundary-pane"><p class="lane-label">02 · SCRUBBED</p><h2>4 values replaced</h2><ul><li>Authorization</li><li>Signature</li><li>Customer email</li><li>Card number</li></ul><div class="shard" aria-hidden="true"></div></div>
+        <div class="boundary-pane"><p class="lane-label">02 · SECRETS REMOVED</p><h2>4 values replaced</h2><ul><li>Authorization</li><li>Signature</li><li>Customer email</li><li>Card number</li></ul><div class="shard" aria-hidden="true"></div></div>
         <div class="lane response"><p class="lane-label">03 · LOCAL MOCK</p><h2>503 response</h2><pre><code>{
   "code": "upstream_timeout",
   "retryable": true
@@ -109,11 +108,11 @@ function demo(): string {
 }
 
 function privacy(): string {
-  return `${header()}<main id="main" class="prose"><p class="eyebrow">Policy · 28 August 2026</p><h1 tabindex="-1">Your captures stay in your chosen folder</h1><h2>CLI data</h2><p>Boundary Replay sends no telemetry. It writes scrubbed captures and bundles only to paths you choose.</p><h2>Browser data</h2><p>The demo uses session storage under a <code>demo:</code> key. Leaving demo mode discards that sample state.</p><h2>Contact</h2><p>Questions can go to <a href="mailto:privacy@sociobot.in">privacy@sociobot.in</a>.</p></main>${footer()}`;
+  return `${header()}<main id="main" class="prose"><p class="eyebrow">Policy · 29 August 2026</p><h1 tabindex="-1">Your recorded requests stay in your chosen folder</h1><h2>CLI data</h2><p>Boundary Replay sends no telemetry. It writes records and exported mocks only to paths you choose.</p><h2>Browser data</h2><p>The demo uses session storage under a <code>demo:</code> key. Leaving demo mode discards that sample state.</p><h2>Contact</h2><p>Questions can go to <a href="mailto:privacy@sociobot.in">privacy@sociobot.in</a>.</p></main>${footer()}`;
 }
 
 function terms(): string {
-  return `${header()}<main id="main" class="prose"><p class="eyebrow">Terms · 28 August 2026</p><h1 tabindex="-1">Use Boundary Replay on systems you control</h1><h2>Permission</h2><p>You must have permission to capture each service boundary. Review redaction policies before handling production traffic.</p><h2>Free software</h2><p>The CLI is provided under the MIT License without warranty.</p><h2>Limits</h2><p>Redaction rules reduce exposure but cannot identify every secret. You remain responsible for each exported bundle.</p></main>${footer()}`;
+  return `${header()}<main id="main" class="prose"><p class="eyebrow">Terms · 29 August 2026</p><h1 tabindex="-1">Use Boundary Replay on systems you control</h1><h2>Permission</h2><p>You must have permission to record each service request and response. Review secret-removal rules before handling production traffic.</p><h2>Free software</h2><p>The CLI is provided under the MIT License without warranty.</p><h2>Limits</h2><p>Secret-removal rules reduce exposure but cannot identify every secret. You remain responsible for each exported mock.</p></main>${footer()}`;
 }
 
 function notFound(): string {
@@ -121,9 +120,9 @@ function notFound(): string {
 }
 
 const routeMeta: Record<Route, { title: string; description: string }> = {
-  '/': { title: 'Boundary Replay — replay failed HTTP boundaries', description: 'Capture an opted-in HTTP exchange, scrub secrets before disk, and export a runnable local mock.' },
-  '/demo': { title: 'Demo — Boundary Replay', description: 'Inspect a sample failed webhook, its redactions, and its local mock response.' },
-  '/privacy': { title: 'Privacy — Boundary Replay', description: 'How Boundary Replay handles captures and isolated demo state.' },
+  '/': { title: 'Boundary Replay — replay HTTP failures on localhost', description: 'Record selected HTTP requests, remove secrets before saving, and export a localhost mock.' },
+  '/demo': { title: 'Demo — Boundary Replay', description: 'Inspect a sample failed webhook, its removed values, and its localhost response.' },
+  '/privacy': { title: 'Privacy — Boundary Replay', description: 'How Boundary Replay handles recorded requests and isolated demo state.' },
   '/terms': { title: 'Terms — Boundary Replay', description: 'Terms for the Boundary Replay CLI.' },
   '/404': { title: 'Not found — Boundary Replay', description: 'This Boundary Replay page could not be found.' }
 };
@@ -190,7 +189,7 @@ function bindEvents(): void {
     const bundle = { manifest: { schema_version: 1, fixture_count: 1, fixtures: ['payment-webhook.json'] }, fixtures: [fixture] };
     const url = URL.createObjectURL(new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' }));
     const link = document.createElement('a'); link.href = url; link.download = 'payment-failure.bundle.json'; link.click(); URL.revokeObjectURL(url);
-    document.querySelector<HTMLElement>('.export-status')!.textContent = 'Exported one scrubbed fixture.';
+    document.querySelector<HTMLElement>('.export-status')!.textContent = 'Exported one sample with selected secrets removed.';
   });
 }
 

@@ -38,6 +38,36 @@ async function freeLoopbackPort(): Promise<number> {
   return address.port;
 }
 
+async function startProductionSite(): Promise<{ origin: string; close: () => Promise<void> }> {
+  const siteRoot = resolve('dist/site');
+  const clientRoutes = new Set(['/', '/demo', '/privacy', '/terms']);
+  const server = createServer((request, response) => {
+    const pathname = new URL(request.url || '/', 'http://127.0.0.1').pathname;
+    const requested = clientRoutes.has(pathname) ? 'index.html' : pathname.replace(/^\//u, '');
+    const candidate = resolve(siteRoot, requested);
+    const insideRoot = candidate === siteRoot || candidate.startsWith(`${siteRoot}/`);
+    const found = insideRoot && existsSync(candidate);
+    const file = found ? candidate : join(siteRoot, '404.html');
+    const status = found ? 200 : 404;
+    const type = file.endsWith('.html') ? 'text/html; charset=utf-8'
+      : file.endsWith('.js') ? 'text/javascript; charset=utf-8'
+      : file.endsWith('.css') ? 'text/css; charset=utf-8'
+      : file.endsWith('.svg') ? 'image/svg+xml'
+      : file.endsWith('.webp') ? 'image/webp'
+      : file.endsWith('.png') ? 'image/png'
+      : 'application/octet-stream';
+    response.writeHead(status, { 'content-type': type });
+    response.end(readFileSync(file));
+  });
+  await new Promise<void>(resolveListen => server.listen(0, '127.0.0.1', resolveListen));
+  const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('production test server has no port');
+  return {
+    origin: `http://127.0.0.1:${address.port}`,
+    close: () => new Promise<void>(resolveClose => server.close(() => resolveClose()))
+  };
+}
+
 test('@claim:redact-before-disk capture sidecar writes only scrubbed data', async () => {
   const root = tempFolder();
   const upstream = createServer((request, response) => {
@@ -85,7 +115,7 @@ test('@claim:local-only-replay never follows 301, 302, 303, 307, or 308 redirect
   expect(bind.stderr).toContain('refusing non-loopback address');
   const nonLocal = spawnSync(binary, ['send', '--bundle', '/tmp/missing', '--fixture', 'x', '--target', 'https://example.com/hook', '--signing-secret-env', 'TEST_SECRET'], { encoding: 'utf8' });
   expect(nonLocal.status).not.toBe(0);
-  expect(nonLocal.stderr).toContain('refusing non-local target');
+  expect(nonLocal.stderr).toContain('refusing non-loopback target');
   const root = tempFolder();
   const bundle = makeDemo(root);
   const redirectedBodies: string[] = [];
@@ -133,10 +163,87 @@ test('@claim:local-only-replay never follows 301, 302, 303, 307, or 308 redirect
 });
 
 test('@claim:msrv-build builds the locked CLI with Rust 1.88', () => {
+  test.setTimeout(600_000);
   const manifest = readFileSync('Cargo.toml', 'utf8');
   expect(manifest).toContain('rust-version = "1.88"');
+  const installed = spawnSync('rustup', ['toolchain', 'list'], { encoding: 'utf8' });
+  expect(installed.status, installed.stderr).toBe(0);
+  if (!/^1\.88\.0(?:-|\s|$)/mu.test(installed.stdout)) {
+    const provision = spawnSync('rustup', ['toolchain', 'install', '1.88.0', '--profile', 'minimal'], { encoding: 'utf8' });
+    expect(provision.status, provision.stderr).toBe(0);
+  }
   const build = spawnSync('rustup', ['run', '1.88.0', 'cargo', 'build', '--locked'], { encoding: 'utf8' });
   expect(build.status, build.stderr).toBe(0);
+});
+
+test('@claim:build-artifacts production build creates the static site and release executable', () => {
+  test.setTimeout(600_000);
+  const build = spawnSync('npm', ['run', 'build'], { encoding: 'utf8' });
+  expect(build.status, `${build.stdout}\n${build.stderr}`).toBe(0);
+  expect(existsSync('dist/site/index.html')).toBe(true);
+  expect(existsSync('target/release/boundary-replay')).toBe(true);
+});
+
+test('@claim:deployed-routes direct routes and the designed HTTP 404 work under production rules', async ({ page }) => {
+  const config = JSON.parse(readFileSync('site/public/staticwebapp.config.json', 'utf8')) as {
+    routes: Array<{ route: string; rewrite?: string }>;
+    responseOverrides: Record<string, { rewrite?: string }>;
+  };
+  expect(config.routes.filter(route => route.rewrite === '/index.html').map(route => route.route)).toEqual(['/demo', '/privacy', '/terms']);
+  expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html' });
+  const production = await startProductionSite();
+  try {
+    for (const [route, heading] of [
+      ['/demo', 'Inspect a payment failure with secrets removed'],
+      ['/privacy', 'Your recorded requests stay in your chosen folder'],
+      ['/terms', 'Use Boundary Replay on systems you control']
+    ] as const) {
+      const response = await page.goto(`${production.origin}${route}`);
+      expect(response?.status()).toBe(200);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
+    }
+    const missing = await page.goto(`${production.origin}/missing-route`);
+    expect(missing?.status()).toBe(404);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
+    await expect(page.getByRole('link', { name: 'Return home' })).toHaveAttribute('href', '/');
+  } finally {
+    await production.close();
+  }
+});
+
+test('@claim:shipped-sample CLI and browser demos match both shipped example files', async ({ page }) => {
+  const root = tempFolder();
+  try {
+    const bundle = makeDemo(root);
+    const cliSample = JSON.parse(readFileSync(join(bundle, 'fixtures', 'payment-webhook.json'), 'utf8'));
+    const shippedSample = JSON.parse(readFileSync('examples/sample-payment-webhook.json', 'utf8'));
+    const policy = JSON.parse(readFileSync('examples/boundary-replay.json', 'utf8'));
+    await page.goto('/demo');
+    const downloadEvent = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Export sample bundle' }).click();
+    const download = await downloadEvent;
+    const browserSample = JSON.parse(readFileSync((await download.path())!, 'utf8')).fixtures[0];
+    for (const sample of [cliSample, browserSample]) {
+      expect(sample.request.method).toBe(shippedSample.request.method);
+      expect(sample.request.path).toBe(shippedSample.request.path);
+      expect(sample.request.body.event).toBe(shippedSample.request.body.event);
+      expect(sample.response.status).toBe(shippedSample.response.status);
+    }
+    const expectedRedactions = [
+      'request.headers.authorization',
+      'request.headers.x-signature',
+      'request.body.customer_email',
+      'request.body.card_number'
+    ];
+    expect([...cliSample.redactions].sort()).toEqual([...expectedRedactions].sort());
+    expect([...browserSample.redactions].sort()).toEqual([...expectedRedactions].sort());
+    expect(policy.headers).toEqual(expect.arrayContaining(['authorization', 'x-signature']));
+    expect(policy.json_fields).toEqual(expect.arrayContaining(['customer_email', 'card_number']));
+    expect(cliSample.request.headers.authorization).toBe('[REDACTED]');
+    expect(browserSample.request.body.customer_email).toBe('[REDACTED]');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test('@claim:default-cli-demo creates an isolated folder and prints a working mock command', async () => {
@@ -232,13 +339,29 @@ test('@claim:signed-local-webhook send creates a fresh signature', async () => {
 test('@claim:private-demo uses isolated sample state and same-origin requests', async ({ page }) => {
   const requests: string[] = [];
   page.on('request', request => requests.push(request.url()));
+  await page.goto('/');
+  await page.evaluate(() => {
+    localStorage.setItem('real:sentinel', 'keep-me');
+    sessionStorage.setItem('real:session', 'keep-me');
+  });
   await page.goto('/demo');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Inspect a scrubbed payment failure');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Inspect a payment failure with secrets removed');
   const storage = await page.evaluate(() => ({ session: Object.keys(sessionStorage), local: Object.keys(localStorage) }));
-  expect(storage.session).toEqual(['demo:incident-boundary-replay:state']);
-  expect(storage.local).toEqual([]);
+  expect(storage.session.sort()).toEqual(['demo:incident-boundary-replay:state', 'real:session']);
+  expect(storage.local).toEqual(['real:sentinel']);
+  await page.getByRole('button', { name: 'Inspect capture' }).click();
+  await page.getByRole('button', { name: 'Test local response' }).click();
+  const downloadEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export sample bundle' }).click();
+  await downloadEvent;
   await page.getByRole('button', { name: 'Reset demo' }).click();
-  expect(await page.evaluate(() => Object.keys(sessionStorage))).toEqual(['demo:incident-boundary-replay:state']);
+  await page.getByRole('link', { name: 'Start for real' }).click();
+  const afterExit = await page.evaluate(() => ({
+    demo: sessionStorage.getItem('demo:incident-boundary-replay:state'),
+    realSession: sessionStorage.getItem('real:session'),
+    realLocal: localStorage.getItem('real:sentinel')
+  }));
+  expect(afterExit).toEqual({ demo: null, realSession: 'keep-me', realLocal: 'keep-me' });
   expect(requests.every(url => new URL(url).origin === 'http://127.0.0.1:4173')).toBe(true);
 });
 
@@ -247,7 +370,7 @@ test('@claim:telemetry-free keeps the local browser and CLI demo flow local', as
   page.on('request', request => requests.push(request.url()));
   await page.goto('/');
   await page.getByRole('link', { name: 'Try it with sample data' }).click();
-  await expect(page.getByRole('heading', { name: 'Inspect a scrubbed payment failure' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Inspect a payment failure with secrets removed' })).toBeVisible();
   expect(requests.every(url => new URL(url).origin === 'http://127.0.0.1:4173')).toBe(true);
   const root = tempFolder();
   const guard = tempFolder();
@@ -337,7 +460,7 @@ test('@claim:cli-json-and-errors gives scripts JSON on success and stderr plus a
     const failed = spawnSync(binary, ['send', '--bundle', join(root, 'payment-failure.bundle'), '--fixture', 'payment-webhook', '--target', 'https://example.com/hooks', '--signing-secret-env', 'TEST_SECRET', '--json'], { encoding: 'utf8' });
     expect(failed.status).not.toBe(0);
     expect(failed.stdout).toBe('');
-    expect(failed.stderr).toContain('refusing non-local target');
+    expect(failed.stderr).toContain('refusing non-loopback target');
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
@@ -371,7 +494,7 @@ test('@claim:offline-demo reloads after the first visit', async ({ page, context
   if (!await page.evaluate(() => Boolean(navigator.serviceWorker.controller))) await page.reload();
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
   const shellCached = await page.evaluate(async () => {
-    const cache = await caches.open('boundary-replay-v2');
+    const cache = await caches.open('boundary-replay-v3');
     const assets = [...document.querySelectorAll<HTMLScriptElement | HTMLLinkElement>('script[src], link[rel="stylesheet"]')]
       .map(element => element instanceof HTMLScriptElement ? element.src : element.href)
       .filter(Boolean);
@@ -381,7 +504,7 @@ test('@claim:offline-demo reloads after the first visit', async ({ page, context
   await context.setOffline(true);
   await expect(page.getByText('Offline — this page and its sample data remain available.')).toBeVisible();
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Inspect a scrubbed payment failure' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Inspect a payment failure with secrets removed' })).toBeVisible();
   await expect(page.getByText('503 response')).toBeVisible();
 });
 
@@ -413,21 +536,24 @@ test('site structure, keyboard path, mobile layout, and accessibility', async ({
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  await expect(page).toHaveTitle('Boundary Replay — replay failed HTTP boundaries');
-  await expect(page.locator('main')).toHaveCount(1);
-  await expect(page.locator('h1')).toHaveCount(1);
-  await expect(page.locator('img:not([alt])')).toHaveCount(0);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
-  const results = await new AxeBuilder({ page }).analyze();
-  expect(results.violations.filter(v => ['serious', 'critical'].includes(v.impact || ''))).toEqual([]);
+  for (const route of ['/', '/?demo=1', '/demo', '/privacy', '/terms', '/404.html']) {
+    await page.goto(route);
+    await expect(page.locator('main')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('img:not([alt])')).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.lang)).toBe('en');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(results.violations.filter(v => ['serious', 'critical'].includes(v.impact || '')), route).toEqual([]);
+  }
   expect(errors).toEqual([]);
 });
 
 test('direct ?demo=1 opens the isolated sample with its persistent controls', async ({ page }) => {
   await page.goto('/?demo=1');
-  await expect(page.getByRole('heading', { name: 'Inspect a scrubbed payment failure' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Inspect a payment failure with secrets removed' })).toBeVisible();
   await expect(page.getByText('Demo — sample data, nothing is saved')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Reset demo' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Start for real' })).toBeVisible();
@@ -457,8 +583,8 @@ test('install guidance links to source, copies a clone-ready command, and uses t
 
 test('routes update social metadata and the standalone 404 shares the site chrome', async ({ page }) => {
   const routes = [
-    ['/demo', 'Demo — Boundary Replay', 'Inspect a sample failed webhook, its redactions, and its local mock response.'],
-    ['/privacy', 'Privacy — Boundary Replay', 'How Boundary Replay handles captures and isolated demo state.'],
+    ['/demo', 'Demo — Boundary Replay', 'Inspect a sample failed webhook, its removed values, and its localhost response.'],
+    ['/privacy', 'Privacy — Boundary Replay', 'How Boundary Replay handles recorded requests and isolated demo state.'],
     ['/terms', 'Terms — Boundary Replay', 'Terms for the Boundary Replay CLI.']
   ] as const;
   for (const [route, title, description] of routes) {
@@ -472,12 +598,12 @@ test('routes update social metadata and the standalone 404 shares the site chrom
   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', 'Not found — Boundary Replay');
   await expect(page.getByRole('link', { name: 'BR Boundary Replay home' })).toBeVisible();
   await expect(page.getByRole('navigation').getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '/#how');
-  await expect(page.locator('footer')).toContainText('Capture a scrubbed boundary. Replay it locally.');
-  await expect(page.locator('footer')).toContainText('v0.1.0 · build 2026.08.28');
+  await expect(page.locator('footer')).toContainText('Record a failed HTTP exchange. Replay it on localhost.');
+  await expect(page.locator('footer')).toContainText('v0.1.0 · build 2026.08.29');
 });
 
-test('desktop first read keeps the demo action and facts in view', async ({ page }) => {
-  for (const viewport of [{ width: 1440, height: 900 }, { width: 1366, height: 768 }]) {
+test('mobile and desktop first read keep the demo action and facts in view', async ({ page }) => {
+  for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }, { width: 1366, height: 768 }]) {
     await page.setViewportSize(viewport);
     await page.goto('/');
     const action = await page.getByRole('link', { name: 'Try it with sample data' }).boundingBox();
@@ -577,7 +703,7 @@ test('SWA config rewrites only known client routes and preserves a real 404 resp
   expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html' });
   expect(existsSync('site/public/404.html')).toBe(true);
   const worker = readFileSync('dist/site/sw.js', 'utf8');
-  expect(worker).toContain('boundary-replay-v2');
+  expect(worker).toContain('boundary-replay-v3');
   expect(worker).toMatch(/"\/assets\/index-[^"]+\.js"/);
   expect(worker).toMatch(/"\/assets\/index-[^"]+\.css"/);
 

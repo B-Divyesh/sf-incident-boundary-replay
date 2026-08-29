@@ -1,4 +1,4 @@
-const CACHE = 'boundary-replay-v2';
+const CACHE = 'boundary-replay-v3';
 const BUILD_ASSETS = /* __BOUNDARY_REPLAY_ASSETS__ */ [];
 const SHELL = ['/', '/demo', '/privacy', '/terms', '/404.html', '/404.css', '/favicon.svg', ...BUILD_ASSETS];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting())));

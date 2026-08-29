@@ -4,7 +4,28 @@
     "claim": "Builds with Rust 1.88 or newer",
     "where": "README install section, Cargo package metadata",
     "test": "npm test -- --grep @claim:msrv-build",
-    "sandbox": "clean locked build with the declared Rust 1.88 toolchain"
+    "sandbox": "fresh clone with only a supported newer Rust installed; the test provisions Rust 1.88 when absent, then runs a locked build"
+  },
+  {
+    "id": "build-artifacts",
+    "claim": "The production build creates dist/site/index.html and the Rust release executable",
+    "where": "README develop and verify section",
+    "test": "npm test -- --grep @claim:build-artifacts",
+    "sandbox": "fresh clone; run the production build and assert the static entry point and release executable exist"
+  },
+  {
+    "id": "deployed-routes",
+    "claim": "Direct loads preserve /demo, /privacy, and /terms; unknown URLs return the designed page with HTTP 404",
+    "where": "README deploy section",
+    "test": "npm test -- --grep @claim:deployed-routes",
+    "sandbox": "fresh production build served with the shipped Static Web Apps routing rules; load each route directly and verify the status and page"
+  },
+  {
+    "id": "shipped-sample",
+    "claim": "The CLI and browser demos use the request, response, and secret-removal fields shipped in examples",
+    "where": "README sample demo section",
+    "test": "npm test -- --grep @claim:shipped-sample",
+    "sandbox": "fresh CLI and browser demos; compare their event, method, path, response status, and removed fields with both shipped example files"
   },
   {
     "id": "default-cli-demo",
@@ -15,28 +36,28 @@
   },
   {
     "id": "redact-before-disk",
-    "claim": "Redacts selected headers and JSON fields before disk",
+    "claim": "Removes selected headers and JSON fields before saving",
     "where": "landing facts, workflow, README, privacy",
     "test": "npm test -- --grep @claim:redact-before-disk",
-    "sandbox": "fresh temp folder and local upstream; send an HTTP request through the capture sidecar; inspect the only saved exchange for redaction markers and absence of request and response secrets"
+    "sandbox": "fresh temp folder and loopback service; record one HTTP request; inspect the saved request and response for redaction markers and absence of secrets"
   },
   {
     "id": "local-only-replay",
-    "claim": "Mock servers and webhook sends accept loopback targets only",
+    "claim": "Mock servers and webhook sends accept loopback addresses only",
     "where": "landing facts, safety section, README",
     "test": "npm test -- --grep @claim:local-only-replay",
-    "sandbox": "run the CLI against a non-loopback bind and target; then send every standard redirect status from a loopback first hop to a second receiver; assert neither capture nor signed webhook traffic reaches the redirected destination"
+    "sandbox": "run the CLI against a non-loopback bind and target; then send every standard redirect status from one loopback service to another; assert no recorded or signed webhook traffic reaches the redirected destination"
   },
   {
     "id": "runnable-local-mock",
-    "claim": "An exported fixture matches its recorded method and path and returns the recorded status, headers, and body locally",
+    "claim": "An exported mock matches its recorded method and path and returns the recorded status, headers, and body on loopback",
     "where": "landing workflow, demo, README",
     "test": "npm test -- --grep @claim:runnable-local-mock",
-    "sandbox": "fresh CLI demo bundle; start the mock on loopback; POST to the recorded path; assert status 503, content-type and retry-after headers, and the recorded JSON body"
+    "sandbox": "fresh CLI demo export; start the mock on loopback; POST to the recorded path; assert status 503, content-type and retry-after headers, and the recorded JSON body"
   },
   {
     "id": "signed-local-webhook",
-    "claim": "A scrubbed webhook is re-signed with a local secret before it is sent",
+    "claim": "A webhook with selected secrets removed is re-signed before it is sent",
     "where": "landing safety section, README",
     "test": "npm test -- --grep @claim:signed-local-webhook",
     "sandbox": "fresh CLI demo bundle and local receiver; send with a test environment secret; assert a fresh HMAC signature and no captured signature"
@@ -46,7 +67,7 @@
     "claim": "The browser demo uses sample data, stores only demo-prefixed session state, and makes no third-party request",
     "where": "demo banner, privacy, demo documentation",
     "test": "npm test -- --grep @claim:private-demo",
-    "sandbox": "fresh browser context; record requests and storage while opening and resetting /demo"
+    "sandbox": "fresh browser context with real-data sentinels; record requests and storage while opening, inspecting, exporting, resetting, and leaving /demo"
   },
   {
     "id": "cli-demo-isolation",
@@ -64,7 +85,7 @@
   },
   {
     "id": "chosen-output-paths",
-    "claim": "Captured exchanges and exported bundles are written only under the output folders you name",
+    "claim": "Recorded requests and exported mocks are written only under the output folders you name",
     "where": "README, privacy page",
     "test": "npm test -- --grep @claim:chosen-output-paths",
     "sandbox": "fresh temp folder and local upstream; capture into a named folder, export into a second named folder, and assert no sibling files were created"
@@ -81,14 +102,14 @@
     "claim": "Demo, export, and send support JSON output; CLI errors use stderr and a non-zero exit code",
     "where": "README",
     "test": "npm test -- --grep @claim:cli-json-and-errors",
-    "sandbox": "fresh demo bundle; parse demo and export JSON results, then use a non-local send target and assert empty stdout, actionable stderr, and failure status"
+    "sandbox": "fresh demo bundle; parse demo and export JSON results, then use a non-loopback send target and assert empty stdout, actionable stderr, and failure status"
   },
   {
     "id": "capture-opt-in",
-    "claim": "Capture begins only after you run the sidecar",
+    "claim": "Recording begins only after you run the capture command",
     "where": "landing safety section",
     "test": "npm test -- --grep @claim:capture-opt-in",
-    "sandbox": "fresh loopback port and local upstream; prove no server responds before launch, then launch capture and assert a request is captured"
+    "sandbox": "fresh loopback port and local service; prove no server responds before launch, then run the capture command and assert a request is recorded"
   },
   {
     "id": "offline-demo",
@@ -99,7 +120,7 @@
   },
   {
     "id": "sample-export",
-    "claim": "The browser demo exports one scrubbed sample fixture",
+    "claim": "The browser demo exports one sample with selected secrets removed",
     "where": "demo export action",
     "test": "npm test -- --grep @claim:sample-export",
     "sandbox": "fresh browser context; download the demo bundle; assert its manifest, count, status, and redaction markers"

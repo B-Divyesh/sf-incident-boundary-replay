@@ -1,1 +1,1 @@
-Capture HTTP failures and replay scrubbed fixtures on localhost.
+Record HTTP failures, remove selected secrets, and replay them on localhost.

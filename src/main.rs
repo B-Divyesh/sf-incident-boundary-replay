@@ -9,7 +9,7 @@ use std::path::PathBuf;
 use uuid::Uuid;
 
 #[derive(Parser)]
-#[command(name = "boundary-replay", version, about = "Capture scrubbed HTTP boundaries and run them as local mocks", long_about = None)]
+#[command(name = "boundary-replay", version, about = "Record selected HTTP requests, remove secrets, and run localhost mocks", long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Command,
@@ -17,22 +17,22 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
-    /// Proxy opted-in traffic and write only scrubbed exchanges
+    /// Record selected requests and responses after removing configured secrets
     Capture {
-        /// Loopback address for the opted-in sidecar, for example 127.0.0.1:8787
+        /// Loopback address for the capture command, for example 127.0.0.1:8787
         #[arg(long, default_value = "127.0.0.1:8787")]
         listen: String,
         /// Explicit HTTP(S) upstream to capture; redirects are returned, never followed
         #[arg(long)]
         upstream: String,
-        /// Folder where scrubbed exchange JSON files are written
+        /// Folder where records with selected secrets removed are written
         #[arg(long, default_value = "captures")]
         out: PathBuf,
         /// JSON file listing headers and fields to redact
         #[arg(long)]
         redact: Option<PathBuf>,
     },
-    /// Export scrubbed captures as a portable mock bundle
+    /// Export recorded requests and responses as a portable localhost mock
     Export {
         /// Folder containing scrubbed capture JSON files
         #[arg(long)]
@@ -55,7 +55,7 @@ enum Command {
         #[arg(long, default_value = "127.0.0.1:9487")]
         listen: String,
     },
-    /// Re-sign and send one scrubbed webhook to a local service
+    /// Re-sign and send one recorded webhook to a loopback service
     Send {
         /// Bundle folder containing the scrubbed fixture
         #[arg(long)]
