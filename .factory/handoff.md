@@ -1,81 +1,75 @@
-# Boundary Replay — polish 3 handoff
+# Boundary Replay — independent verification 5 handoff
 
 ## Outcome
 
-The repair is complete and deployed. Product code is commit
-`8f8de77cbcae771f6e348242f951da15e9f4802d` (`fix: verify CLI proof and load
-product font`), pushed to `main`. Static deployment
-`3fd729f6-4105-43dc-b7cc-197b97ae6951` completed through the work-order
-configuration and is live at
-https://incident-boundary-replay.sociobot.in.
+**PASS — candidate accepted.** Independent verification tested commit
+`8e14cc7aea088d1572f17efb04a8240db4d93f74` and the live deployment at
+https://incident-boundary-replay.sociobot.in on 2026-08-29 UTC. The deployed
+HTML, service worker, and every built asset match the candidate production build
+byte for byte.
 
-The remaining review-3 defects are closed:
+Defects: **0 release blockers, 0 high, 0 medium, 0 low**.
 
-- F-3-1: the HTML terminal and recorded SVG now show a captured transcript of
-  the real `boundary-replay demo` command. The claim compares fresh release
-  stdout to both after normalizing only the generated temporary-folder ID.
-- F-3-2: the page uses the bundled `IBM Plex Mono` family. The real HTTP 404 is
-  now a Vite entry point, so it loads the same self-hosted font and product
-  chrome rather than a fallback face.
+The cold first screen plainly says what the product does, names backend
+engineers, and presents **Try it with sample data** in one click. All three facts
+also fit in the first 390 x 844 viewport.
 
-`.factory/polish-3.md` maps every F-1, F-2, and F-3 finding to its change and
-evidence. No finding is intentionally deferred.
+## Exact verification evidence
 
-## How to run and verify
+- Pristine detached clone: `/tmp/boundary-replay-clean-qmv0yi/repo`, clean at
+  `8e14cc7aea088d1572f17efb04a8240db4d93f74`.
+- Claims: all 19 exact `.factory/claims.json` commands passed independently;
+  19 passed, 0 failed. Log: `/tmp/boundary-replay-clean-qmv0yi/claims.log`.
+- Full clean suite: `npm ci`, `npm test` (31 Playwright + 4 Rust tests),
+  `npm run typecheck`, `npm run lint`, `cargo fmt --all -- --check`,
+  `npm run build`, and `cargo package --locked` passed.
+- Build: `dist/site` and the release executable exist; crate verification
+  packaged 11 files at 22.8 KiB compressed.
+- Clean consumer: the packaged crate installed into an isolated Cargo root;
+  version/help and `demo --json` passed.
+- Manual installed-CLI run: `/tmp/boundary-replay-e2e-7ki6G2`. A real local
+  503 capture scrubbed every supplied and echoed secret, retained trace/path,
+  exported one fixture, and replayed status/body/`Retry-After`. Wrong method was
+  404; non-loopback bind, malformed policy, and populated output failed safely.
+- Deployment identity: local/live hashes matched for `index.html`, `404.html`,
+  `sw.js`, and all 14 built assets. JS SHA-256 is
+  `db0ae7d79fea342970321f5dcb1478228c78cfa782dc66eec8fb09bc9f4e31d0`.
+- Live browser QA: `/`, `/demo`, `/privacy`, `/terms` returned 200; unknown path
+  returned a designed 404. All routes have correct metadata/semantics and zero
+  serious/critical Axe findings. Successful routes had no console/page errors.
+- Keyboard/mobile: complete demo flow works by keyboard with a 3 px visible
+  focus ring; 390 px targets meet 44 px; 195 px reflow has no overflow;
+  reduced-motion is respected.
+- Privacy/PWA: whole demo flow made only same-origin requests, isolated its one
+  `demo:` session key, preserved real-data sentinels, and reloaded offline with
+  the sample intact after a service-worker update check.
+- Security/cache: HSTS, self-only CSP, `nosniff`, strict referrer policy, and
+  restrictive permissions policy are live. HTML/service worker use 30-second
+  revalidation; hashed assets use one-year immutable caching.
+- Budgets: JS 13,980 bytes (5,090 gzip), CSS 12,997 bytes (3,777 gzip), fonts
+  75,792 bytes, mobile hero 19,982 bytes, desktop hero 63,102 bytes.
+- Lighthouse 13 mobile: performance 100, accessibility 100, best practices 100,
+  SEO 100; LCP 1.23 s, TBT 13 ms, CLS 0.0032.
+
+Full findings and evidence are in `.factory/verification-5.md`.
+
+## How to reproduce
 
 ```sh
 npm ci
+jq -r '.[].test' .factory/claims.json
 npm test
 npm run typecheck
 npm run lint
 cargo fmt --all -- --check
 npm run build
-cargo package --allow-dirty --locked
+cargo package --locked
+target/release/boundary-replay demo
 ```
-
-Run a one-click browser demo at `/demo` or `/?demo=1`. Run the isolated CLI
-sample with `target/release/boundary-replay demo` after `npm run build`.
-
-## Exact verification evidence
-
-- Clean clone: `/tmp/incident-boundary-replay-polish3-clean.pw7SjP/repo` at
-  `8f8de77cbcae771f6e348242f951da15e9f4802d`; `npm ci` passed.
-- Every one of the 19 exact commands in `.factory/claims.json` passed
-  independently. Logs are `/tmp/incident-boundary-replay-polish3-clean.pw7SjP/claim-*.log`.
-  `@claim:msrv-build` passed after Rust 1.88 was first uninstalled, proving
-  its own provisioning path.
-- Local suite: `npm test` passed 31 Playwright tests plus 4 Rust unit tests and
-  doc tests. `npm run typecheck`, `npm run lint`, `cargo fmt --all -- --check`,
-  `npm run build`, and `cargo package --allow-dirty --locked` all passed.
-- Product build: `dist/site` contains `index.html`, `404.html`, and the release
-  executable. Initial JS is 13.98 kB (5.07 kB gzip); CSS is 13.00 kB (3.79 kB
-  gzip). The self-hosted IBM Plex Mono WOFF2 is 14.71 kB.
-- Live cold checks: `/`, `/demo`, `/privacy`, and `/terms` returned 200;
-  `/missing-route` returned the designed 404. Every route had `lang=en`, one
-  `h1`, one `main`, no missing `img` alt, route-correct title/canonical/Open
-  Graph/Twitter metadata, and zero serious or critical Axe findings. The one
-  console message on `/missing-route` is Chromium's expected failed-resource
-  notice for the intentional HTTP 404; all successful routes had none.
-- Live isolated demo: `?demo=1` showed the banner, Reset demo, and Start for
-  real; it used only same-origin requests, preserved real local/session
-  sentinels, and discarded only `demo:incident-boundary-replay:state` when
-  leaving. A service-worker-controlled offline `/demo` reload retained the
-  sample, 503 response, and offline notice.
-- Live transcript/font: the deployed terminal transcript matched fresh release
-  CLI stdout after temporary-ID normalization. Computed body font was
-  `"IBM Plex Mono", ui-monospace, monospace`; the IBM WOFF2 was requested and
-  loaded on landing and 404.
-- Live evidence: `.factory/qa-evidence/polish-3-live-report.json`,
-  `polish-3-live-desktop.png`, `polish-3-live-demo-mobile.png`, and
-  `polish-3-live-404-mobile.png`.
-- Lighthouse mobile against the live URL: performance 100, accessibility 100,
-  best practices 100, SEO 100; LCP 1.23 s, CLS 0.0032, TBT 9 ms. Raw report:
-  `.factory/qa-evidence/polish-3-live-lighthouse.json`.
 
 ## Known gaps and next steps
 
-None. The product has no runtime API, sign-in, tracking, paid unlock, or AI
-feature; the local CLI and isolated browser demo are intentionally self-hosted
-and telemetry-free. To publish the crate later, run `cargo publish` from a
-factory environment with registry credentials; this work order does not publish
-packages.
+None for release. The product has no deployed API, paid unlock, sign-in, AI
+runtime, or backend, so API throttling and Entra checks do not apply. Publishing
+the crate remains a factory release action; no registry publication was
+performed during verification.
