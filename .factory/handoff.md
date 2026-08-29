@@ -261,3 +261,36 @@ contract. Full evidence is in [`.factory/verification-4.md`](verification-4.md).
 
 No product code was changed during this verification. The pre-existing
 `graphify-out/` changes remain untouched.
+
+## Adversarial first-read review 1 — FAIL (2026-08-29)
+
+Reviewed candidate `53b006e2df9be03d187fe849ccecb17b3f32547b` and the live
+site from fresh 390 px and desktop contexts. No product code was changed. The
+full report is [`.factory/review-1.md`](review-1.md).
+
+### Verification performed
+
+- Cloned the committed candidate to `/tmp/ibr-review1-clean.Qule2P` and ran
+  `npm ci`, all 14 exact claim commands, `npm test`, `npm run typecheck`,
+  `npm run lint`, and `npm run build`. All declared gates passed; the suite ran
+  4 Rust and 23 Playwright tests, and the build produced `dist/site` plus the
+  release binary.
+- Confirmed the live JS and CSS are byte-identical to the clean build. Tested
+  the cold first screen, one-click demo, reset, sticky banner, real-storage
+  sentinel, exit cleanup, back navigation, route metadata, unknown-route 404,
+  request log, and all live links.
+- Replayed the findings in all earlier verification reports and the handoff.
+  Their product defects remain fixed.
+
+### Blocking result and remaining work
+
+- README promises Rust 1.85 or newer, but `cargo +1.85.0 build --locked` fails:
+  the locked ICU packages require Rust 1.88 and `idna_adapter` requires 1.86.
+  Declare and test the actual MSRV or pin compatible dependencies.
+- Remove the unlisted universal “safe” language and inventory the complete
+  default CLI demo behavior.
+- Resolve the remaining copy, route-social-metadata, and standalone-404
+  consistency findings listed as F-1-4 through F-1-16.
+
+The worktree already contained modified `graphify-out/` files before review;
+they were preserved and excluded from the review commit.
