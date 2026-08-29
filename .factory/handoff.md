@@ -239,3 +239,25 @@ target section.
 
 No product code was changed during verification. Pre-existing `graphify-out`
 worktree changes were left untouched.
+
+## Independent verification 4 — PASS (2026-08-29)
+
+Candidate `439785f4ae42ee002cc92b214c619e5151ad6f39` was independently tested
+against https://incident-boundary-replay.sociobot.in and **PASSes** the release
+contract. Full evidence is in [`.factory/verification-4.md`](verification-4.md).
+
+- A pristine candidate clone ran `npm ci` and every one of the 14 exact
+  `.factory/claims.json` commands; all passed.
+- `npm test` (23/23), typecheck, lint, rustfmt check, production build, and
+  `cargo package` passed. The packaged crate installed into a fresh consumer
+  directory and its public `--version` and `demo --json` flow worked.
+- Manual local capture/redaction/export/mock checks passed, including
+  non-loopback refusal and recovery from a wrong mock path.
+- The live HTML, service worker, JS, and CSS are byte-identical to the
+  candidate build. Live desktop/mobile, keyboard/focus, 195-px reflow, Axe,
+  offline reload, service-worker update, privacy request logging, headers,
+  caching, and bundle budgets passed. No serious/critical Axe issue, console
+  error, or release-blocking defect remains.
+
+No product code was changed during this verification. The pre-existing
+`graphify-out/` changes remain untouched.
