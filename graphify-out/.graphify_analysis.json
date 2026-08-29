@@ -7,7 +7,6 @@
       "hashset",
       "headermap",
       "self",
-      "src_lib",
       "src_lib_body_value",
       "src_lib_bundlemanifest",
       "src_lib_default_fields",
@@ -20,20 +19,39 @@
       "src_lib_redactionpolicy",
       "src_lib_redactionpolicy_default",
       "src_lib_redactionpolicy_load",
-      "src_lib_redacts_nested_fields_and_headers",
-      "src_lib_refuses_non_empty_bundle_output_without_changing_it",
-      "src_lib_refuses_non_local_replay_targets",
       "src_lib_rs_option",
       "src_lib_rs_string",
       "src_lib_safe_id",
-      "src_lib_sample",
+      "src_lib_scrub_exchange",
       "src_lib_scrub_headers",
       "src_lib_scrub_value",
-      "src_lib_value_bytes",
       "value",
       "vec"
     ],
     "1": [
+      "path",
+      "socketaddr",
+      "src_lib",
+      "src_lib_boundary_client",
+      "src_lib_ensure_empty_or_new_directory",
+      "src_lib_export_bundle",
+      "src_lib_exports_a_runnable_bundle",
+      "src_lib_load_bundle",
+      "src_lib_local_target",
+      "src_lib_loopback_socket",
+      "src_lib_redacts_nested_fields_and_headers",
+      "src_lib_refuses_non_empty_bundle_output_without_changing_it",
+      "src_lib_refuses_non_local_replay_targets",
+      "src_lib_rs_result",
+      "src_lib_run_capture",
+      "src_lib_run_mock",
+      "src_lib_sample",
+      "src_lib_send_webhook",
+      "src_lib_shutdown",
+      "src_lib_write_exchange",
+      "url"
+    ],
+    "2": [
       "axe_core_playwright",
       "fontsource_ibm_plex_mono",
       "fontsource_variable_space_grotesk",
@@ -52,7 +70,7 @@
       "typescript",
       "vite"
     ],
-    "2": [
+    "3": [
       "site_src_main",
       "site_src_main_bindevents",
       "site_src_main_demo",
@@ -70,23 +88,6 @@
       "site_src_main_routemeta",
       "site_src_main_syncnetworkstate",
       "site_src_main_terms"
-    ],
-    "3": [
-      "option",
-      "pathbuf",
-      "result",
-      "src_lib_ensure_empty_or_new_directory",
-      "src_lib_export_bundle",
-      "src_lib_exports_a_runnable_bundle",
-      "src_lib_scrub_exchange",
-      "src_lib_write_exchange",
-      "src_main",
-      "src_main_cli",
-      "src_main_command",
-      "src_main_demo",
-      "src_main_main",
-      "src_main_run",
-      "string"
     ],
     "4": [
       "ref_playwright_config_ts",
@@ -130,22 +131,21 @@
       "src_lib_capturestate",
       "src_lib_mock_handler",
       "src_lib_rs_pathbuf",
+      "src_lib_value_bytes",
       "state",
-      "uri",
-      "url"
+      "uri"
     ],
     "7": [
-      "path",
-      "socketaddr",
-      "src_lib_boundary_client",
-      "src_lib_load_bundle",
-      "src_lib_local_target",
-      "src_lib_loopback_socket",
-      "src_lib_rs_result",
-      "src_lib_run_capture",
-      "src_lib_run_mock",
-      "src_lib_send_webhook",
-      "src_lib_shutdown"
+      "src_main",
+      "src_main_cli",
+      "src_main_command",
+      "src_main_demo",
+      "src_main_main",
+      "src_main_rs_option",
+      "src_main_rs_pathbuf",
+      "src_main_rs_result",
+      "src_main_rs_string",
+      "src_main_run"
     ],
     "8": [
       "tests_product_spec",
@@ -153,6 +153,7 @@
       "tests_product_spec_freeloopbackport",
       "tests_product_spec_makedemo",
       "tests_product_spec_runbinary",
+      "tests_product_spec_startproductionsite",
       "tests_product_spec_tempfolder"
     ],
     "9": [
@@ -173,37 +174,37 @@
       "tests_connect_guard_connect"
     ],
     "12": [
-      "pkg_boundary_replay"
+      "option"
     ],
     "13": [
-      "playwright_config"
+      "pathbuf"
     ],
     "14": [
-      "src_main_rs_option"
+      "pkg_boundary_replay"
     ],
     "15": [
-      "src_main_rs_pathbuf"
+      "playwright_config"
     ],
     "16": [
-      "src_main_rs_result"
+      "result"
     ],
     "17": [
-      "src_main_rs_string"
+      "string"
     ],
     "18": [
       "vite_config"
     ]
   },
   "cohesion": {
-    "0": 0.15053763440860216,
-    "1": 0.11764705882352941,
-    "2": 0.2647058823529412,
-    "3": 0.2571428571428571,
+    "0": 0.15076923076923077,
+    "1": 0.2523809523809524,
+    "2": 0.11764705882352941,
+    "3": 0.2647058823529412,
     "4": 0.13333333333333333,
     "5": 0.15384615384615385,
     "6": 0.22727272727272727,
-    "7": 0.38181818181818183,
-    "8": 0.3333333333333333,
+    "7": 0.35555555555555557,
+    "8": 0.2857142857142857,
     "9": 0.4,
     "10": 0.6666666666666666,
     "11": 0.6666666666666666,
@@ -252,25 +253,47 @@
       "degree": 9
     },
     {
-      "id": "src_lib_write_exchange",
-      "label": "write_exchange()",
-      "degree": 8
-    },
-    {
-      "id": "src_main_run",
-      "label": "run()",
-      "degree": 8
-    },
-    {
       "id": "tsconfig_compileroptions",
       "label": "compilerOptions",
+      "degree": 8
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 8
+    },
+    {
+      "id": "src_lib_write_exchange",
+      "label": "write_exchange()",
       "degree": 8
     }
   ],
   "surprises": [
     {
-      "source": "run()",
-      "target": "run_capture()",
+      "source": "demo()",
+      "target": "scrub_exchange()",
+      "source_files": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "demo()",
+      "target": "write_exchange()",
+      "source_files": [
+        "src/main.rs",
+        "src/lib.rs"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "demo()",
+      "target": "export_bundle()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
@@ -281,18 +304,7 @@
     },
     {
       "source": "run()",
-      "target": "run_mock()",
-      "source_files": [
-        "src/main.rs",
-        "src/lib.rs"
-      ],
-      "confidence": "INFERRED",
-      "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
-    },
-    {
-      "source": "run()",
-      "target": "send_webhook()",
+      "target": "export_bundle()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
@@ -310,18 +322,7 @@
       ],
       "confidence": "INFERRED",
       "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source"
-    },
-    {
-      "source": "demo()",
-      "target": "export_bundle()",
-      "source_files": [
-        "src/main.rs",
-        "src/lib.rs"
-      ],
-      "confidence": "INFERRED",
-      "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source"
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     }
   ],
   "tokens": {

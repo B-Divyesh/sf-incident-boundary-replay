@@ -9,7 +9,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "route",
       "source_file": "site/src/main.ts",
@@ -31,29 +31,29 @@
       "label": "bindEvents()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "bindevents()",
       "source_file": "site/src/main.ts",
-      "source_location": "L167"
+      "source_location": "L166"
     },
     {
       "id": "site_src_main_demo",
       "label": "demo()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "demo()",
       "source_file": "site/src/main.ts",
-      "source_location": "L93"
+      "source_location": "L92"
     },
     {
       "id": "site_src_main_esc",
       "label": "esc()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "esc()",
       "source_file": "site/src/main.ts",
@@ -64,7 +64,7 @@
       "label": "footer()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "footer()",
       "source_file": "site/src/main.ts",
@@ -75,7 +75,7 @@
       "label": "header()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "header()",
       "source_file": "site/src/main.ts",
@@ -86,7 +86,7 @@
       "label": "landing()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "landing()",
       "source_file": "site/src/main.ts",
@@ -97,51 +97,51 @@
       "label": "navigate()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "navigate()",
       "source_file": "site/src/main.ts",
-      "source_location": "L161"
+      "source_location": "L160"
     },
     {
       "id": "site_src_main_notfound",
       "label": "notFound()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "notfound()",
       "source_file": "site/src/main.ts",
-      "source_location": "L119"
+      "source_location": "L118"
     },
     {
       "id": "site_src_main_privacy",
       "label": "privacy()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "privacy()",
       "source_file": "site/src/main.ts",
-      "source_location": "L111"
+      "source_location": "L110"
     },
     {
       "id": "site_src_main_render",
       "label": "render()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "render()",
       "source_file": "site/src/main.ts",
-      "source_location": "L131"
+      "source_location": "L130"
     },
     {
       "id": "site_src_main_routefrompath",
       "label": "routeFromPath()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "routefrompath()",
       "source_file": "site/src/main.ts",
@@ -152,22 +152,22 @@
       "label": "syncNetworkState()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "syncnetworkstate()",
       "source_file": "site/src/main.ts",
-      "source_location": "L197"
+      "source_location": "L196"
     },
     {
       "id": "site_src_main_terms",
       "label": "terms()",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "terms()",
       "source_file": "site/src/main.ts",
-      "source_location": "L115"
+      "source_location": "L114"
     },
     {
       "id": "tests_product_spec_freeloopbackport",
@@ -201,6 +201,17 @@
       "norm_label": "runbinary()",
       "source_file": "tests/product.spec.ts",
       "source_location": "L22"
+    },
+    {
+      "id": "tests_product_spec_startproductionsite",
+      "label": "startProductionSite()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 8,
+      "file_type": "code",
+      "norm_label": "startproductionsite()",
+      "source_file": "tests/product.spec.ts",
+      "source_location": "L41"
     },
     {
       "id": "tests_product_spec_tempfolder",
@@ -272,16 +283,6 @@
       "norm_label": "self",
       "source_file": "",
       "source_location": ""
-    },
-    {
-      "id": "src_lib",
-      "label": "lib.rs",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "lib.rs",
-      "source_file": "src/lib.rs",
-      "source_location": "L1"
     },
     {
       "id": "src_lib_body_value",
@@ -404,36 +405,6 @@
       "source_location": "L73"
     },
     {
-      "id": "src_lib_redacts_nested_fields_and_headers",
-      "label": "redacts_nested_fields_and_headers()",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "redacts_nested_fields_and_headers()",
-      "source_file": "src/lib.rs",
-      "source_location": "L589"
-    },
-    {
-      "id": "src_lib_refuses_non_empty_bundle_output_without_changing_it",
-      "label": "refuses_non_empty_bundle_output_without_changing_it()",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "refuses_non_empty_bundle_output_without_changing_it()",
-      "source_file": "src/lib.rs",
-      "source_location": "L616"
-    },
-    {
-      "id": "src_lib_refuses_non_local_replay_targets",
-      "label": "refuses_non_local_replay_targets()",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "refuses_non_local_replay_targets()",
-      "source_file": "src/lib.rs",
-      "source_location": "L632"
-    },
-    {
       "id": "src_lib_rs_option",
       "label": "Option",
       "_origin": "ast",
@@ -464,14 +435,14 @@
       "source_location": "L282"
     },
     {
-      "id": "src_lib_sample",
-      "label": "sample()",
+      "id": "src_lib_scrub_exchange",
+      "label": "scrub_exchange()",
       "_origin": "ast",
       "community": 0,
       "file_type": "code",
-      "norm_label": "sample()",
+      "norm_label": "scrub_exchange()",
       "source_file": "src/lib.rs",
-      "source_location": "L584"
+      "source_location": "L142"
     },
     {
       "id": "src_lib_scrub_headers",
@@ -494,16 +465,6 @@
       "source_location": "L194"
     },
     {
-      "id": "src_lib_value_bytes",
-      "label": "value_bytes()",
-      "_origin": "ast",
-      "community": 0,
-      "file_type": "code",
-      "norm_label": "value_bytes()",
-      "source_file": "src/lib.rs",
-      "source_location": "L523"
-    },
-    {
       "id": "value",
       "label": "Value",
       "_origin": "ast",
@@ -524,174 +485,214 @@
       "source_location": ""
     },
     {
-      "id": "package_devdependencies",
-      "label": "devDependencies",
+      "id": "path",
+      "label": "Path",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "devdependencies",
-      "source_file": "package.json",
-      "source_location": "L15"
+      "norm_label": "path",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "package_devdependencies_axe_core_playwright",
-      "label": "@axe-core/playwright",
+      "id": "socketaddr",
+      "label": "SocketAddr",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "@axe-core/playwright",
-      "source_file": "package.json",
-      "source_location": "L18"
+      "norm_label": "socketaddr",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "package_devdependencies_fontsource_ibm_plex_mono",
-      "label": "@fontsource/ibm-plex-mono",
+      "id": "src_lib",
+      "label": "lib.rs",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "@fontsource/ibm-plex-mono",
-      "source_file": "package.json",
-      "source_location": "L16"
+      "norm_label": "lib.rs",
+      "source_file": "src/lib.rs",
+      "source_location": "L1"
     },
     {
-      "id": "package_devdependencies_fontsource_variable_space_grotesk",
-      "label": "@fontsource-variable/space-grotesk",
+      "id": "src_lib_boundary_client",
+      "label": "boundary_client()",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "@fontsource-variable/space-grotesk",
-      "source_file": "package.json",
-      "source_location": "L17"
+      "norm_label": "boundary_client()",
+      "source_file": "src/lib.rs",
+      "source_location": "L348"
     },
     {
-      "id": "package_devdependencies_playwright_test",
-      "label": "@playwright/test",
+      "id": "src_lib_ensure_empty_or_new_directory",
+      "label": "ensure_empty_or_new_directory()",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "@playwright/test",
-      "source_file": "package.json",
-      "source_location": "L19"
+      "norm_label": "ensure_empty_or_new_directory()",
+      "source_file": "src/lib.rs",
+      "source_location": "L266"
     },
     {
-      "id": "package_devdependencies_sharp",
-      "label": "sharp",
+      "id": "src_lib_export_bundle",
+      "label": "export_bundle()",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "sharp",
-      "source_file": "package.json",
-      "source_location": "L21"
+      "norm_label": "export_bundle()",
+      "source_file": "src/lib.rs",
+      "source_location": "L222"
     },
     {
-      "id": "package_devdependencies_types_node",
-      "label": "@types/node",
+      "id": "src_lib_exports_a_runnable_bundle",
+      "label": "exports_a_runnable_bundle()",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "@types/node",
-      "source_file": "package.json",
-      "source_location": "L20"
+      "norm_label": "exports_a_runnable_bundle()",
+      "source_file": "src/lib.rs",
+      "source_location": "L602"
     },
     {
-      "id": "package_devdependencies_typescript",
-      "label": "typescript",
+      "id": "src_lib_load_bundle",
+      "label": "load_bundle()",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "typescript",
-      "source_file": "package.json",
-      "source_location": "L22"
+      "norm_label": "load_bundle()",
+      "source_file": "src/lib.rs",
+      "source_location": "L300"
     },
     {
-      "id": "package_devdependencies_vite",
-      "label": "vite",
+      "id": "src_lib_local_target",
+      "label": "local_target()",
       "_origin": "ast",
       "community": 1,
       "file_type": "code",
-      "norm_label": "vite",
-      "source_file": "package.json",
-      "source_location": "L23"
+      "norm_label": "local_target()",
+      "source_file": "src/lib.rs",
+      "source_location": "L327"
     },
     {
-      "id": "axe_core_playwright",
-      "label": "@axe-core/playwright",
+      "id": "src_lib_loopback_socket",
+      "label": "loopback_socket()",
       "_origin": "ast",
       "community": 1,
-      "file_type": "concept",
-      "norm_label": "@axe-core/playwright",
-      "source_file": "package.json",
-      "source_location": "L18"
+      "file_type": "code",
+      "norm_label": "loopback_socket()",
+      "source_file": "src/lib.rs",
+      "source_location": "L317"
     },
     {
-      "id": "fontsource_ibm_plex_mono",
-      "label": "@fontsource/ibm-plex-mono",
+      "id": "src_lib_redacts_nested_fields_and_headers",
+      "label": "redacts_nested_fields_and_headers()",
       "_origin": "ast",
       "community": 1,
-      "file_type": "concept",
-      "norm_label": "@fontsource/ibm-plex-mono",
-      "source_file": "package.json",
-      "source_location": "L16"
+      "file_type": "code",
+      "norm_label": "redacts_nested_fields_and_headers()",
+      "source_file": "src/lib.rs",
+      "source_location": "L589"
     },
     {
-      "id": "fontsource_variable_space_grotesk",
-      "label": "@fontsource-variable/space-grotesk",
+      "id": "src_lib_refuses_non_empty_bundle_output_without_changing_it",
+      "label": "refuses_non_empty_bundle_output_without_changing_it()",
       "_origin": "ast",
       "community": 1,
-      "file_type": "concept",
-      "norm_label": "@fontsource-variable/space-grotesk",
-      "source_file": "package.json",
-      "source_location": "L17"
+      "file_type": "code",
+      "norm_label": "refuses_non_empty_bundle_output_without_changing_it()",
+      "source_file": "src/lib.rs",
+      "source_location": "L616"
     },
     {
-      "id": "playwright_test",
-      "label": "@playwright/test",
+      "id": "src_lib_refuses_non_local_replay_targets",
+      "label": "refuses_non_local_replay_targets()",
       "_origin": "ast",
       "community": 1,
-      "file_type": "concept",
-      "norm_label": "@playwright/test",
-      "source_file": "package.json",
-      "source_location": "L19"
+      "file_type": "code",
+      "norm_label": "refuses_non_local_replay_targets()",
+      "source_file": "src/lib.rs",
+      "source_location": "L632"
     },
     {
-      "id": "sharp",
-      "label": "sharp",
+      "id": "src_lib_rs_result",
+      "label": "Result",
       "_origin": "ast",
       "community": 1,
-      "file_type": "concept",
-      "norm_label": "sharp",
-      "source_file": "package.json",
-      "source_location": "L21"
+      "file_type": "code",
+      "norm_label": "result",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "types_node",
-      "label": "@types/node",
+      "id": "src_lib_run_capture",
+      "label": "run_capture()",
       "_origin": "ast",
       "community": 1,
-      "file_type": "concept",
-      "norm_label": "@types/node",
-      "source_file": "package.json",
-      "source_location": "L20"
+      "file_type": "code",
+      "norm_label": "run_capture()",
+      "source_file": "src/lib.rs",
+      "source_location": "L363"
     },
     {
-      "id": "typescript",
-      "label": "typescript",
+      "id": "src_lib_run_mock",
+      "label": "run_mock()",
       "_origin": "ast",
       "community": 1,
-      "file_type": "concept",
-      "norm_label": "typescript",
-      "source_file": "package.json",
-      "source_location": "L22"
+      "file_type": "code",
+      "norm_label": "run_mock()",
+      "source_file": "src/lib.rs",
+      "source_location": "L478"
     },
     {
-      "id": "vite",
-      "label": "vite",
+      "id": "src_lib_sample",
+      "label": "sample()",
       "_origin": "ast",
       "community": 1,
-      "file_type": "concept",
-      "norm_label": "vite",
-      "source_file": "package.json",
-      "source_location": "L23"
+      "file_type": "code",
+      "norm_label": "sample()",
+      "source_file": "src/lib.rs",
+      "source_location": "L584"
+    },
+    {
+      "id": "src_lib_send_webhook",
+      "label": "send_webhook()",
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "send_webhook()",
+      "source_file": "src/lib.rs",
+      "source_location": "L530"
+    },
+    {
+      "id": "src_lib_shutdown",
+      "label": "shutdown()",
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "shutdown()",
+      "source_file": "src/lib.rs",
+      "source_location": "L576"
+    },
+    {
+      "id": "src_lib_write_exchange",
+      "label": "write_exchange()",
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "write_exchange()",
+      "source_file": "src/lib.rs",
+      "source_location": "L216"
+    },
+    {
+      "id": "url",
+      "label": "Url",
+      "_origin": "ast",
+      "community": 1,
+      "file_type": "code",
+      "norm_label": "url",
+      "source_file": "",
+      "source_location": ""
     },
     {
       "id": "site_public_sw",
@@ -744,10 +745,30 @@
       "source_location": "L1"
     },
     {
+      "id": "option",
+      "label": "Option",
+      "_origin": "ast",
+      "community": 12,
+      "file_type": "code",
+      "norm_label": "option",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "pathbuf",
+      "label": "PathBuf",
+      "_origin": "ast",
+      "community": 13,
+      "file_type": "code",
+      "norm_label": "pathbuf",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "pkg_boundary_replay",
       "label": "boundary-replay",
       "_origin": "ast",
-      "community": 12,
+      "community": 14,
       "ecosystem": "cargo",
       "file_type": "code",
       "norm_label": "boundary-replay",
@@ -760,34 +781,14 @@
       "id": "playwright_config",
       "label": "playwright.config.ts",
       "_origin": "ast",
-      "community": 13,
+      "community": 15,
       "file_type": "code",
       "norm_label": "playwright.config.ts",
       "source_file": "playwright.config.ts",
       "source_location": "L1"
     },
     {
-      "id": "src_main_rs_option",
-      "label": "Option",
-      "_origin": "ast",
-      "community": 14,
-      "file_type": "code",
-      "norm_label": "option",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_main_rs_pathbuf",
-      "label": "PathBuf",
-      "_origin": "ast",
-      "community": 15,
-      "file_type": "code",
-      "norm_label": "pathbuf",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_main_rs_result",
+      "id": "result",
       "label": "Result",
       "_origin": "ast",
       "community": 16,
@@ -797,7 +798,7 @@
       "source_location": ""
     },
     {
-      "id": "src_main_rs_string",
+      "id": "string",
       "label": "String",
       "_origin": "ast",
       "community": 17,
@@ -817,10 +818,180 @@
       "source_location": "L1"
     },
     {
+      "id": "package_devdependencies",
+      "label": "devDependencies",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "devdependencies",
+      "source_file": "package.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "package_devdependencies_axe_core_playwright",
+      "label": "@axe-core/playwright",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "@axe-core/playwright",
+      "source_file": "package.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "package_devdependencies_fontsource_ibm_plex_mono",
+      "label": "@fontsource/ibm-plex-mono",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "@fontsource/ibm-plex-mono",
+      "source_file": "package.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "package_devdependencies_fontsource_variable_space_grotesk",
+      "label": "@fontsource-variable/space-grotesk",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "@fontsource-variable/space-grotesk",
+      "source_file": "package.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "package_devdependencies_playwright_test",
+      "label": "@playwright/test",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "@playwright/test",
+      "source_file": "package.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "package_devdependencies_sharp",
+      "label": "sharp",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "sharp",
+      "source_file": "package.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "package_devdependencies_types_node",
+      "label": "@types/node",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "@types/node",
+      "source_file": "package.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "package_devdependencies_typescript",
+      "label": "typescript",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "typescript",
+      "source_file": "package.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "package_devdependencies_vite",
+      "label": "vite",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "code",
+      "norm_label": "vite",
+      "source_file": "package.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "axe_core_playwright",
+      "label": "@axe-core/playwright",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "concept",
+      "norm_label": "@axe-core/playwright",
+      "source_file": "package.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "fontsource_ibm_plex_mono",
+      "label": "@fontsource/ibm-plex-mono",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "concept",
+      "norm_label": "@fontsource/ibm-plex-mono",
+      "source_file": "package.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "fontsource_variable_space_grotesk",
+      "label": "@fontsource-variable/space-grotesk",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "concept",
+      "norm_label": "@fontsource-variable/space-grotesk",
+      "source_file": "package.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "playwright_test",
+      "label": "@playwright/test",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "concept",
+      "norm_label": "@playwright/test",
+      "source_file": "package.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "sharp",
+      "label": "sharp",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "concept",
+      "norm_label": "sharp",
+      "source_file": "package.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "types_node",
+      "label": "@types/node",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "concept",
+      "norm_label": "@types/node",
+      "source_file": "package.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "typescript",
+      "label": "typescript",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "concept",
+      "norm_label": "typescript",
+      "source_file": "package.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "vite",
+      "label": "vite",
+      "_origin": "ast",
+      "community": 2,
+      "file_type": "concept",
+      "norm_label": "vite",
+      "source_file": "package.json",
+      "source_location": "L23"
+    },
+    {
       "id": "site_src_main",
       "label": "main.ts",
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "main.ts",
       "source_file": "site/src/main.ts",
@@ -830,7 +1001,7 @@
       "id": "site_src_main_fixture",
       "label": "fixture",
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "fixture",
       "source_file": "site/src/main.ts",
@@ -840,161 +1011,11 @@
       "id": "site_src_main_routemeta",
       "label": "routeMeta",
       "_origin": "ast",
-      "community": 2,
+      "community": 3,
       "file_type": "code",
       "norm_label": "routemeta",
       "source_file": "site/src/main.ts",
-      "source_location": "L123"
-    },
-    {
-      "id": "option",
-      "label": "Option",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "option",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "pathbuf",
-      "label": "PathBuf",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "pathbuf",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "result",
-      "label": "Result",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "result",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_lib_ensure_empty_or_new_directory",
-      "label": "ensure_empty_or_new_directory()",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "ensure_empty_or_new_directory()",
-      "source_file": "src/lib.rs",
-      "source_location": "L266"
-    },
-    {
-      "id": "src_lib_export_bundle",
-      "label": "export_bundle()",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "export_bundle()",
-      "source_file": "src/lib.rs",
-      "source_location": "L222"
-    },
-    {
-      "id": "src_lib_exports_a_runnable_bundle",
-      "label": "exports_a_runnable_bundle()",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "exports_a_runnable_bundle()",
-      "source_file": "src/lib.rs",
-      "source_location": "L602"
-    },
-    {
-      "id": "src_lib_scrub_exchange",
-      "label": "scrub_exchange()",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "scrub_exchange()",
-      "source_file": "src/lib.rs",
-      "source_location": "L142"
-    },
-    {
-      "id": "src_lib_write_exchange",
-      "label": "write_exchange()",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "write_exchange()",
-      "source_file": "src/lib.rs",
-      "source_location": "L216"
-    },
-    {
-      "id": "src_main",
-      "label": "main.rs",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "main.rs",
-      "source_file": "src/main.rs",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_main_cli",
-      "label": "Cli",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "cli",
-      "source_file": "src/main.rs",
-      "source_location": "L13"
-    },
-    {
-      "id": "src_main_command",
-      "label": "Command",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "command",
-      "source_file": "src/main.rs",
-      "source_location": "L19"
-    },
-    {
-      "id": "src_main_demo",
-      "label": "demo()",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "demo()",
-      "source_file": "src/main.rs",
-      "source_location": "L151"
-    },
-    {
-      "id": "src_main_main",
-      "label": "main()",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "main()",
-      "source_file": "src/main.rs",
-      "source_location": "L86"
-    },
-    {
-      "id": "src_main_run",
-      "label": "run()",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "run()",
-      "source_file": "src/main.rs",
-      "source_location": "L93"
-    },
-    {
-      "id": "string",
-      "label": "String",
-      "_origin": "ast",
-      "community": 3,
-      "file_type": "code",
-      "norm_label": "string",
-      "source_file": "",
-      "source_location": ""
+      "source_location": "L122"
     },
     {
       "id": "tsconfig",
@@ -1367,6 +1388,16 @@
       "source_location": ""
     },
     {
+      "id": "src_lib_value_bytes",
+      "label": "value_bytes()",
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "value_bytes()",
+      "source_file": "src/lib.rs",
+      "source_location": "L523"
+    },
+    {
       "id": "state",
       "label": "State",
       "_origin": "ast",
@@ -1387,77 +1418,77 @@
       "source_location": ""
     },
     {
-      "id": "url",
-      "label": "Url",
+      "id": "src_main",
+      "label": "main.rs",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "file_type": "code",
-      "norm_label": "url",
+      "norm_label": "main.rs",
+      "source_file": "src/main.rs",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_main_cli",
+      "label": "Cli",
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": "cli",
+      "source_file": "src/main.rs",
+      "source_location": "L13"
+    },
+    {
+      "id": "src_main_command",
+      "label": "Command",
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": "command",
+      "source_file": "src/main.rs",
+      "source_location": "L19"
+    },
+    {
+      "id": "src_main_demo",
+      "label": "demo()",
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": "demo()",
+      "source_file": "src/main.rs",
+      "source_location": "L151"
+    },
+    {
+      "id": "src_main_main",
+      "label": "main()",
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": "main()",
+      "source_file": "src/main.rs",
+      "source_location": "L86"
+    },
+    {
+      "id": "src_main_rs_option",
+      "label": "Option",
+      "_origin": "ast",
+      "community": 7,
+      "file_type": "code",
+      "norm_label": "option",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "path",
-      "label": "Path",
+      "id": "src_main_rs_pathbuf",
+      "label": "PathBuf",
       "_origin": "ast",
       "community": 7,
       "file_type": "code",
-      "norm_label": "path",
+      "norm_label": "pathbuf",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "socketaddr",
-      "label": "SocketAddr",
-      "_origin": "ast",
-      "community": 7,
-      "file_type": "code",
-      "norm_label": "socketaddr",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_lib_boundary_client",
-      "label": "boundary_client()",
-      "_origin": "ast",
-      "community": 7,
-      "file_type": "code",
-      "norm_label": "boundary_client()",
-      "source_file": "src/lib.rs",
-      "source_location": "L348"
-    },
-    {
-      "id": "src_lib_load_bundle",
-      "label": "load_bundle()",
-      "_origin": "ast",
-      "community": 7,
-      "file_type": "code",
-      "norm_label": "load_bundle()",
-      "source_file": "src/lib.rs",
-      "source_location": "L300"
-    },
-    {
-      "id": "src_lib_local_target",
-      "label": "local_target()",
-      "_origin": "ast",
-      "community": 7,
-      "file_type": "code",
-      "norm_label": "local_target()",
-      "source_file": "src/lib.rs",
-      "source_location": "L327"
-    },
-    {
-      "id": "src_lib_loopback_socket",
-      "label": "loopback_socket()",
-      "_origin": "ast",
-      "community": 7,
-      "file_type": "code",
-      "norm_label": "loopback_socket()",
-      "source_file": "src/lib.rs",
-      "source_location": "L317"
-    },
-    {
-      "id": "src_lib_rs_result",
+      "id": "src_main_rs_result",
       "label": "Result",
       "_origin": "ast",
       "community": 7,
@@ -1467,44 +1498,24 @@
       "source_location": ""
     },
     {
-      "id": "src_lib_run_capture",
-      "label": "run_capture()",
+      "id": "src_main_rs_string",
+      "label": "String",
       "_origin": "ast",
       "community": 7,
       "file_type": "code",
-      "norm_label": "run_capture()",
-      "source_file": "src/lib.rs",
-      "source_location": "L363"
+      "norm_label": "string",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "src_lib_run_mock",
-      "label": "run_mock()",
+      "id": "src_main_run",
+      "label": "run()",
       "_origin": "ast",
       "community": 7,
       "file_type": "code",
-      "norm_label": "run_mock()",
-      "source_file": "src/lib.rs",
-      "source_location": "L478"
-    },
-    {
-      "id": "src_lib_send_webhook",
-      "label": "send_webhook()",
-      "_origin": "ast",
-      "community": 7,
-      "file_type": "code",
-      "norm_label": "send_webhook()",
-      "source_file": "src/lib.rs",
-      "source_location": "L530"
-    },
-    {
-      "id": "src_lib_shutdown",
-      "label": "shutdown()",
-      "_origin": "ast",
-      "community": 7,
-      "file_type": "code",
-      "norm_label": "shutdown()",
-      "source_file": "src/lib.rs",
-      "source_location": "L576"
+      "norm_label": "run()",
+      "source_file": "src/main.rs",
+      "source_location": "L93"
     },
     {
       "id": "tests_product_spec",
@@ -1587,7 +1598,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L171",
+      "source_location": "L170",
       "weight": 1.0
     },
     {
@@ -1599,7 +1610,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L182",
+      "source_location": "L181",
       "weight": 1.0
     },
     {
@@ -1611,7 +1622,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L108",
+      "source_location": "L107",
       "weight": 1.0
     },
     {
@@ -1623,7 +1634,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L95",
+      "source_location": "L94",
       "weight": 1.0
     },
     {
@@ -1647,7 +1658,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L90",
+      "source_location": "L89",
       "weight": 1.0
     },
     {
@@ -1659,7 +1670,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L164",
+      "source_location": "L163",
       "weight": 1.0
     },
     {
@@ -1671,7 +1682,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L120",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -1683,7 +1694,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L120",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -1695,7 +1706,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L112",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -1707,7 +1718,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L112",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -1719,7 +1730,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L132",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
@@ -1731,7 +1742,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L134",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -1743,7 +1754,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L134",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -1755,7 +1766,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L134",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -1767,7 +1778,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L134",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -1779,7 +1790,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L134",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -1791,7 +1802,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L145",
+      "source_location": "L144",
       "weight": 1.0
     },
     {
@@ -1803,7 +1814,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L116",
+      "source_location": "L115",
       "weight": 1.0
     },
     {
@@ -1815,7 +1826,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "site/src/main.ts",
-      "source_location": "L116",
+      "source_location": "L115",
       "weight": 1.0
     },
     {
@@ -2468,7 +2479,7 @@
     },
     {
       "source": "src_main_command",
-      "target": "string",
+      "target": "src_main_rs_string",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2480,7 +2491,7 @@
     },
     {
       "source": "src_main_command",
-      "target": "option",
+      "target": "src_main_rs_option",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2768,7 +2779,7 @@
     },
     {
       "source": "src_main_command",
-      "target": "pathbuf",
+      "target": "src_main_rs_pathbuf",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2780,7 +2791,7 @@
     },
     {
       "source": "src_main_demo",
-      "target": "pathbuf",
+      "target": "src_main_rs_pathbuf",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -2972,7 +2983,7 @@
     },
     {
       "source": "src_main",
-      "target": "pathbuf",
+      "target": "src_main_rs_pathbuf",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3332,7 +3343,7 @@
     },
     {
       "source": "src_main_demo",
-      "target": "option",
+      "target": "src_main_rs_option",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3620,7 +3631,7 @@
     },
     {
       "source": "src_main_demo",
-      "target": "result",
+      "target": "src_main_rs_result",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3632,7 +3643,7 @@
     },
     {
       "source": "src_main_run",
-      "target": "result",
+      "target": "src_main_rs_result",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3958,7 +3969,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "site/src/main.ts",
-      "source_location": "L111",
+      "source_location": "L110",
       "weight": 1.0
     },
     {
@@ -3969,7 +3980,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "site/src/main.ts",
-      "source_location": "L115",
+      "source_location": "L114",
       "weight": 1.0
     },
     {
@@ -3980,7 +3991,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "site/src/main.ts",
-      "source_location": "L119",
+      "source_location": "L118",
       "weight": 1.0
     },
     {
@@ -3991,7 +4002,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "site/src/main.ts",
-      "source_location": "L123",
+      "source_location": "L122",
       "weight": 1.0
     },
     {
@@ -4002,7 +4013,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "site/src/main.ts",
-      "source_location": "L131",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -4013,7 +4024,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "site/src/main.ts",
-      "source_location": "L161",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -4024,7 +4035,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "site/src/main.ts",
-      "source_location": "L167",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -4101,7 +4112,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "site/src/main.ts",
-      "source_location": "L93",
+      "source_location": "L92",
       "weight": 1.0
     },
     {
@@ -4611,6 +4622,17 @@
       "weight": 1.0
     },
     {
+      "source": "tests_product_spec",
+      "target": "tests_product_spec_startproductionsite",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/product.spec.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
       "source": "tsconfig",
       "target": "tsconfig_include",
       "relation": "contains",
@@ -4751,7 +4773,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "site/src/main.ts",
-      "source_location": "L207",
+      "source_location": "L206",
       "weight": 1.0
     },
     {
@@ -4852,5 +4874,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "95f061b5076e3eb6838daca59df5e542480b2452"
+  "built_at_commit": "9ca531ce8abc140c597e0456d3d27a5288966eef"
 }
