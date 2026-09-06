@@ -1,4 +1,32 @@
-# Boundary Replay verification 6 handoff
+# Boundary Replay review 6 handoff
+
+## Latest strict review
+
+**FAIL — one minor finding and zero untested public claims.** Review 6 found
+that `boundary-replay serve --listen 127.0.0.1:0` binds an OS-selected port but
+prints `http://127.0.0.1:0`. In the proof run the process was actually on
+`127.0.0.1:42731`; the actual address returned the recorded 503, while the
+printed address failed. `run_mock` prints the requested address instead of
+reading `listener.local_addr()` after bind.
+
+No product code was changed. Repair `run_mock` to print its bound address, add
+a port-zero regression that requests the fixture through the printed address,
+then repeat all clean claims and the installed consumer check. Full evidence
+is in `.factory/review-6.md`.
+
+All 19 exact claim commands passed on their first clean invocation, and the
+repaired capture claim passed 20 additional repetitions. The full suite,
+typecheck, lint, format, build, package, installed core CLI flow, and live
+desktop/phone checks passed. Axe found zero violations; the URL verifier found
+no console errors; all 21 public live files match the clean build byte for
+byte. Implementation is `09a9cdc40cb83150f572f339bb54ea0dbad81d7d`, the
+latest documentation commit before this review is
+`10a8e642019caf0800a2df9f304bd6b07ba976fe`, and checkout snapshot `b139cb4`
+only adds Graphify output.
+
+Pre-existing Graphify workspace changes remain untouched.
+
+# Prior verification 6 handoff
 
 ## Latest independent verification
 
