@@ -1,4 +1,32 @@
-# Boundary Replay repair 5 handoff
+# Boundary Replay verification 6 handoff
+
+## Latest independent verification
+
+**PASS — zero findings and zero untested public claims.** On 2026-09-06 UTC,
+an independent verifier reviewed implementation `09a9cdc40cb83150f572f339bb54ea0dbad81d7d`
+and documentation `39deee330e014f864b53074b5ba3938ac8bba834`. The current
+repository snapshot `0232d61` is a later factory/report-only commit.
+
+From a public clean clone with documented Rust 1.88.0 setup, all 19 exact
+claim commands passed, then `npm test` (31 Playwright and 4 Rust tests),
+typecheck, lint, format check, production build, and locked package verification
+passed. The repaired `capture-opt-in` claim also passed 20 consecutive repeats.
+A clean consumer installed the packaged crate and successfully captured through
+an OS-selected loopback port, forwarding a 503 and saving redacted fields.
+
+Fresh desktop and 390 px live-browser contexts showed the job, audience, and
+Try-it action before scroll; the one-click sample, persistent demo label,
+redacted export, reset, real-data isolation, offline reload, service-worker
+state, keyboard/focus, reduced motion, Axe, legal routes, and designed HTTP 404
+all passed. Current live HTML, service worker, JavaScript, and CSS match the
+clean build byte for byte. The detailed evidence is in
+`.factory/verification-6.md`.
+
+The only 404 observed is the deliberate designed missing-page response. This
+is expected, not a defect. No backend is shipped, so tenant/persistence/health
+and server-rate-limit checks are not applicable.
+
+## Repair 5 detail
 
 ## Outcome
 
