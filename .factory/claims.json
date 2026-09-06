@@ -109,7 +109,7 @@
     "claim": "Recording begins only after you run the capture command",
     "where": "landing safety section",
     "test": "npm test -- --grep @claim:capture-opt-in",
-    "sandbox": "fresh loopback port and local service; prove no server responds before launch, then run the capture command and assert a request is recorded"
+    "sandbox": "fresh output folder and local service; prove no exchange exists before launch, then run capture on an OS-selected loopback port and assert one request is recorded"
   },
   {
     "id": "offline-demo",
