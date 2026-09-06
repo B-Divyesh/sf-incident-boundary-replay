@@ -255,6 +255,11 @@
       "degree": 9
     },
     {
+      "id": "src_lib_write_exchange",
+      "label": "write_exchange()",
+      "degree": 8
+    },
+    {
       "id": "tsconfig_compileroptions",
       "label": "compilerOptions",
       "degree": 8
@@ -263,17 +268,12 @@
       "id": "package_scripts",
       "label": "scripts",
       "degree": 8
-    },
-    {
-      "id": "src_main_run",
-      "label": "run()",
-      "degree": 8
     }
   ],
   "surprises": [
     {
       "source": "demo()",
-      "target": "ensure_empty_or_new_directory()",
+      "target": "export_bundle()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
@@ -283,7 +283,7 @@
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "demo()",
+      "source": "run()",
       "target": "export_bundle()",
       "source_files": [
         "src/main.rs",
@@ -316,8 +316,8 @@
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "run()",
-      "target": "export_bundle()",
+      "source": "demo()",
+      "target": "ensure_empty_or_new_directory()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
