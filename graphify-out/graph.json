@@ -225,6 +225,17 @@
       "source_location": "L48"
     },
     {
+      "id": "tests_product_spec_startmock",
+      "label": "startMock()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 8,
+      "file_type": "code",
+      "norm_label": "startmock()",
+      "source_file": "tests/product.spec.ts",
+      "source_location": "L76"
+    },
+    {
       "id": "tests_product_spec_startproductionsite",
       "label": "startProductionSite()",
       "_callable": true,
@@ -233,7 +244,7 @@
       "file_type": "code",
       "norm_label": "startproductionsite()",
       "source_file": "tests/product.spec.ts",
-      "source_location": "L76"
+      "source_location": "L104"
     },
     {
       "id": "tests_product_spec_tempfolder",
@@ -394,7 +405,7 @@
       "file_type": "code",
       "norm_label": "exports_a_runnable_bundle()",
       "source_file": "src/lib.rs",
-      "source_location": "L605"
+      "source_location": "L608"
     },
     {
       "id": "src_lib_header_map",
@@ -474,7 +485,7 @@
       "file_type": "code",
       "norm_label": "redacts_nested_fields_and_headers()",
       "source_file": "src/lib.rs",
-      "source_location": "L592"
+      "source_location": "L595"
     },
     {
       "id": "src_lib_refuses_non_empty_bundle_output_without_changing_it",
@@ -484,7 +495,7 @@
       "file_type": "code",
       "norm_label": "refuses_non_empty_bundle_output_without_changing_it()",
       "source_file": "src/lib.rs",
-      "source_location": "L619"
+      "source_location": "L622"
     },
     {
       "id": "src_lib_refuses_non_local_replay_targets",
@@ -494,7 +505,7 @@
       "file_type": "code",
       "norm_label": "refuses_non_local_replay_targets()",
       "source_file": "src/lib.rs",
-      "source_location": "L635"
+      "source_location": "L638"
     },
     {
       "id": "src_lib_safe_id",
@@ -514,7 +525,7 @@
       "file_type": "code",
       "norm_label": "sample()",
       "source_file": "src/lib.rs",
-      "source_location": "L587"
+      "source_location": "L590"
     },
     {
       "id": "src_lib_scrub_exchange",
@@ -554,7 +565,7 @@
       "file_type": "code",
       "norm_label": "value_bytes()",
       "source_file": "src/lib.rs",
-      "source_location": "L526"
+      "source_location": "L529"
     },
     {
       "id": "src_lib_write_exchange",
@@ -1200,124 +1211,114 @@
       "source_location": "L3"
     },
     {
-      "id": "path",
-      "label": "Path",
+      "id": "client",
+      "label": "Client",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "path",
+      "norm_label": "client",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "result",
-      "label": "Result",
+      "id": "method",
+      "label": "Method",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "result",
+      "norm_label": "method",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "socketaddr",
-      "label": "SocketAddr",
+      "id": "pathbuf",
+      "label": "PathBuf",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "socketaddr",
+      "norm_label": "pathbuf",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "src_lib_boundary_client",
-      "label": "boundary_client()",
+      "id": "request",
+      "label": "Request",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "boundary_client()",
-      "source_file": "src/lib.rs",
-      "source_location": "L348"
+      "norm_label": "request",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "src_lib_ensure_empty_or_new_directory",
-      "label": "ensure_empty_or_new_directory()",
+      "id": "response",
+      "label": "Response",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "ensure_empty_or_new_directory()",
-      "source_file": "src/lib.rs",
-      "source_location": "L266"
+      "norm_label": "response",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "src_lib_load_bundle",
-      "label": "load_bundle()",
+      "id": "src_lib_capture_handler",
+      "label": "capture_handler()",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "load_bundle()",
+      "norm_label": "capture_handler()",
       "source_file": "src/lib.rs",
-      "source_location": "L300"
+      "source_location": "L397"
     },
     {
-      "id": "src_lib_local_target",
-      "label": "local_target()",
+      "id": "src_lib_capture_one",
+      "label": "capture_one()",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "local_target()",
+      "norm_label": "capture_one()",
       "source_file": "src/lib.rs",
-      "source_location": "L327"
+      "source_location": "L404"
     },
     {
-      "id": "src_lib_loopback_socket",
-      "label": "loopback_socket()",
+      "id": "src_lib_capturestate",
+      "label": "CaptureState",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "loopback_socket()",
+      "norm_label": "capturestate",
       "source_file": "src/lib.rs",
-      "source_location": "L317"
+      "source_location": "L356"
     },
     {
-      "id": "src_lib_run_capture",
-      "label": "run_capture()",
+      "id": "src_lib_mock_handler",
+      "label": "mock_handler()",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "run_capture()",
+      "norm_label": "mock_handler()",
       "source_file": "src/lib.rs",
-      "source_location": "L363"
+      "source_location": "L499"
     },
     {
-      "id": "src_lib_run_mock",
-      "label": "run_mock()",
+      "id": "state",
+      "label": "State",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "run_mock()",
-      "source_file": "src/lib.rs",
-      "source_location": "L481"
+      "norm_label": "state",
+      "source_file": "",
+      "source_location": ""
     },
     {
-      "id": "src_lib_send_webhook",
-      "label": "send_webhook()",
+      "id": "uri",
+      "label": "Uri",
       "_origin": "ast",
       "community": 5,
       "file_type": "code",
-      "norm_label": "send_webhook()",
-      "source_file": "src/lib.rs",
-      "source_location": "L533"
-    },
-    {
-      "id": "src_lib_shutdown",
-      "label": "shutdown()",
-      "_origin": "ast",
-      "community": 5,
-      "file_type": "code",
-      "norm_label": "shutdown()",
-      "source_file": "src/lib.rs",
-      "source_location": "L579"
+      "norm_label": "uri",
+      "source_file": "",
+      "source_location": ""
     },
     {
       "id": "url",
@@ -1330,114 +1331,124 @@
       "source_location": ""
     },
     {
-      "id": "client",
-      "label": "Client",
+      "id": "path",
+      "label": "Path",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "client",
+      "norm_label": "path",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "method",
-      "label": "Method",
+      "id": "result",
+      "label": "Result",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "method",
+      "norm_label": "result",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "pathbuf",
-      "label": "PathBuf",
+      "id": "socketaddr",
+      "label": "SocketAddr",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "pathbuf",
+      "norm_label": "socketaddr",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "request",
-      "label": "Request",
+      "id": "src_lib_boundary_client",
+      "label": "boundary_client()",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "request",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "response",
-      "label": "Response",
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "response",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_lib_capture_handler",
-      "label": "capture_handler()",
-      "_origin": "ast",
-      "community": 6,
-      "file_type": "code",
-      "norm_label": "capture_handler()",
+      "norm_label": "boundary_client()",
       "source_file": "src/lib.rs",
-      "source_location": "L397"
+      "source_location": "L348"
     },
     {
-      "id": "src_lib_capture_one",
-      "label": "capture_one()",
+      "id": "src_lib_ensure_empty_or_new_directory",
+      "label": "ensure_empty_or_new_directory()",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "capture_one()",
+      "norm_label": "ensure_empty_or_new_directory()",
       "source_file": "src/lib.rs",
-      "source_location": "L404"
+      "source_location": "L266"
     },
     {
-      "id": "src_lib_capturestate",
-      "label": "CaptureState",
+      "id": "src_lib_load_bundle",
+      "label": "load_bundle()",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "capturestate",
+      "norm_label": "load_bundle()",
       "source_file": "src/lib.rs",
-      "source_location": "L356"
+      "source_location": "L300"
     },
     {
-      "id": "src_lib_mock_handler",
-      "label": "mock_handler()",
+      "id": "src_lib_local_target",
+      "label": "local_target()",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "mock_handler()",
+      "norm_label": "local_target()",
       "source_file": "src/lib.rs",
-      "source_location": "L496"
+      "source_location": "L327"
     },
     {
-      "id": "state",
-      "label": "State",
+      "id": "src_lib_loopback_socket",
+      "label": "loopback_socket()",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "state",
-      "source_file": "",
-      "source_location": ""
+      "norm_label": "loopback_socket()",
+      "source_file": "src/lib.rs",
+      "source_location": "L317"
     },
     {
-      "id": "uri",
-      "label": "Uri",
+      "id": "src_lib_run_capture",
+      "label": "run_capture()",
       "_origin": "ast",
       "community": 6,
       "file_type": "code",
-      "norm_label": "uri",
-      "source_file": "",
-      "source_location": ""
+      "norm_label": "run_capture()",
+      "source_file": "src/lib.rs",
+      "source_location": "L363"
+    },
+    {
+      "id": "src_lib_run_mock",
+      "label": "run_mock()",
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "run_mock()",
+      "source_file": "src/lib.rs",
+      "source_location": "L481"
+    },
+    {
+      "id": "src_lib_send_webhook",
+      "label": "send_webhook()",
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "send_webhook()",
+      "source_file": "src/lib.rs",
+      "source_location": "L536"
+    },
+    {
+      "id": "src_lib_shutdown",
+      "label": "shutdown()",
+      "_origin": "ast",
+      "community": 6,
+      "file_type": "code",
+      "norm_label": "shutdown()",
+      "source_file": "src/lib.rs",
+      "source_location": "L582"
     },
     {
       "id": "src_main",
@@ -1956,7 +1967,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L608",
+      "source_location": "L611",
       "weight": 1.0
     },
     {
@@ -1968,7 +1979,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L609",
+      "source_location": "L612",
       "weight": 1.0
     },
     {
@@ -1980,7 +1991,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L609",
+      "source_location": "L612",
       "weight": 1.0
     },
     {
@@ -1992,7 +2003,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L610",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
@@ -2004,7 +2015,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L612",
+      "source_location": "L615",
       "weight": 1.0
     },
     {
@@ -2016,7 +2027,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L614",
+      "source_location": "L617",
       "weight": 1.0
     },
     {
@@ -2028,7 +2039,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L520",
+      "source_location": "L523",
       "weight": 1.0
     },
     {
@@ -2076,7 +2087,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L593",
+      "source_location": "L596",
       "weight": 1.0
     },
     {
@@ -2088,7 +2099,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L594",
+      "source_location": "L597",
       "weight": 1.0
     },
     {
@@ -2100,7 +2111,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L594",
+      "source_location": "L597",
       "weight": 1.0
     },
     {
@@ -2112,7 +2123,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L627",
+      "source_location": "L630",
       "weight": 1.0
     },
     {
@@ -2124,7 +2135,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L627",
+      "source_location": "L630",
       "weight": 1.0
     },
     {
@@ -2208,7 +2219,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L491",
+      "source_location": "L494",
       "weight": 1.0
     },
     {
@@ -2244,7 +2255,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L539",
+      "source_location": "L542",
       "weight": 1.0
     },
     {
@@ -2256,7 +2267,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L540",
+      "source_location": "L543",
       "weight": 1.0
     },
     {
@@ -2268,7 +2279,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L546",
+      "source_location": "L549",
       "weight": 1.0
     },
     {
@@ -2280,7 +2291,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/lib.rs",
-      "source_location": "L557",
+      "source_location": "L560",
       "weight": 1.0
     },
     {
@@ -2688,7 +2699,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/lib.rs",
-      "source_location": "L496",
+      "source_location": "L499",
       "weight": 1.0
     },
     {
@@ -3144,7 +3155,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/lib.rs",
-      "source_location": "L496",
+      "source_location": "L499",
       "weight": 1.0
     },
     {
@@ -3156,7 +3167,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/lib.rs",
-      "source_location": "L496",
+      "source_location": "L499",
       "weight": 1.0
     },
     {
@@ -3168,7 +3179,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/lib.rs",
-      "source_location": "L496",
+      "source_location": "L499",
       "weight": 1.0
     },
     {
@@ -3324,7 +3335,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/lib.rs",
-      "source_location": "L533",
+      "source_location": "L536",
       "weight": 1.0
     },
     {
@@ -3336,7 +3347,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/lib.rs",
-      "source_location": "L526",
+      "source_location": "L529",
       "weight": 1.0
     },
     {
@@ -3540,7 +3551,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/lib.rs",
-      "source_location": "L496",
+      "source_location": "L499",
       "weight": 1.0
     },
     {
@@ -3612,7 +3623,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/lib.rs",
-      "source_location": "L587",
+      "source_location": "L590",
       "weight": 1.0
     },
     {
@@ -3624,7 +3635,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/lib.rs",
-      "source_location": "L533",
+      "source_location": "L536",
       "weight": 1.0
     },
     {
@@ -3636,7 +3647,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/lib.rs",
-      "source_location": "L526",
+      "source_location": "L529",
       "weight": 1.0
     },
     {
@@ -4409,7 +4420,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L496",
+      "source_location": "L499",
       "weight": 1.0
     },
     {
@@ -4420,7 +4431,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L526",
+      "source_location": "L529",
       "weight": 1.0
     },
     {
@@ -4431,7 +4442,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L533",
+      "source_location": "L536",
       "weight": 1.0
     },
     {
@@ -4442,7 +4453,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L579",
+      "source_location": "L582",
       "weight": 1.0
     },
     {
@@ -4453,7 +4464,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L587",
+      "source_location": "L590",
       "weight": 1.0
     },
     {
@@ -4464,7 +4475,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L592",
+      "source_location": "L595",
       "weight": 1.0
     },
     {
@@ -4475,7 +4486,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L605",
+      "source_location": "L608",
       "weight": 1.0
     },
     {
@@ -4486,7 +4497,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L619",
+      "source_location": "L622",
       "weight": 1.0
     },
     {
@@ -4497,7 +4508,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/lib.rs",
-      "source_location": "L635",
+      "source_location": "L638",
       "weight": 1.0
     },
     {
@@ -4601,6 +4612,17 @@
     },
     {
       "source": "tests_product_spec",
+      "target": "tests_product_spec_startproductionsite",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/product.spec.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_product_spec",
       "target": "tests_product_spec_tempfolder",
       "relation": "contains",
       "_origin": "ast",
@@ -4667,7 +4689,7 @@
     },
     {
       "source": "tests_product_spec",
-      "target": "tests_product_spec_startproductionsite",
+      "target": "tests_product_spec_startmock",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4918,5 +4940,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "900a8c54ebba531827ce2c9c7ad6a3a24ba112bf"
+  "built_at_commit": "8e1fe05cd4b705a008cb487930d59bf1ccc35d99"
 }

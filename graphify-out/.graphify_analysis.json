@@ -108,6 +108,20 @@
       "package_version"
     ],
     "5": [
+      "client",
+      "method",
+      "pathbuf",
+      "request",
+      "response",
+      "src_lib_capture_handler",
+      "src_lib_capture_one",
+      "src_lib_capturestate",
+      "src_lib_mock_handler",
+      "state",
+      "uri",
+      "url"
+    ],
+    "6": [
       "path",
       "result",
       "socketaddr",
@@ -119,21 +133,7 @@
       "src_lib_run_capture",
       "src_lib_run_mock",
       "src_lib_send_webhook",
-      "src_lib_shutdown",
-      "url"
-    ],
-    "6": [
-      "client",
-      "method",
-      "pathbuf",
-      "request",
-      "response",
-      "src_lib_capture_handler",
-      "src_lib_capture_one",
-      "src_lib_capturestate",
-      "src_lib_mock_handler",
-      "state",
-      "uri"
+      "src_lib_shutdown"
     ],
     "7": [
       "src_main",
@@ -155,6 +155,7 @@
       "tests_product_spec_normalizedemooutput",
       "tests_product_spec_runbinary",
       "tests_product_spec_startcapture",
+      "tests_product_spec_startmock",
       "tests_product_spec_startproductionsite",
       "tests_product_spec_tempfolder"
     ],
@@ -203,10 +204,10 @@
     "2": 0.2647058823529412,
     "3": 0.13333333333333333,
     "4": 0.15384615384615385,
-    "5": 0.3076923076923077,
-    "6": 0.2545454545454545,
+    "5": 0.22727272727272727,
+    "6": 0.3484848484848485,
     "7": 0.35555555555555557,
-    "8": 0.2222222222222222,
+    "8": 0.2,
     "9": 0.4,
     "10": 0.6666666666666666,
     "11": 0.6666666666666666,
@@ -255,11 +256,6 @@
       "degree": 9
     },
     {
-      "id": "src_lib_write_exchange",
-      "label": "write_exchange()",
-      "degree": 8
-    },
-    {
       "id": "tsconfig_compileroptions",
       "label": "compilerOptions",
       "degree": 8
@@ -268,12 +264,17 @@
       "id": "package_scripts",
       "label": "scripts",
       "degree": 8
+    },
+    {
+      "id": "src_main_run",
+      "label": "run()",
+      "degree": 8
     }
   ],
   "surprises": [
     {
       "source": "demo()",
-      "target": "export_bundle()",
+      "target": "ensure_empty_or_new_directory()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
@@ -283,7 +284,7 @@
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "run()",
+      "source": "demo()",
       "target": "export_bundle()",
       "source_files": [
         "src/main.rs",
@@ -316,8 +317,8 @@
       "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "demo()",
-      "target": "ensure_empty_or_new_directory()",
+      "source": "run()",
+      "target": "export_bundle()",
       "source_files": [
         "src/main.rs",
         "src/lib.rs"
