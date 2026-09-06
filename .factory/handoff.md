@@ -82,6 +82,9 @@ Checked 2026-09-06 UTC at
 - Axe found zero violations on landing (desktop and phone), privacy, terms,
   and the designed 404. `/`, `/demo`, `/privacy`, and `/terms` returned 200;
   `/missing-repair5` returned the designed HTTP 404.
+- The factory `verify-url.sh` passed the live landing in 1.017 seconds with no
+  console errors, one h1, one main landmark, `lang=en`, and no missing image
+  alt text or unlabeled buttons.
 - HTTPS responses retain CSP with `frame-ancestors 'none'`, HSTS, nosniff,
   strict-origin referrer policy, and restrictive permissions policy.
 - Built initial JavaScript is 13,980 bytes (5,070 bytes gzip); CSS is 12,997
