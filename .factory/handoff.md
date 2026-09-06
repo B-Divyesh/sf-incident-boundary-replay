@@ -72,6 +72,8 @@ Checked 2026-09-06 UTC at
 - One click opened the populated `payment.failed` sample with its 503 result,
   four removed values, persistent **Demo — sample data, nothing is saved**
   label, **Reset demo**, and **Start for real**.
+- The live export downloaded one fixture with status 503, four redactions, and
+  `[REDACTED]` in the selected personal-data field.
 - Inspect, reset, sticky-banner scroll, and exit passed. Exit removed only the
   demo session key and preserved seeded real local/session storage values.
 - Landing and demo requests were same-origin only. Service-worker update left
@@ -89,6 +91,9 @@ Checked 2026-09-06 UTC at
   strict-origin referrer policy, and restrictive permissions policy.
 - Built initial JavaScript is 13,980 bytes (5,070 bytes gzip); CSS is 12,997
   bytes (3,790 bytes gzip).
+- The earlier fresh mobile Lighthouse result remains applicable because the
+  static output is byte-identical: performance 99, LCP 1.6 s, CLS 0.003, and
+  total blocking time 0 ms.
 
 The current live static output is the same browser artifact as the prior
 candidate because this repair changes the CLI/runtime test path only. It was
