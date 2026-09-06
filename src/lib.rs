@@ -486,7 +486,10 @@ pub async fn run_mock(bundle: &Path, listen: &str) -> Result<()> {
         .fallback(any(mock_handler))
         .with_state(MockState(Arc::new(fixtures)));
     let listener = TcpListener::bind(addr).await?;
-    println!("serving {count} fixture(s) on http://{addr}");
+    let bound_addr = listener
+        .local_addr()
+        .context("could not read the mock listener address")?;
+    println!("serving {count} fixture(s) on http://{bound_addr}");
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown())
         .await?;

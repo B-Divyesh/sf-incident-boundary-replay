@@ -73,6 +73,34 @@ async function startCapture(upstream: string, out: string): Promise<{ sidecar: C
   return { sidecar, origin };
 }
 
+async function startMock(bundle: string): Promise<{ server: ChildProcess; origin: string }> {
+  const server = spawn(binary, ['serve', '--bundle', bundle, '--listen', '127.0.0.1:0'], {
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+  let stdout = '';
+  let stderr = '';
+  const origin = await new Promise<string>((resolveReady, reject) => {
+    let settled = false;
+    const finish = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      callback();
+    };
+    const fail = (reason: string) => finish(() => reject(new Error(`${reason}\nstdout:\n${stdout}\nstderr:\n${stderr}`)));
+    const ready = () => {
+      const match = stdout.match(/serving \d+ fixture\(s\) on (http:\/\/127\.0\.0\.1:(\d+))/u);
+      if (match && Number(match[2]) > 0) finish(() => resolveReady(match[1]));
+    };
+    const timeout = setTimeout(() => fail('mock did not report a usable address within 5 seconds'), 5000);
+    server.stdout.on('data', chunk => { stdout += chunk; ready(); });
+    server.stderr.on('data', chunk => { stderr += chunk; });
+    server.once('error', error => fail(`mock failed to start: ${error.message}`));
+    server.once('exit', (code, signal) => fail(`mock stopped during startup with code ${code ?? 'null'} and signal ${signal ?? 'none'}`));
+  });
+  return { server, origin };
+}
+
 async function startProductionSite(): Promise<{ origin: string; close: () => Promise<void> }> {
   const siteRoot = resolve('dist/site');
   const clientRoutes = new Set(['/', '/demo', '/privacy', '/terms']);
@@ -318,16 +346,11 @@ test('@claim:cli-demo-isolation refuses non-empty output folders and never chang
 
 test('@claim:runnable-local-mock exported bundle returns its recorded failure', async () => {
   const root = tempFolder();
-  const port = 19487;
   const bundle = makeDemo(root);
-  const server = spawn(binary, ['serve', '--bundle', bundle, '--listen', `127.0.0.1:${port}`], { stdio: ['ignore', 'pipe', 'pipe'] });
+  const { server, origin } = await startMock(bundle);
   try {
-    await new Promise<void>((resolveReady, reject) => {
-      const timeout = setTimeout(() => reject(new Error('mock did not start')), 5000);
-      server.stdout.on('data', chunk => { if (chunk.toString().includes('serving 1 fixture')) { clearTimeout(timeout); resolveReady(); } });
-      server.on('exit', code => reject(new Error(`mock stopped with ${code}`)));
-    });
-    const response = await fetch(`http://127.0.0.1:${port}/webhooks/payment`, { method: 'POST' });
+    expect(new URL(origin).port).not.toBe('0');
+    const response = await fetch(`${origin}/webhooks/payment`, { method: 'POST' });
     expect(response.status).toBe(503);
     expect(response.headers.get('content-type')).toContain('application/json');
     expect(response.headers.get('retry-after')).toBe('30');

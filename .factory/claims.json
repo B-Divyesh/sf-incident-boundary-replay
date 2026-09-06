@@ -53,7 +53,7 @@
     "claim": "An exported mock matches its recorded method and path and returns the recorded status, headers, and body on loopback",
     "where": "landing workflow, demo, README",
     "test": "npm test -- --grep @claim:runnable-local-mock",
-    "sandbox": "fresh CLI demo export; start the mock on loopback; POST to the recorded path; assert status 503, content-type and retry-after headers, and the recorded JSON body"
+    "sandbox": "fresh CLI demo export; start the mock on loopback port 0; parse its announced nonzero address; POST to that address; assert status 503, content-type and retry-after headers, and the recorded JSON body"
   },
   {
     "id": "signed-local-webhook",
