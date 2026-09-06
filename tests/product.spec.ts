@@ -5,7 +5,7 @@ import { createServer } from 'node:http';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { execFileSync, spawn, spawnSync } from 'node:child_process';
+import { ChildProcess, execFileSync, spawn, spawnSync } from 'node:child_process';
 
 const binary = resolve('target/debug/boundary-replay');
 
@@ -45,13 +45,32 @@ function runBinary(args: string[], env: NodeJS.ProcessEnv = process.env): Promis
   });
 }
 
-async function freeLoopbackPort(): Promise<number> {
-  const server = createServer();
-  await new Promise<void>(resolveListen => server.listen(0, '127.0.0.1', resolveListen));
-  const address = server.address();
-  if (!address || typeof address === 'string') throw new Error('could not reserve a loopback port');
-  await new Promise<void>(resolveClose => server.close(() => resolveClose()));
-  return address.port;
+async function startCapture(upstream: string, out: string): Promise<{ sidecar: ChildProcess; origin: string }> {
+  const sidecar = spawn(binary, ['capture', '--listen', '127.0.0.1:0', '--upstream', upstream, '--out', out], {
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+  let stdout = '';
+  let stderr = '';
+  const origin = await new Promise<string>((resolveReady, reject) => {
+    let settled = false;
+    const finish = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      callback();
+    };
+    const fail = (reason: string) => finish(() => reject(new Error(`${reason}\nstdout:\n${stdout}\nstderr:\n${stderr}`)));
+    const ready = () => {
+      const match = stdout.match(/capturing opted-in traffic on (http:\/\/127\.0\.0\.1:\d+)/u);
+      if (match) finish(() => resolveReady(match[1]));
+    };
+    const timeout = setTimeout(() => fail('capture sidecar did not start within 5 seconds'), 5000);
+    sidecar.stdout.on('data', chunk => { stdout += chunk; ready(); });
+    sidecar.stderr.on('data', chunk => { stderr += chunk; });
+    sidecar.once('error', error => fail(`capture sidecar failed to start: ${error.message}`));
+    sidecar.once('exit', (code, signal) => fail(`capture sidecar stopped during startup with code ${code ?? 'null'} and signal ${signal ?? 'none'}`));
+  });
+  return { sidecar, origin };
 }
 
 async function startProductionSite(): Promise<{ origin: string; close: () => Promise<void> }> {
@@ -96,14 +115,9 @@ test('@claim:redact-before-disk capture sidecar writes only scrubbed data', asyn
   await new Promise<void>(resolveListen => upstream.listen(0, '127.0.0.1', resolveListen));
   const address = upstream.address();
   if (!address || typeof address === 'string') throw new Error('upstream has no port');
-  const sidecar = spawn(binary, ['capture', '--listen', '127.0.0.1:18787', '--upstream', `http://127.0.0.1:${address.port}`, '--out', root], { stdio: ['ignore', 'pipe', 'pipe'] });
+  const { sidecar, origin } = await startCapture(`http://127.0.0.1:${address.port}`, root);
   try {
-    await new Promise<void>((resolveReady, reject) => {
-      const timeout = setTimeout(() => reject(new Error('capture sidecar did not start')), 5000);
-      sidecar.stdout.on('data', chunk => { if (chunk.toString().includes('capturing opted-in traffic')) { clearTimeout(timeout); resolveReady(); } });
-      sidecar.on('exit', code => reject(new Error(`capture sidecar stopped with ${code}`)));
-    });
-    const response = await fetch('http://127.0.0.1:18787/webhooks/payment', {
+    const response = await fetch(`${origin}/webhooks/payment`, {
       method: 'POST',
       headers: { authorization: 'Bearer private-token', 'content-type': 'application/json', 'x-trace-id': 'trace-test-1' },
       body: JSON.stringify({ event: 'payment.failed', customer_email: 'maya.chen@example.com', card_number: '4242424242424242' })
@@ -151,16 +165,10 @@ test('@claim:local-only-replay never follows 301, 302, 303, 307, or 308 redirect
   await new Promise<void>(resolveListen => redirector.listen(0, '127.0.0.1', resolveListen));
   const redirectAddress = redirector.address();
   if (!redirectAddress || typeof redirectAddress === 'string') throw new Error('redirector has no port');
-  const sidecarPort = await freeLoopbackPort();
-  const sidecar = spawn(binary, ['capture', '--listen', `127.0.0.1:${sidecarPort}`, '--upstream', `http://127.0.0.1:${redirectAddress.port}`, '--out', join(root, 'captured')], { stdio: ['ignore', 'pipe', 'pipe'] });
+  const { sidecar, origin } = await startCapture(`http://127.0.0.1:${redirectAddress.port}`, join(root, 'captured'));
   try {
-    await new Promise<void>((resolveReady, reject) => {
-      const timeout = setTimeout(() => reject(new Error('capture sidecar did not start')), 5000);
-      sidecar.stdout.on('data', chunk => { if (chunk.toString().includes('capturing opted-in traffic')) { clearTimeout(timeout); resolveReady(); } });
-      sidecar.on('exit', code => reject(new Error(`capture sidecar stopped with ${code}`)));
-    });
     for (const status of [301, 302, 303, 307, 308]) {
-      const capture = await fetch(`http://127.0.0.1:${sidecarPort}/${status}`, { method: 'POST', body: `raw-secret-${status}`, redirect: 'manual' });
+      const capture = await fetch(`${origin}/${status}`, { method: 'POST', body: `raw-secret-${status}`, redirect: 'manual' });
       expect(capture.status).toBe(status);
       const result = await runBinary(['send', '--bundle', bundle, '--fixture', 'payment-webhook', '--target', `http://127.0.0.1:${redirectAddress.port}/${status}`, '--signing-secret-env', 'TEST_SIGNING_SECRET', '--json'], { ...process.env, TEST_SIGNING_SECRET: 'test-secret' });
       expect(result.code, result.stderr).toBe(0);
@@ -422,15 +430,9 @@ test('@claim:chosen-output-paths keeps captured and exported data inside named f
   await new Promise<void>(resolveListen => upstream.listen(0, '127.0.0.1', resolveListen));
   const address = upstream.address();
   if (!address || typeof address === 'string') throw new Error('upstream has no port');
-  const port = await freeLoopbackPort();
-  const sidecar = spawn(binary, ['capture', '--listen', `127.0.0.1:${port}`, '--upstream', `http://127.0.0.1:${address.port}`, '--out', captureFolder], { stdio: ['ignore', 'pipe', 'pipe'] });
+  const { sidecar, origin } = await startCapture(`http://127.0.0.1:${address.port}`, captureFolder);
   try {
-    await new Promise<void>((resolveReady, reject) => {
-      const timeout = setTimeout(() => reject(new Error('capture sidecar did not start')), 5000);
-      sidecar.stdout.on('data', chunk => { if (chunk.toString().includes('capturing opted-in traffic')) { clearTimeout(timeout); resolveReady(); } });
-      sidecar.on('exit', code => reject(new Error(`capture sidecar stopped with ${code}`)));
-    });
-    expect((await fetch(`http://127.0.0.1:${port}/only-here`, { method: 'POST', body: '{"token":"private"}' })).status).toBe(503);
+    expect((await fetch(`${origin}/only-here`, { method: 'POST', body: '{"token":"private"}' })).status).toBe(503);
     const exported = spawnSync(binary, ['export', '--captures', captureFolder, '--out', bundleFolder, '--json'], { encoding: 'utf8' });
     expect(exported.status, exported.stderr).toBe(0);
     expect(JSON.parse(exported.stdout)).toMatchObject({ bundle: bundleFolder, fixtures: 1 });
@@ -486,20 +488,14 @@ test('@claim:cli-json-and-errors gives scripts JSON on success and stderr plus a
 
 test('@claim:capture-opt-in starts capturing only after the sidecar is launched', async () => {
   const root = tempFolder();
-  const port = await freeLoopbackPort();
-  await expect(fetch(`http://127.0.0.1:${port}/not-running`)).rejects.toThrow();
   const upstream = createServer((request, response) => { request.resume(); response.writeHead(204); response.end(); });
   await new Promise<void>(resolveListen => upstream.listen(0, '127.0.0.1', resolveListen));
   const address = upstream.address();
   if (!address || typeof address === 'string') throw new Error('upstream has no port');
-  const sidecar = spawn(binary, ['capture', '--listen', `127.0.0.1:${port}`, '--upstream', `http://127.0.0.1:${address.port}`, '--out', root], { stdio: ['ignore', 'pipe', 'pipe'] });
+  expect(readdirSync(root)).toEqual([]);
+  const { sidecar, origin } = await startCapture(`http://127.0.0.1:${address.port}`, root);
   try {
-    await new Promise<void>((resolveReady, reject) => {
-      const timeout = setTimeout(() => reject(new Error('capture sidecar did not start')), 5000);
-      sidecar.stdout.on('data', chunk => { if (chunk.toString().includes('capturing opted-in traffic')) { clearTimeout(timeout); resolveReady(); } });
-      sidecar.on('exit', code => reject(new Error(`capture sidecar stopped with ${code}`)));
-    });
-    expect((await fetch(`http://127.0.0.1:${port}/running`)).status).toBe(204);
+    expect((await fetch(`${origin}/running`)).status).toBe(204);
     expect(readdirSync(root)).toHaveLength(1);
   } finally {
     sidecar.kill('SIGINT');

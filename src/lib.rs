@@ -383,7 +383,10 @@ pub async fn run_capture(
         .fallback(any(capture_handler))
         .with_state(state);
     let listener = TcpListener::bind(addr).await?;
-    println!("capturing opted-in traffic on http://{addr}");
+    let bound_addr = listener
+        .local_addr()
+        .context("could not read the capture listener address")?;
+    println!("capturing opted-in traffic on http://{bound_addr}");
     println!("writing scrubbed exchanges to {}", out.display());
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown())
