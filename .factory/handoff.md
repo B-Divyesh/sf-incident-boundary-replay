@@ -1,178 +1,49 @@
-# Boundary Replay review 6 handoff
-
-## Latest strict review
-
-**FAIL — one minor finding and zero untested public claims.** Review 6 found
-that `boundary-replay serve --listen 127.0.0.1:0` binds an OS-selected port but
-prints `http://127.0.0.1:0`. In the proof run the process was actually on
-`127.0.0.1:42731`; the actual address returned the recorded 503, while the
-printed address failed. `run_mock` prints the requested address instead of
-reading `listener.local_addr()` after bind.
-
-No product code was changed. Repair `run_mock` to print its bound address, add
-a port-zero regression that requests the fixture through the printed address,
-then repeat all clean claims and the installed consumer check. Full evidence
-is in `.factory/review-6.md`.
-
-All 19 exact claim commands passed on their first clean invocation, and the
-repaired capture claim passed 20 additional repetitions. The full suite,
-typecheck, lint, format, build, package, installed core CLI flow, and live
-desktop/phone checks passed. Axe found zero violations; the URL verifier found
-no console errors; all 21 public live files match the clean build byte for
-byte. Implementation is `09a9cdc40cb83150f572f339bb54ea0dbad81d7d`, the
-latest documentation commit before this review is
-`10a8e642019caf0800a2df9f304bd6b07ba976fe`, and checkout snapshot `b139cb4`
-only adds Graphify output.
-
-Pre-existing Graphify workspace changes remain untouched.
-
-# Prior verification 6 handoff
-
-## Latest independent verification
-
-**PASS — zero findings and zero untested public claims.** On 2026-09-06 UTC,
-an independent verifier reviewed implementation `09a9cdc40cb83150f572f339bb54ea0dbad81d7d`
-and documentation `39deee330e014f864b53074b5ba3938ac8bba834`. The current
-repository snapshot `0232d61` is a later factory/report-only commit.
-
-From a public clean clone with documented Rust 1.88.0 setup, all 19 exact
-claim commands passed, then `npm test` (31 Playwright and 4 Rust tests),
-typecheck, lint, format check, production build, and locked package verification
-passed. The repaired `capture-opt-in` claim also passed 20 consecutive repeats.
-A clean consumer installed the packaged crate and successfully captured through
-an OS-selected loopback port, forwarding a 503 and saving redacted fields.
-
-Fresh desktop and 390 px live-browser contexts showed the job, audience, and
-Try-it action before scroll; the one-click sample, persistent demo label,
-redacted export, reset, real-data isolation, offline reload, service-worker
-state, keyboard/focus, reduced motion, Axe, legal routes, and designed HTTP 404
-all passed. Current live HTML, service worker, JavaScript, and CSS match the
-clean build byte for byte. The detailed evidence is in
-`.factory/verification-6.md`.
-
-The only 404 observed is the deliberate designed missing-page response. This
-is expected, not a defect. No backend is shipped, so tenant/persistence/health
-and server-rate-limit checks are not applicable.
-
-## Repair 5 detail
+# Boundary Replay repair 6 handoff
 
 ## Outcome
 
-**PASS.** Review 5 finding F-5-1 is fixed at its cause. The implementation
-commit is `09a9cdc40cb83150f572f339bb54ea0dbad81d7d` (`fix: remove capture
-claim port race`). The current documentation update follows that implementation
-commit in Git history.
+**PASS in repair verification.** Review 6 finding F-6-1 is fixed at its cause.
+`boundary-replay serve --listen 127.0.0.1:0` now reports the nonzero address
+selected by the operating system, and that printed address serves the recorded
+fixture.
 
-Boundary Replay records selected HTTP requests and responses, removes selected
-secrets before saving, and exports a localhost mock. It is for backend
-engineers reproducing queue, webhook, and third-party failures. The first
-action is **Try it with sample data**.
+- Implementation SHA: `1fc70880aab6bfc165d3726537f7aaab560a03a9`
+- Documentation SHA: the later commit containing this handoff; it does not
+  change the deployed browser or CLI runtime.
+- Live URL: https://incident-boundary-replay.sociobot.in
+- Static deployment ID: `33d70c6c-5c77-412f-baac-46ffc8b11753`
+- Deployment date: 2026-09-06 UTC
 
 ## What changed
 
-- The capture command now reports the loopback address it actually bound. This
-  makes `--listen 127.0.0.1:0` usable for isolated consumers and tests.
-- Capture regressions no longer reserve a port and release it before spawning
-  the sidecar. They let the sidecar choose an OS port, parse its announced
-  address, and send the request there.
-- Startup failures now include the child process stdout and stderr, not only an
-  exit code.
-- The `capture-opt-in` claim checks that its new output folder is empty before
-  the command runs, then proves a real post-launch request is recorded. It is
-  an outcome check rather than a source-text assertion.
+- `run_mock` reads `TcpListener::local_addr()` after binding and prints that
+  bound address.
+- The `runnable-local-mock` claim now starts `serve` on `127.0.0.1:0`, parses
+  the announced address, requires a nonzero port, and sends the request to that
+  exact address.
+- The claim sandbox description records the port-zero outcome check.
 
-The repair did not change browser assets. A fresh production build still
-matches the current HTTPS `index.html`, `404.html`, `sw.js`, main JavaScript,
-and main CSS byte for byte. The source implementation was pushed to `main`.
+The regression is behavioral. It would fail if the process printed port zero,
+if the printed port differed from the bound socket, or if the fixture could not
+be requested through the printed address.
 
-## Verification
+## Clean verification
 
-### Clean claims and quality gates
-
-Two detached clean clones of `09a9cdc` were used. The definitive run was
-`/tmp/ibr-repair5-clean-two.5wchSn/repo` after the documented setup:
+A fresh clone of pushed implementation `1fc7088` was prepared with:
 
 ```sh
 rustup toolchain install 1.88.0 --profile minimal
 npm ci
 ```
 
-- All 19 exact commands in `.factory/claims.json` passed independently on
-  their first command invocation in the clean clone.
-- `npm test` passed: 31 Playwright tests plus 4 Rust unit tests and doc tests.
-- `npm run typecheck`, `npm run lint`, `cargo fmt --all -- --check`,
-  `npm run build`, and `cargo package --locked` passed.
-- `cargo package --locked` packaged and verified 11 files (22.8 KiB
-  compressed).
-- The repaired claim also passed 20 consecutive repetitions with
-  `npm test -- --grep @claim:capture-opt-in --repeat-each=20`.
+`npm ci` reported zero vulnerabilities. All 19 exact commands in
+`.factory/claims.json` passed on their first invocation. The repaired
+`runnable-local-mock` claim also passed 20 consecutive runs in the working
+checkout.
 
-### Clean consumer CLI
-
-The packed crate was extracted and installed into
-`/tmp/ibr-repair5-consumer.sgYptb/root` with `cargo install --path ...
---locked`. The installed binary reported `boundary-replay 0.1.0`; its
-`demo --json` created one sample fixture. Its `capture --listen 127.0.0.1:0`
-run announced its bound loopback address, forwarded a local 503 response, and
-wrote exactly one scrubbed exchange.
-
-### Live HTTPS product
-
-Checked 2026-09-06 UTC at
-`https://incident-boundary-replay.sociobot.in` in fresh 1440 × 900 and 390 ×
-844 Chromium contexts.
-
-- The cold first screen showed the job, named backend engineers and their
-  failure types, and exposed the first action. The action/facts ended at
-  537/658 px on desktop and 571/804 px on phone.
-- One click opened the populated `payment.failed` sample with its 503 result,
-  four removed values, persistent **Demo — sample data, nothing is saved**
-  label, **Reset demo**, and **Start for real**.
-- The live export downloaded one fixture with status 503, four redactions, and
-  `[REDACTED]` in the selected personal-data field.
-- Inspect, reset, sticky-banner scroll, and exit passed. Exit removed only the
-  demo session key and preserved seeded real local/session storage values.
-- Landing and demo requests were same-origin only. Service-worker update left
-  no waiting worker; an offline demo reload retained the sample, 503 response,
-  and offline notice.
-- Keyboard skip focus, the 3 px focus ring, no horizontal overflow, and
-  reduced motion passed on both viewports.
-- Axe found zero violations on landing (desktop and phone), privacy, terms,
-  and the designed 404. `/`, `/demo`, `/privacy`, and `/terms` returned 200;
-  `/missing-repair5` returned the designed HTTP 404.
-- The factory `verify-url.sh` passed the live landing in 1.017 seconds with no
-  console errors, one h1, one main landmark, `lang=en`, and no missing image
-  alt text or unlabeled buttons.
-- HTTPS responses retain CSP with `frame-ancestors 'none'`, HSTS, nosniff,
-  strict-origin referrer policy, and restrictive permissions policy.
-- Built initial JavaScript is 13,980 bytes (5,070 bytes gzip); CSS is 12,997
-  bytes (3,790 bytes gzip).
-- The earlier fresh mobile Lighthouse result remains applicable because the
-  static output is byte-identical: performance 99, LCP 1.6 s, CLS 0.003, and
-  total blocking time 0 ms.
-
-The current live static output is the same browser artifact as the prior
-candidate because this repair changes the CLI/runtime test path only. It was
-compared byte for byte with the current build after push.
-
-## Earlier findings and scope
-
-All earlier review and verification findings were reread before this repair.
-Their current dispositions remain those independently rechecked in
-`.factory/review-5.md`; F-5-1 is now resolved by the clean-run evidence above.
-No Graphify workspace changes were staged or committed.
-
-There is no public backend, account system, paid offer, billing registration,
-or AI runtime. The free local exporter remains usable. Backend tenant, health,
-rate-limit, and entitlement checks are not applicable. The package is ready to
-publish with `cargo package --locked`; publishing remains a factory-owned
-operation.
-
-## Run and deploy
+The following clean-clone gates passed:
 
 ```sh
-rustup toolchain install 1.88.0 --profile minimal
-npm ci
 npm test
 npm run typecheck
 npm run lint
@@ -181,6 +52,112 @@ npm run build
 cargo package --locked
 ```
 
-Deploy `dist/site` as the static root. `site/public/staticwebapp.config.json`
-preserves direct loads for `/demo`, `/privacy`, and `/terms`, and rewrites real
-missing routes to the designed HTTP 404.
+`npm test` passed 31 Playwright tests and 4 Rust tests. The package contained
+11 files and was 22.8 KiB compressed. Built JavaScript is 13,980 bytes (5,090
+bytes gzip); CSS is 12,997 bytes (3,777 bytes gzip).
+
+Claim and gate logs are at `/work/.evidence/repair-6-claims.log` and
+`/work/.evidence/repair-6-quality.log`.
+
+## Installed CLI verification
+
+The packaged crate was extracted and installed into a separate consumer root.
+The installed executable reported version `0.1.0` and useful command help.
+
+An installed-artifact flow then:
+
+- captured one opted-in request through its announced OS-selected port;
+- forwarded the upstream 503 and `Retry-After: 12` response;
+- saved the trace, method, and query path;
+- recorded ten redactions and none of the seeded raw secrets;
+- exported one fixture;
+- served and restarted the same bundle on announced nonzero ports;
+- reproduced the recorded 503, response header, and JSON body;
+- returned the actionable local 404 for a wrong path; and
+- rejected `0.0.0.0:0` as a non-loopback bind.
+
+## Live HTTPS verification
+
+The static site was redeployed from the clean implementation checkout. All 21
+public files match that production build byte for byte. The browser artifact
+is intentionally unchanged because the repair affects the CLI.
+
+Fresh 1440 × 900 and 390 × 844 Chromium contexts confirmed before scrolling:
+
+- Job: capture HTTP failures, remove selected secrets, and replay them on
+  localhost.
+- Audience: backend engineers reproducing queue, webhook, and third-party
+  request failures.
+- First action: **Try it with sample data**.
+
+The action and all three facts fit in both viewports. One click opened the
+populated `payment.failed` sample with `POST /webhooks/payment`, four removed
+values, and a 503 response. The persistent label read **Demo — sample data,
+nothing is saved**. Inspect, export, reset, and exit all passed. Export produced
+one 503 fixture with four redactions. Reset restored the initial result and
+focused the demo heading. Exit removed only the demo key and preserved seeded
+real local- and session-storage values. All landing and demo requests were
+same-origin.
+
+Additional live results:
+
+- `/`, `/demo`, `/privacy`, and `/terms` returned 200 with correct titles.
+- `/missing-repair-6` returned the designed page with HTTP 404.
+- Every tested route had `lang=en`, one h1, one main, and complete image alt
+  text.
+- Axe found zero violations on the landing, demo, privacy, terms, phone demo,
+  and designed 404.
+- The factory URL verifier found no console errors or structural failures.
+- Keyboard skip navigation used the 3 px amber focus ring and reached main.
+- Phone pages had no overflow and no interactive target below 44 × 44 px.
+- Reduced-motion mode had no running animation after initial rendering.
+- The service worker controlled the demo, had no waiting update, and retained
+  the populated sample plus its offline notice after an offline reload.
+- All rendered HTTP links returned 200. The privacy email is a `mailto:` link.
+- CSP, HSTS, nosniff, strict-origin referrer policy, and restrictive permissions
+  policy remain present.
+
+Fresh mobile Lighthouse scores were 100 performance, 100 accessibility, 100
+best practices, and 100 SEO. FCP and LCP were 1.23 seconds, total blocking time
+was 0 ms, CLS was 0.0032, and total transfer was 69,515 bytes. Browser reports
+and screenshots are under `/work/.evidence/repair-6-live/`.
+
+## Earlier findings
+
+All earlier review, verification, and polish reports were reread before the
+repair. Their dispositions remain proved by the clean claim suite, full browser
+suite, installed CLI flow, and live checks:
+
+- Review 1 F-1-1 through F-1-16 remain fixed: Rust 1.88, bounded wording,
+  runnable demo, route metadata, shared 404, plain copy, clipboard recovery,
+  offline wording, and README corrections all pass.
+- Review 2 F-2-1 through F-2-8 remain fixed: clean setup, build and route
+  claims, shipped-sample equivalence, plain terminology, and loopback wording
+  all pass.
+- Review 3 F-3-1 and F-3-2 remain fixed: the landing transcript matches fresh
+  CLI output and the self-hosted IBM Plex Mono face loads.
+- Verification 1 through 3 findings remain fixed: target sizes, complete claim
+  coverage, type checking, first-screen layout, redirect denial, sandbox
+  isolation, real HTTP 404, output protection, navigation focus, install
+  guidance, and responsive art all pass.
+- Review 5 F-5-1 remains fixed: the capture claim uses and reports an
+  OS-selected port reliably.
+- Review 6 F-6-1 is fixed by the bound-address change and the new outcome test.
+- Reviews 4 and verifications 4–6 had no other open findings.
+
+## Scope and remaining work
+
+No known product defect remains. The product has no hosted backend, account,
+tenant, remote API, or SQLite state, so backend health, persistence, tenant,
+and 429 checks do not apply. It has no advertised or registered paid offer;
+team policy packs remain future scope from the brief, so no billing metadata
+was emitted. Runtime AI would add an unnecessary incident-data boundary and is
+not part of this deterministic capture and replay job.
+
+The catalog description is verb-first and 83 characters. It was copied to
+`/work/.evidence/catalog-description.txt`. The existing copy audit remains
+current because no visitor-facing copy changed.
+
+Registry publication remains factory-owned. The package is ready for that
+step with `cargo package --locked`. Pre-existing Graphify workspace changes
+were not staged, modified intentionally, or committed.
